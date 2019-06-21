@@ -166,6 +166,7 @@ class OkCancelDialog(SimpleDialog):
 
         self.left_button_box = HPanel(self.button_box)
         self.button_box.pack(self.left_button_box, expand=True, fill=True)
+        self.ok_btn.set_focus()
 
         if const.IS_MAC:
             self.button_box.pack(self.ok_btn, padding=5)
