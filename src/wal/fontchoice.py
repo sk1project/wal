@@ -55,7 +55,7 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, WidgetMixin):
         self.callback = onchange
         self.Bind(wx.EVT_COMBOBOX, self.on_change, self)
 
-    def on_change(self, event):
+    def on_change(self, _event):
         if self.callback:
             self.callback()
 
@@ -132,10 +132,7 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, WidgetMixin):
         return val - 4
 
     def _create_items(self):
-        items = []
-        for item in range(len(self.bitmaps)):
-            items.append(str(item))
-        return items
+        return [str(item) for item in range(len(self.fontnames))]
 
     def _set_bitmaps(self, bitmaps, sample_bitmaps):
         self.bitmaps = bitmaps
