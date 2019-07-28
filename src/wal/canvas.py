@@ -48,9 +48,15 @@ RENDERING_DELAY = 25
 class CanvasTimer(wx.Timer):
     delay = 0
 
-    def __init__(self, parent, delay=0):
+    def __init__(self, parent, delay=0, on_timer=None):
+        self.parent = parent
         self.delay = delay or RENDERING_DELAY
         wx.Timer.__init__(self, parent)
+        self.bind(on_timer)
+
+    def bind(self, callback):
+        if callback:
+            self.parent.Bind(wx.EVT_TIMER, callback)
 
     def is_running(self):
         return self.IsRunning()
@@ -62,6 +68,10 @@ class CanvasTimer(wx.Timer):
     def start(self, interval=0):
         if not self.IsRunning():
             self.Start(interval or self.delay)
+
+    def restart(self, interval=0):
+        self.stop()
+        self.start(interval)
 
 
 class MainCanvas(Panel, Canvas):
@@ -75,8 +85,7 @@ class MainCanvas(Panel, Canvas):
                        style=wx.FULL_REPAINT_ON_RESIZE)
         Canvas.__init__(self, set_timer=False)
         self.set_bg(const.WHITE)
-        self.timer = CanvasTimer(self, rendering_delay)
-        self.Bind(wx.EVT_TIMER, self._on_timer)
+        self.timer = CanvasTimer(self, rendering_delay, self._on_timer)
         self.Bind(wx.EVT_ENTER_WINDOW, self.mouse_enter, self)
         self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self.capture_lost)
         # ----- Keyboard binding
@@ -107,13 +116,13 @@ class MainCanvas(Panel, Canvas):
             return
         event.Skip()
 
-    def _on_timer(self, event):
+    def _on_timer(self, _event):
         self.on_timer()
 
     def on_timer(self):
         pass
 
-    def mouse_enter(self, event):
+    def mouse_enter(self, _event):
         if const.IS_MSW:
             self.set_focus()
 
@@ -130,7 +139,7 @@ class MainCanvas(Panel, Canvas):
                 pass
             self.mouse_captured = False
 
-    def capture_lost(self, event):
+    def capture_lost(self, _event):
         self.release_mouse()
 
     def _mouse_left_down(self, event):

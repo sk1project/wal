@@ -144,6 +144,9 @@ class Label(wx.StaticText, WidgetMixin):
             self.SetForegroundColour(wx.Colour(*fg))
         self.Wrap(-1)
 
+    def set_min_width(self, width):
+        self.SetMinSize((width, -1))
+
     def set_text(self, text):
         self.SetLabel(tr(text))
 
