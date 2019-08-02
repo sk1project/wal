@@ -86,6 +86,9 @@ class WidgetMixin(object):
     def get_size(self):
         return self.GetSizeTuple()
 
+    def get_position(self):
+        return self.GetPosition()
+
     def is_shown(self):
         return self.IsShown()
 
@@ -143,8 +146,8 @@ class WidgetMixin(object):
     def get_bg(self):
         return self.GetBackgroundColour().Get()
 
-    def popup_menu(self, menu):
-        self.PopupMenu(menu)
+    def popup_menu(self, menu, position=None):
+        self.PopupMenu(menu, position)
 
     def set_drop_target(self, target):
         self.SetDropTarget(target)
