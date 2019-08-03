@@ -51,8 +51,7 @@ class MenuItem(wx.MenuItem):
         return self.IsEnabled()
 
     def set_enable(self, enabled):
-        if not enabled == self.get_enable():
-            self.Enable(enabled)
+        self.Enable(enabled)
 
     def set_checkable(self, val):
         self.SetCheckable(val)
@@ -73,6 +72,9 @@ class MenuItem(wx.MenuItem):
     def set_active(self, val):
         if self.is_checkable() and self.is_checked() != val:
             self.toggle()
+
+    def is_separator(self):
+        return self.IsSeparator()
 
 
 class MenuBar(wx.MenuBar):
