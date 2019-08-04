@@ -154,6 +154,16 @@ class Label(wx.StaticText, WidgetMixin):
         self.Wrap(width)
 
 
+class SensitiveLabel(Label):
+    def __init__(self, parent, text='', fontbold=False, fontsize=0, fg=(),
+                 on_left_click=None, on_right_click=None):
+        Label.__init__(self, parent, text, fontbold, fontsize, fg)
+        if on_left_click:
+            self.Bind(wx.EVT_LEFT_UP, on_left_click)
+        if on_right_click:
+            self.Bind(wx.EVT_RIGHT_UP, on_right_click)
+
+
 class HtmlLabel(wx.HyperlinkCtrl, WidgetMixin):
     def __init__(self, parent, text, url=''):
         url = text if not url else url

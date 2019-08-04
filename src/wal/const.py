@@ -353,3 +353,11 @@ AMBIANCE_GRAY = wx.Colour(60, 59, 55)
 
 def wxcolor_to_dec(wxcolor):
     return tuple(map(lambda x: x / 255.0, wxcolor.Get()[:3]))
+
+
+def get_screen_dpi():
+    return wx.GetDisplayPPI()
+
+
+def get_screen_resolution():
+    return wx.GetDisplaySize()
