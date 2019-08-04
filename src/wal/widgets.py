@@ -543,7 +543,7 @@ class NativeSpin(wx.SpinCtrl, RangeDataWidgetMixin):
             self.Bind(wx.EVT_KILL_FOCUS, self._entry_lost_focus, self)
             self.Bind(wx.EVT_CONTEXT_MENU, self._ctxmenu, self)
 
-    def on_change(self, *args):
+    def on_change(self, *_args):
         if self.callback:
             self.callback()
 
