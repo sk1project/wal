@@ -1,39 +1,11 @@
 import os
-import platform
+import sys
 
-RESTRICTED = ('UniConvertor', 'Python', 'ImageMagick')
+parent = os.path.dirname
+cur_path = os.path.abspath(os.getcwd())
+wal_path = os.path.join(parent(parent(cur_path)), 'src')
+sys.path.insert(0, wal_path)
 
-
-def get_path_var():
-    path = '' + os.environ["PATH"]
-    paths = path.split(os.pathsep)
-    ret = []
-    for path in paths:
-        allow = True
-        for item in RESTRICTED:
-            if item in path: allow = False
-        if allow: ret.append(path)
-    return os.pathsep.join(ret)
-
-
-if os.name == 'nt':
-
-    cur_path = os.path.abspath('..\\..\\..\\sk1-wx-msw')
-
-    devresdir = 'win32-devres'
-    if platform.architecture()[0] == '64bit': devresdir = 'win64-devres'
-
-    devres = os.path.join(cur_path, devresdir)
-    bindir = os.path.join(devres, 'dlls') + os.pathsep
-    magickdir = os.path.join(devres, 'dlls', 'modules') + os.pathsep
-
-    os.environ["PATH"] = magickdir + bindir + get_path_var()
-    os.environ["MAGICK_CODER_MODULE_PATH"] = magickdir
-    os.environ["MAGICK_CODER_FILTER_PATH"] = magickdir
-    os.environ["MAGICK_CONFIGURE_PATH"] = magickdir
-    os.environ["MAGICK_HOME"] = magickdir
-
-    os.chdir(os.path.join(devres, 'dlls'))
 
 import wal
 
@@ -46,8 +18,11 @@ class ColorPanel(wal.ScrolledPanel):
         for item in keys:
             grid.pack(wal.Label(grid, item))
             panel = wal.VPanel(grid)
-            panel.pack((80, 50))
-            panel.set_bg(wal.UI_COLORS[item])
+            panel.set_bg(wal.BLACK)
+            color_panel = wal.VPanel(panel)
+            color_panel.pack((80, 30))
+            color_panel.set_bg(wal.UI_COLORS[item])
+            panel.pack(color_panel, padding_all=1)
             grid.pack(panel)
         self.pack(grid, padding=10)
 
