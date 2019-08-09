@@ -494,13 +494,12 @@ class Canvas(object):
         self.dc.DrawBitmap(bmp, x, y, use_mask)
 
 
-class SensitiveCanvas(Canvas):
+class SensitiveWidget(object):
     kbdproc = None
     mouse_captured = False
     click_flag = False
 
     def __init__(self, check_move=False, kbdproc=None):
-        Canvas.__init__(self)
         self.kbdproc = kbdproc
         self.Bind(wx.EVT_LEFT_UP, self._mouse_left_up)
         self.Bind(wx.EVT_LEFT_DOWN, self._mouse_left_down)
@@ -588,6 +587,13 @@ class SensitiveCanvas(Canvas):
 
     def mouse_left_dclick(self, point):
         pass
+
+
+class SensitiveCanvas(Canvas, SensitiveWidget):
+
+    def __init__(self, check_move=False, kbdproc=None):
+        Canvas.__init__(self)
+        SensitiveWidget.__init__(self, check_move, kbdproc)
 
 
 class RoundedPanel(VPanel, Canvas):
@@ -768,6 +774,9 @@ class ScrolledCanvas(wx.ScrolledWindow, WidgetMixin):
 
     def set_virtual_size(self, size):
         self.SetVirtualSize(size)
+
+    def get_virtual_size(self):
+        return self.GetVirtualSize()
 
     def set_scroll_rate(self, h=20, v=20):
         self.SetScrollRate(h, v)

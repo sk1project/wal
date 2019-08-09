@@ -235,7 +235,9 @@ def _init_gtk_colors(kw):
     bg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE).Get()
     fg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_BTNTEXT).Get()
     infobk = wx.SystemSettings_GetColour(wx.SYS_COLOUR_INFOBK).Get()
-    sel_bg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHT).Get()
+    sel_bg = wx.SystemSettings_GetColour(wx.SYS_COLOUR_ACTIVECAPTION).Get() \
+        if IS_GTK2 else \
+        wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHT).Get()
     sel_text = wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHTTEXT).Get()
     disabled_text = wx.SystemSettings_GetColour(
         wx.SYS_COLOUR_GRAYTEXT).Get()

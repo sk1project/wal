@@ -21,10 +21,10 @@ from wx import animate
 
 import basic
 import const
-from basic import HPanel, MouseEvent
+from basic import HPanel, MouseEvent, SensitiveWidget, VPanel, SensitiveCanvas
 from const import DEF_SIZE, tr, untr
 from mixins import WidgetMixin, DataWidgetMixin, RangeDataWidgetMixin
-from renderer import bmp_to_white, disabled_bmp
+from renderer import bmp_to_white, disabled_bmp, get_text_size
 
 
 class Bitmap(wx.StaticBitmap, WidgetMixin):
@@ -76,7 +76,7 @@ class Notebook(wx.Notebook, WidgetMixin):
             self.callback = on_change
             self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self._on_change, self)
 
-    def _on_change(self, event):
+    def _on_change(self, _event):
         self.refresh()
         if self.callback:
             self.callback(self.get_active_index())
@@ -187,7 +187,7 @@ class Button(wx.Button, WidgetMixin):
     def set_default(self):
         self.SetDefault()
 
-    def on_click(self, event):
+    def on_click(self, _event=None):
         if self.callback:
             self.callback()
 
@@ -208,14 +208,94 @@ class Checkbox(wx.CheckBox, DataWidgetMixin):
         if action:
             self.on_click()
 
-    def on_click(self, event=None):
+    def on_click(self, _event=None):
         if self.callback:
             self.callback()
 
 
+SWITCH_SIZE = (76, 26)
+
+
+class Switch(VPanel, SensitiveCanvas):
+    state = False
+    callback = None
+
+    def __init__(self, parent, value=False, onclick=None):
+        self.state = bool(value)
+        self.callback = onclick
+        VPanel.__init__(self, parent)
+        SensitiveCanvas.__init__(self)
+        self.pack(SWITCH_SIZE)
+
+    def mouse_left_up(self, _point):
+        self.state = not self.state
+        self.refresh()
+        if self.callback:
+            self.callback()
+
+    def get_value(self):
+        return self.state
+
+    def set_value(self, value, action=True):
+        self.state = bool(value)
+        if action:
+            self.on_click()
+
+    def on_click(self, _event=None):
+        if self.callback:
+            self.callback()
+
+    def paint(self):
+        on_color = const.UI_COLORS['selected_text_bg']
+        off_color = const.UI_COLORS['dark_shadow']
+        border_color = const.UI_COLORS['workspace']
+        bg_color = const.UI_COLORS['bg']
+        on_text_color = const.UI_COLORS['selected_text']
+        off_text_color = const.UI_COLORS['text']
+
+        w, h = self.get_size()
+
+        # Light shadow
+        self.set_gc_stroke()
+        self.set_gc_fill(color=const.WHITE)
+        self.gc_draw_rounded_rect(w=w, h=h, radius=2)
+        # Background
+        self.set_gc_fill(color=on_color if self.state else off_color)
+        self.gc_draw_rounded_rect(w=w, h=h - 1, radius=2)
+        # Background shadow
+        rect = (1, 1, w - 2, h - 3)
+        start_color = const.WHITE.Get() + (0,)
+        stop_color = const.WHITE.Get() + (55,)
+        self.gc_draw_linear_gradient(rect, start_color, stop_color, True)
+        # Border
+        self.set_gc_fill()
+        self.set_gc_stroke(color=border_color, width=1)
+        self.gc_draw_rounded_rect(w=w, h=h - 1, radius=2)
+        # Button
+        self.set_gc_stroke(color=border_color, width=1)
+        self.set_gc_fill(color=bg_color)
+        self.gc_draw_rounded_rect(x=w / 2 if self.state else 2, y=2,
+                                  w=w / 2 - 2, h=h - 5, radius=3)
+        # Button relief
+        rect = (w / 2 + 1 if self.state else 3, 3, w / 2 - 4, h - 7)
+        start_color = const.WHITE.Get() + (40,)
+        stop_color = const.BLACK.Get() + (40,)
+        self.gc_draw_linear_gradient(rect, start_color, stop_color, True)
+
+        # Text
+        self.set_gc_font(bold=True, size_incr=-1)
+        txt_color = on_text_color if self.state else off_text_color
+        self.set_gc_text_color(color=txt_color)
+        txt = 'ON' if self.state else 'OFF'
+        tw, th = get_text_size(txt, True, -1)
+        x = (w if self.state else 3 * w) / 4 - tw / 2
+        y = h / 2 - th / 2 - 1
+        self.gc_draw_text(txt, x, y)
+
+
 class NumCheckbox(Checkbox):
     def set_value(self, val, action=True):
-        self.SetValue(True if val else False)
+        self.SetValue(bool(val))
         if action:
             self.on_click()
 
@@ -1060,7 +1140,7 @@ class MegaSpin(MegaSpinDouble):
     def __init__(self, parent, value=0, range_val=(0, 1), size=DEF_SIZE,
                  width=5, onchange=None, onenter=None, check_focus=True):
         MegaSpinDouble.__init__(self, parent, value, range_val, 1, 0, size,
-                                 width, onchange, onenter, check_focus)
+                                width, onchange, onenter, check_focus)
 
     def set_digits(self, digits):
         pass
@@ -1109,10 +1189,11 @@ class Slider(wx.Slider, RangeDataWidgetMixin):
 
 
 class Splitter(wx.SplitterWindow, WidgetMixin):
-    def __init__(self, parent, live_update=True):
+    def __init__(self, parent, live_update=True, hidden=False):
         style = wx.SP_NOBORDER
         style = style | wx.SP_LIVE_UPDATE if live_update else style
         wx.SplitterWindow.__init__(self, parent, wx.ID_ANY, style=style)
+        self.SetSashInvisible(hidden)
 
     def split_vertically(self, win1, win2, sash_pos=0):
         self.SplitVertically(win1, win2, sash_pos)
@@ -1137,6 +1218,32 @@ class Splitter(wx.SplitterWindow, WidgetMixin):
 
     def get_sash_position(self):
         return self.GetSashPosition()
+
+
+class SplitterSash(VPanel, SensitiveWidget):
+    move = False
+    mouse_pos = 0
+    sash_pos = 0
+
+    def __init__(self, parent, splitter=None, size=3):
+        self.splitter = splitter
+        VPanel.__init__(self, parent)
+        SensitiveWidget.__init__(self, check_move=True)
+        self.pack((size, size))
+        self.SetCursor(wx.StockCursor(wx.CURSOR_SIZEWE))
+
+    def mouse_left_down(self, point):
+        self.move = True
+        self.mouse_pos = self.ClientToScreen(point)[0]
+        self.sash_pos = self.splitter.get_sash_position()
+
+    def mouse_move(self, point):
+        if self.move:
+            dx = self.ClientToScreen(point)[0] - self.mouse_pos
+            self.splitter.set_sash_position(self.sash_pos + dx)
+
+    def mouse_left_up(self, point):
+        self.move = False
 
 
 class ScrollBar(wx.ScrollBar, WidgetMixin):
