@@ -24,7 +24,7 @@ def _dialog(parent, title, text, icon, yesno=False, cancel=False):
     if any([yesno, cancel]):
         buttons = wx.YES_NO if yesno else 0
         if cancel:
-            buttons = wx.OK | wx.CANCEL if not buttons else buttons | wx.CANCEL
+            buttons = buttons | wx.CANCEL if buttons else wx.OK | wx.CANCEL
     else:
         buttons = wx.OK
     dlg = wx.MessageDialog(parent, tr(text), tr(title), icon | buttons)
