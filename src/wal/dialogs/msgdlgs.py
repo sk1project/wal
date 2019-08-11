@@ -46,16 +46,11 @@ def stop_dialog(parent, title, text):
 
 
 def yesno_dialog(parent, title, text):
-    ret = _dialog(parent, title, text, wx.ICON_WARNING, True, False)
-    if ret == wx.ID_YES:
-        return True
-    return False
+    return _dialog(
+        parent, title, text, wx.ICON_WARNING, True, False) == wx.ID_YES
 
 
 def ync_dialog(parent, title, text):
-    ret = _dialog(parent, title, text, wx.ICON_WARNING, True, True)
-    if ret == wx.ID_YES:
-        return True
-    if ret == wx.ID_NO:
-        return False
-    return None
+    return {wx.ID_YES: True,
+            wx.ID_NO: False,
+            }.get(_dialog(parent, title, text, wx.ICON_WARNING, True, True))
