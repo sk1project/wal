@@ -16,7 +16,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import wx
-import const
+
+from .. import const
+from .. import utils
 
 
 def get_accelerator_entry(*args):
@@ -28,7 +30,7 @@ class Menu(wx.Menu):
         wx.Menu.__init__(self)
 
     def append_menu(self, item_id, text, menu):
-        self.AppendMenu(item_id, const.tr(text), menu)
+        self.AppendMenu(item_id, utils.tr(text), menu)
 
     def remove_item(self, item):
         self.RemoveItem(item)
@@ -42,7 +44,7 @@ class Menu(wx.Menu):
 
 class MenuItem(wx.MenuItem):
     def __init__(self, parent, action_id, text):
-        wx.MenuItem.__init__(self, parent, action_id, text=const.tr(text))
+        wx.MenuItem.__init__(self, parent, action_id, text=utils.tr(text))
 
     def bind_to(self, mw, callback, action_id):
         mw.Bind(wx.EVT_MENU, callback, id=action_id)
@@ -81,5 +83,5 @@ class MenuBar(wx.MenuBar):
     def __init__(self):
         wx.MenuBar.__init__(self)
 
-    def append_menu(self, menu_id, txt, menu):
-        self.Append(menu, const.tr(txt))
+    def append_menu(self, _menu_id, txt, menu):
+        self.Append(menu, utils.tr(txt))

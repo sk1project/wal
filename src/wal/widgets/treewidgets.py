@@ -17,8 +17,9 @@
 
 import wx
 
-import const
-from mixins import WidgetMixin
+from .. import const
+from .. import utils
+from ..mixins import WidgetMixin
 
 NO_ICON = -1
 
@@ -102,7 +103,7 @@ class TreeWidget(wx.TreeCtrl, WidgetMixin):
     def add_childs(self, parent, childs):
         for item in childs:
             icon = self.get_icons(item)
-            tid = self.AppendItem(parent, const.tr(item.name), icon, NO_ICON)
+            tid = self.AppendItem(parent, utils.tr(item.name), icon, NO_ICON)
             self.items_ref.append(item)
             self.items.append(tid)
             self.add_childs(tid, item.childs)

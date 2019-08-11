@@ -20,7 +20,7 @@ from wx.lib.agw.ultimatelistctrl import UltimateListCtrl
 from wx.lib.agw.ultimatelistctrl import UltimateListItemAttr
 from wx.lib.agw.ultimatelistctrl import ULC_VRULES, ULC_HRULES
 
-import const
+from .. import const
 
 WIDTH = 22
 

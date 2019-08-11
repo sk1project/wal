@@ -17,10 +17,10 @@
 
 import wx
 
-import const
-import renderer
-from const import DEF_SIZE, RIGHT
-from mixins import GenericGWidget
+from .. import const
+from .. import renderer
+from ..const import DEF_SIZE, RIGHT
+from ..mixins import GenericGWidget
 
 
 class ImageLabel(GenericGWidget):

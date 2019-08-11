@@ -17,8 +17,8 @@
 
 import wx
 
-import const
-from basic import SizedPanel, SensitiveCanvas, Canvas, Panel
+from .. import const
+from .basic import SizedPanel, SensitiveCanvas, Canvas, Panel
 
 
 class RulerCanvas(SizedPanel, SensitiveCanvas):

@@ -17,8 +17,8 @@
 
 import wx
 
-from basic import Panel
-import const
+from .. import utils
+from .basic import Panel
 
 
 class StubPanel(Panel):
@@ -42,7 +42,7 @@ class StubPanel(Panel):
         w, h = self.GetSize()
         self.Refresh(rect=wx.Rect(0, 0, w, h))
 
-    def _on_resize(self, event):
+    def _on_resize(self, _event):
         if self.buttons:
             w0, h = self.buttons[0].GetSize()
             w = len(self.buttons) * w0
@@ -54,7 +54,7 @@ class StubPanel(Panel):
                 x += w0
             self.refresh()
 
-    def _on_paint(self, event):
+    def _on_paint(self, _event):
         h = self.GetSize()[1]
         pdc = wx.PaintDC(self)
         dc = wx.GCDC(pdc)
@@ -86,7 +86,7 @@ class StubBtn(wx.Panel):
         self.SetSize(self.icon.GetSize())
 
         if tooltip:
-            self.SetToolTipString(const.tr(tooltip))
+            self.SetToolTipString(utils.tr(tooltip))
 
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_PAINT, self._on_paint, self)
@@ -128,25 +128,25 @@ class StubBtn(wx.Panel):
         w, h = self.GetSize()
         self.Refresh(rect=wx.Rect(0, 0, w, h))
 
-    def _on_paint(self, event):
+    def _on_paint(self, _event):
         pdc = wx.PaintDC(self)
         dc = wx.GCDC(pdc)
         dc.DrawBitmap(self.bitmaps[self.state], 0, 0, True)
 
-    def _mouse_over(self, event):
+    def _mouse_over(self, _event):
         if not self.state == DISABLED:
             self.mouse_over = True
             self.state = ACTIVE
             self.refresh()
             self.timer.Start(100)
 
-    def _mouse_down(self, event):
+    def _mouse_down(self, _event):
         if not self.state == DISABLED:
             self.mouse_pressed = True
             self.state = PRESSED
             self.refresh()
 
-    def _mouse_up(self, event):
+    def _mouse_up(self, _event):
         self.mouse_pressed = False
         if self.mouse_over:
             if self.callback and not self.state == DISABLED:
@@ -154,7 +154,7 @@ class StubBtn(wx.Panel):
                 self.refresh()
                 self.callback()
 
-    def _on_timer(self, event):
+    def _on_timer(self, _event):
         mouse_pos = wx.GetMousePosition()
         x, y = self.GetScreenPosition()
         w, h = self.GetSize()
@@ -167,7 +167,7 @@ class StubBtn(wx.Panel):
                 self.state = NORMAL
                 self.refresh()
 
-    def _on_win_leave(self, event):
+    def _on_win_leave(self, _event):
         self.timer.Stop()
         if self.mouse_over:
             self.mouse_over = False

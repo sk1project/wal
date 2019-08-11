@@ -18,8 +18,9 @@
 import wx
 import wx.lib.mixins.listctrl as listmix
 
-import const
-from mixins import WidgetMixin
+from .. import const
+from .. import utils
+from ..mixins import WidgetMixin
 
 
 class SimpleList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, WidgetMixin):
@@ -78,7 +79,7 @@ class SimpleList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, WidgetMixin):
         even = False
         i = 0
         for item in data:
-            item = const.tr(item)
+            item = utils.tr(item)
             self.Append([item])
             if alt_color:
                 list_item = self.GetItem(i)
@@ -121,7 +122,7 @@ class ReportList(SimpleList):
     def set_columns(self):
         for item in self.data[0]:
             index = self.data[0].index(item)
-            self.InsertColumn(index, const.tr(item))
+            self.InsertColumn(index, utils.tr(item))
 
     def set_data(self, data, alt_color=True):
         even = False
@@ -130,9 +131,9 @@ class ReportList(SimpleList):
         subheader = any(isinstance(i, str) for i in data)
         for item in data[1:]:
             if isinstance(item, list):
-                list_item = [const.tr(label) for label in item]
+                list_item = [utils.tr(label) for label in item]
             elif isinstance(item, str):
-                list_item = [const.tr(item), ] + ['', ] * (cols - 1)
+                list_item = [utils.tr(item), ] + ['', ] * (cols - 1)
             else:
                 continue
             self.Append(list_item)
@@ -176,16 +177,16 @@ class VirtualList(SimpleList):
     def OnGetItemText(self, item, col):
         return self.get_item_text(item, col)
 
-    def get_item_text(self, item, col):
+    def get_item_text(self, _item, _col):
         """
-        Callback method. Should return item text for specified column. 
+        Callback method. Should return item text for specified column.
         """
         return ''
 
     def OnGetItemImage(self, item):
         return self.get_item_image(item)
 
-    def get_item_image(self, item):
+    def get_item_image(self, _item):
         """
         Callback method. Should return item icon index or -1.
         """

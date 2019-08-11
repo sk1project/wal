@@ -17,9 +17,9 @@
 
 import wx.combo
 
-import const
-from mixins import WidgetMixin
-from renderer import bmp_to_white
+from .. import const
+from ..mixins import WidgetMixin
+from ..utils import bmp_to_white
 
 
 class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, WidgetMixin):

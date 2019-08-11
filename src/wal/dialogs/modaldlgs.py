@@ -18,11 +18,12 @@
 import logging
 import wx
 
-import const
-import mixins
-from basic import HPanel, VPanel
-from const import EXPAND, ALL, VERTICAL, HORIZONTAL, tr
-from widgets import HLine, Button, Label, ProgressBar
+from .. import const
+from .. import mixins
+from ..panels import HPanel, VPanel
+from ..const import EXPAND, ALL, VERTICAL, HORIZONTAL
+from ..widgets import HLine, Button, Label, ProgressBar
+from ..utils import tr
 
 LOG = logging.getLogger(__name__)
 
@@ -90,7 +91,7 @@ class SimpleDialog(wx.Dialog, mixins.DialogMixin):
     def get_result(self):
         return None
 
-    def on_close(self, event=None):
+    def on_close(self, _event=None):
         self.end_modal(const.BUTTON_CANCEL)
 
     def pack(self, *args, **kw):
@@ -244,7 +245,7 @@ class CustomProgressDialog(SimpleDialog):
         self.Update()
         wx.Yield()
 
-    def on_load(self, *args):
+    def on_load(self, *_args):
         self._timer.Stop()
         self.progressbar.set_value(5)
         try:

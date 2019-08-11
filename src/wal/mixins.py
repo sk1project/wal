@@ -17,8 +17,9 @@
 
 import wx
 
-import const
-from const import tr, untr
+from . import const
+from . import utils
+from .utils import tr, untr
 
 
 class DialogMixin(object):
@@ -158,7 +159,7 @@ class DataWidgetMixin(WidgetMixin):
         self.SetValue(tr(value))
 
     def get_value(self):
-        return untr(self.GetValue())
+        return utils.untr(self.GetValue())
 
 
 class RangeDataWidgetMixin(DataWidgetMixin):

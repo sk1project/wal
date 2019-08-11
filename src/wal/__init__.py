@@ -15,24 +15,11 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from artprovider import ArtProvider, push_provider, provider_get_bitmap
-from basic import *
-from canvas import *
-from clipboard import *
-from const import *
-from filedlgs import *
-from fontchoice import FontBitmapChoice
-from gctrls import ImageLabel, ImageButton, ImageToggleButton
-from layerlist import LayerList
-from listwidgets import SimpleList, ReportList
-from menu import Menu, MenuItem, MenuBar, get_accelerator_entry
-from modaldlgs import *
-from msgdlgs import *
-from printing import *
-from renderer import *
-from stubpanel import StubPanel, StubBtn
-from tabs import HTabPanel, HTab, VTabPanel, VTab
-from togglectrls import HToggleKeeper, VToggleKeeper, ModeToggleButton
-from treewidgets import TreeElement, TreeWidget
-from widgets import *
-from dnd import FileDropHandler, TextDropHandler
+from .base import Application, MainWindow, MouseEvent
+from .panels import *
+from .const import *
+from .dialogs import *
+from .misc import *
+from .renderer import *
+from .widgets import *
+from .utils import *

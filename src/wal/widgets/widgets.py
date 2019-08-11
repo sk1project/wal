@@ -19,12 +19,14 @@ import wx
 import wx.combo
 from wx import animate
 
-import basic
-import const
-from basic import HPanel, MouseEvent, SensitiveWidget, VPanel, SensitiveCanvas
-from const import DEF_SIZE, tr, untr
-from mixins import WidgetMixin, DataWidgetMixin, RangeDataWidgetMixin
-from renderer import bmp_to_white, disabled_bmp, get_text_size
+from .. import const
+from .. import panels
+from .. import base
+from .. import utils
+from ..panels import SensitiveWidget, VPanel, SensitiveCanvas
+from ..utils import tr
+from ..mixins import WidgetMixin, DataWidgetMixin, RangeDataWidgetMixin
+from ..utils import bmp_to_white, disabled_bmp, get_text_size
 
 
 class Bitmap(wx.StaticBitmap, WidgetMixin):
@@ -44,11 +46,11 @@ class Bitmap(wx.StaticBitmap, WidgetMixin):
 
     def _on_right_click(self, event):
         if self.rcallback:
-            self.rcallback(MouseEvent(event))
+            self.rcallback(base.MouseEvent(event))
 
     def _on_left_click(self, event):
         if self.lcallback:
-            self.lcallback(MouseEvent(event))
+            self.lcallback(base.MouseEvent(event))
 
     def _get_bitmap(self):
         if const.IS_MSW and not self.get_enabled():
@@ -173,8 +175,8 @@ class HtmlLabel(wx.HyperlinkCtrl, WidgetMixin):
 class Button(wx.Button, WidgetMixin):
     callback = None
 
-    def __init__(self, parent, text, size=DEF_SIZE, onclick=None, tooltip='',
-                 default=False, pid=wx.ID_ANY):
+    def __init__(self, parent, text, size=const.DEF_SIZE, onclick=None,
+                 tooltip='', default=False, pid=wx.ID_ANY):
         wx.Button.__init__(self, parent, pid, tr(text), size=size)
         if default:
             self.SetDefault()
@@ -322,7 +324,7 @@ class Combolist(wx.Choice, WidgetMixin):
     items = []
     callback = None
 
-    def __init__(self, parent, size=DEF_SIZE, width=0,
+    def __init__(self, parent, size=const.DEF_SIZE, width=0,
                  items=None, onchange=None):
         items = items or []
         self.items = [tr(item) for item in items]
@@ -354,7 +356,7 @@ class Combolist(wx.Choice, WidgetMixin):
         return self.get_selection()
 
     def get_active_value(self):
-        return untr(self.items[self.get_selection()])
+        return utils.untr(self.items[self.get_selection()])
 
     def set_active_value(self, val):
         val = tr(val)
@@ -440,8 +442,8 @@ class Combobox(wx.ComboBox, DataWidgetMixin):
     callback = None
     flag = False
 
-    def __init__(self, parent, value='', pos=(-1, 1), size=DEF_SIZE, width=0,
-                 items=None, onchange=None):
+    def __init__(self, parent, value='', pos=(-1, 1), size=const.DEF_SIZE,
+                 width=0, items=None, onchange=None):
         items = items or []
         self.items = [tr(item) for item in items]
         flags = wx.CB_DROPDOWN | wx.TE_PROCESS_ENTER
@@ -524,9 +526,9 @@ class Entry(wx.TextCtrl, DataWidgetMixin):
     _callback1 = None
     editable = True
 
-    def __init__(self, parent, value='', size=DEF_SIZE, width=0, onchange=None,
-                 multiline=False, richtext=False, onenter=None, editable=True,
-                 no_border=False, no_wrap=False):
+    def __init__(self, parent, value='', size=const.DEF_SIZE, width=0,
+                 onchange=None, multiline=False, richtext=False, onenter=None,
+                 editable=True, no_border=False, no_wrap=False):
         self.value = tr(value)
         self.editable = editable
         self._callback = onchange
@@ -603,7 +605,7 @@ class NativeSpin(wx.SpinCtrl, RangeDataWidgetMixin):
     flag = True
     ctxmenu_flag = False
 
-    def __init__(self, parent, value=0, range_val=(0, 1), size=DEF_SIZE,
+    def __init__(self, parent, value=0, range_val=(0, 1), size=const.DEF_SIZE,
                  width=6, onchange=None, onenter=None, check_focus=True):
         width = 0 if const.IS_GTK3 else width
         width = width + 2 if const.IS_MSW else width
@@ -663,7 +665,7 @@ if not const.IS_WX2:
 
         def __init__(
                 self, parent, value=0.0, range_val=(0.0, 1.0), step=0.01,
-                digits=2, size=DEF_SIZE, width=6,
+                digits=2, size=const.DEF_SIZE, width=6,
                 onchange=None, onenter=None, check_focus=True):
 
             self.range_val = range_val
@@ -730,7 +732,7 @@ if not const.IS_WX2:
 
 class NativeSpinButton(wx.SpinButton, RangeDataWidgetMixin):
     def __init__(
-            self, parent, value=0, range_val=(0, 10), size=DEF_SIZE,
+            self, parent, value=0, range_val=(0, 10), size=const.DEF_SIZE,
             onchange=None, vertical=True):
         self.range_val = range_val
         style = wx.SL_VERTICAL
@@ -750,7 +752,7 @@ class DummyEvent(object):
 _dummy_event = DummyEvent()
 
 
-class _MBtn(basic.Panel, basic.SensitiveCanvas):
+class _MBtn(panels.Panel, panels.SensitiveCanvas):
     _pressed = False
     _enabled = True
     _active = True
@@ -765,8 +767,8 @@ class _MBtn(basic.Panel, basic.SensitiveCanvas):
         self.callback = onclick
         self.callback_wheel = onwheel
         self.parent = parent
-        basic.Panel.__init__(self, parent, wx.ID_ANY)
-        basic.SensitiveCanvas.__init__(self)
+        panels.Panel.__init__(self, parent, wx.ID_ANY)
+        panels.SensitiveCanvas.__init__(self)
         self.set_size(size)
         self.points = self._get_points()
         self.timer = wx.Timer(self)
@@ -853,17 +855,18 @@ class _MBtn(basic.Panel, basic.SensitiveCanvas):
         self.gc_draw_polygon(self.points)
 
 
-class MegaSpinButton(basic.Panel):
+class MegaSpinButton(panels.Panel):
     enabled = True
     width = 14
 
-    def __init__(self, parent, value=0, range_val=(0, 10), size=DEF_SIZE,
+    def __init__(self, parent, value=0, range_val=(0, 10), size=const.DEF_SIZE,
                  onchange=None, vertical=True):
         self.range_val = range_val
         self.value = value
         self.callback = onchange
-        size = (self.width, 20) if size == DEF_SIZE else (self.width, size[1])
-        basic.Panel.__init__(self, parent, wx.ID_ANY)
+        size = (self.width, 20) if size == const.DEF_SIZE \
+            else (self.width, size[1])
+        panels.Panel.__init__(self, parent, wx.ID_ANY)
         self.set_size(size)
         w, h = size
         my = h // 2
@@ -948,7 +951,7 @@ class MegaSpinDouble(wx.Panel, RangeDataWidgetMixin):
 
     def __init__(
             self, parent, value=0.0, range_val=(0.0, 1.0), step=0.01,
-            digits=2, size=DEF_SIZE, width=5,
+            digits=2, size=const.DEF_SIZE, width=5,
             onchange=None, onenter=None, check_focus=True):
 
         self.callback = onchange
@@ -971,7 +974,7 @@ class MegaSpinDouble(wx.Panel, RangeDataWidgetMixin):
                 self.sb = SpinButton(self, size=size, onchange=self._check_spin)
                 w_pos = self.entry.GetSize()[0] - 5
                 if spin_sep:
-                    self.line = HPanel(self)
+                    self.line = panels.HPanel(self)
                     self.line.SetSize((1, self.sb.GetSize()[1] - 2))
                     self.line.set_bg(const.UI_COLORS['hover_solid_border'])
                     self.line.SetPosition((w_pos - 1, 1))
@@ -1137,7 +1140,7 @@ class MegaSpinDouble(wx.Panel, RangeDataWidgetMixin):
 
 
 class MegaSpin(MegaSpinDouble):
-    def __init__(self, parent, value=0, range_val=(0, 1), size=DEF_SIZE,
+    def __init__(self, parent, value=0, range_val=(0, 1), size=const.DEF_SIZE,
                  width=5, onchange=None, onenter=None, check_focus=True):
         MegaSpinDouble.__init__(self, parent, value, range_val, 1, 0, size,
                                 width, onchange, onenter, check_focus)

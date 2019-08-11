@@ -17,9 +17,10 @@
 
 import wx
 
-import const
-from basic import HPanel, SensitiveCanvas
-from renderer import get_text_size
+from .. import const
+from .. import utils
+from ..utils import get_text_size
+from .basic import HPanel, SensitiveCanvas
 
 TAB_MARGIN = 1
 TAB_PADDING = 5
@@ -325,7 +326,7 @@ class TabPainter(object):
         s = INDICATOR_SIZE
         pos = tab.pos + 3 * s - 3
         width = tab.get_tab_size() - 5 * s
-        txt = const.tr(tab.text)
+        txt = utils.tr(tab.text)
         if const.IS_MSW:
             if get_text_size(txt, size_incr=-1)[0] > width:
                 while get_text_size(txt + '...', size_incr=-1)[0] > width:
@@ -540,7 +541,7 @@ class VRectTabPainter(TabPainter):
         s = INDICATOR_SIZE
         pos = tab.pos + 3 * s - 3
         width = tab.get_tab_size() - 5 * s
-        txt = const.tr(tab.text)
+        txt = utils.tr(tab.text)
         if const.IS_MSW:
             if get_text_size(txt, size_incr=-1)[0] > width:
                 while get_text_size(txt + '...', size_incr=-1)[0] > width:

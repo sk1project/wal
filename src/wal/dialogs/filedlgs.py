@@ -19,7 +19,8 @@ import os
 import sys
 import wx
 
-import const
+from .. import const
+from .. import utils
 
 HOME = os.path.expanduser('~'). \
     decode(sys.getfilesystemencoding()).encode('utf-8')
@@ -38,15 +39,15 @@ def get_open_file_name(parent, title='Open', default_dir='~',
 
     style = wx.FD_CHANGE_DIR | wx.FD_FILE_MUST_EXIST | wx.FD_PREVIEW
     dlg = wx.FileDialog(
-        parent, message=const.tr(title),
+        parent, message=utils.tr(title),
         defaultDir=expanduser(default_dir),
         defaultFile="",
-        wildcard=const.tr(wildcard),
+        wildcard=utils.tr(wildcard),
         style=wx.FD_OPEN | style
     )
     dlg.CenterOnParent()
     if dlg.ShowModal() == wx.ID_OK:
-        ret = const.untr(dlg.GetPath())
+        ret = utils.untr(dlg.GetPath())
     dlg.Destroy()
     return ret
 
@@ -62,15 +63,15 @@ def get_save_file_name(parent, path, title='', wildcard='*.txt'):
 
     style = wx.FD_CHANGE_DIR | wx.FD_OVERWRITE_PROMPT | wx.FD_PREVIEW
     dlg = wx.FileDialog(
-        parent, message=const.tr(title),
+        parent, message=utils.tr(title),
         defaultDir=doc_folder,
-        defaultFile=const.tr(doc_name),
-        wildcard=const.tr(wildcard),
+        defaultFile=utils.tr(doc_name),
+        wildcard=utils.tr(wildcard),
         style=wx.FD_SAVE | style
     )
     dlg.CenterOnParent()
     if dlg.ShowModal() == wx.ID_OK:
-        ret = (const.untr(dlg.GetPath()), dlg.GetFilterIndex())
+        ret = (utils.untr(dlg.GetPath()), dlg.GetFilterIndex())
     dlg.Destroy()
     return ret
 
@@ -84,12 +85,12 @@ def get_dir_path(parent, path='~', title=''):
     path = expanduser(path)
 
     dlg = wx.DirDialog(
-        parent, message=const.tr(title),
-        defaultPath=const.tr(path),
+        parent, message=utils.tr(title),
+        defaultPath=utils.tr(path),
         style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST
     )
     dlg.CenterOnParent()
     if dlg.ShowModal() == wx.ID_OK:
-        ret = const.untr(dlg.GetPath())
+        ret = utils.untr(dlg.GetPath())
     dlg.Destroy()
     return ret

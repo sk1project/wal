@@ -16,7 +16,8 @@
 # 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import wx
-from const import tr
+
+from ..utils import tr
 
 
 def _dialog(parent, title, text, icon, yesno=False, cancel=False):
@@ -33,7 +34,7 @@ def _dialog(parent, title, text, icon, yesno=False, cancel=False):
             if not buttons:
                 buttons = wx.OK | wx.CANCEL
             else:
-                buttons |= wx.CANCEL
+                buttons = wx.CANCEL
         dlg = wx.MessageDialog(parent, tr(text), tr(title), icon | buttons)
         ret = dlg.ShowModal()
         dlg.Destroy()
