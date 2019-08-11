@@ -21,23 +21,15 @@ from ..utils import tr
 
 
 def _dialog(parent, title, text, icon, yesno=False, cancel=False):
-    ret = None
-    if not yesno and not cancel:
-        dlg = wx.MessageDialog(parent, tr(text), tr(title), wx.OK | icon)
-        dlg.ShowModal()
-        dlg.Destroy()
-    else:
-        buttons = 0
-        if yesno:
-            buttons = wx.YES_NO
+    if any([yesno, cancel]):
+        buttons = wx.YES_NO if yesno else 0
         if cancel:
-            if not buttons:
-                buttons = wx.OK | wx.CANCEL
-            else:
-                buttons = wx.CANCEL
-        dlg = wx.MessageDialog(parent, tr(text), tr(title), icon | buttons)
-        ret = dlg.ShowModal()
-        dlg.Destroy()
+            buttons = wx.OK | wx.CANCEL if not buttons else buttons | wx.CANCEL
+    else:
+        buttons = wx.OK
+    dlg = wx.MessageDialog(parent, tr(text), tr(title), icon | buttons)
+    ret = dlg.ShowModal()
+    dlg.Destroy()
     return ret
 
 
