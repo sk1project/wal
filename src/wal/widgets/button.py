@@ -19,6 +19,7 @@ import wx
 
 from .. import const
 from .. import mixins
+from .. import renderer
 from .. import utils
 
 
@@ -93,3 +94,38 @@ class ColorButton(wx.ColourPickerCtrl, mixins.WidgetMixin):
 
     def get_value255(self):
         return self.GetColour().Get()
+
+
+class ImageButton(mixins.GenericGWidget):
+    def __init__(
+            self, parent, art_id=None, art_size=const.DEF_SIZE,
+            text='', tooltip='', padding=0, decoration_padding=6,
+            flat=True, native=True,
+            fontbold=False, fontsize=0, textplace=const.RIGHT,
+            onclick=None, repeat=False):
+
+        self.flat = flat
+        self.decoration_padding = decoration_padding
+
+        mixins.GenericGWidget.__init__(self, parent, tooltip, onclick, repeat)
+
+        if native:
+            rndr = renderer.NativeButtonRenderer
+        else:
+            rndr = renderer.ButtonRenderer
+
+        self.renderer = rndr(
+            self, art_id, art_size, text,
+            padding, fontbold, fontsize, textplace)
+
+    def _on_paint(self, event):
+        if self.enabled:
+            if not self.mouse_over:
+                self.renderer.draw_normal(self.flat)
+            else:
+                if self.mouse_pressed:
+                    self.renderer.draw_pressed()
+                else:
+                    self.renderer.draw_hover()
+        else:
+            self.renderer.draw_disabled(self.flat)

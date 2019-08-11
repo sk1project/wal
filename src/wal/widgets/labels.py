@@ -17,7 +17,9 @@
 
 import wx
 
+from .. import const
 from .. import mixins
+from .. import renderer
 from .. import utils
 
 
@@ -70,3 +72,34 @@ class HtmlLabel(wx.HyperlinkCtrl, mixins.WidgetMixin):
     def __init__(self, parent, text, url=''):
         url = text if not url else url
         wx.HyperlinkCtrl.__init__(self, parent, wx.ID_ANY, utils.tr(text), url)
+
+
+class ImageLabel(mixins.GenericGWidget):
+    rightclick_cmd = None
+
+    def __init__(
+            self, parent, art_id=None, art_size=const.DEF_SIZE, text='',
+            tooltip='', padding=0,
+            fontbold=False, fontsize=0, textplace=const.RIGHT,
+            onclick=None, onrightclick=None, repeat=False):
+
+        self.flat = True
+
+        mixins.GenericGWidget.__init__(self, parent, tooltip, onclick, repeat)
+        self.renderer = renderer.LabelRenderer(
+            self, art_id, art_size, text,
+            padding, fontbold, fontsize, textplace)
+
+        if onrightclick:
+            self.rightclick_cmd = onrightclick
+            self.Bind(wx.EVT_RIGHT_UP, self._on_rightclick, self)
+
+    def _on_rightclick(self, _event):
+        if self.rightclick_cmd:
+            self.rightclick_cmd()
+
+    def _on_paint(self, event):
+        if self.enabled:
+            self.renderer.draw_normal()
+        else:
+            self.renderer.draw_disabled()

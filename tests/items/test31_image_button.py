@@ -14,7 +14,7 @@ class MW(wal.MainWindow):
 
         btn = wal.ImageButton(self, text='Test',
                               onclick=self.click)
-        self.pack(btn, fill=True, expand=True)
+        self.pack(btn, fill=True, padding=10)
 
     def click(self, *args):
         print 'CLICK'

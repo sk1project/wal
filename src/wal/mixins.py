@@ -227,12 +227,12 @@ class GenericGWidget(wx.Panel, WidgetMixin):
     def _on_paint(self, event):
         pass
 
-    def _mouse_over(self, event):
+    def _mouse_over(self, _event):
         self.mouse_over = True
         self.refresh()
         self.timer.Start(100)
 
-    def _mouse_down(self, event):
+    def _mouse_down(self, _event):
         self.mouse_pressed = True
         self.refresh()
 

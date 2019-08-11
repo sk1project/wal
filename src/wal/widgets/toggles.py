@@ -15,11 +15,81 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from .. import const
+from .. import mixins
 from .. import panels
-from . import gctrls
+from .. import renderer
 
 
-class ModeToggleButton(gctrls.ImageToggleButton):
+class ImageToggleButton(mixins.GenericGWidget):
+    value = False
+    onchange = None
+
+    def __init__(
+            self, parent, value=False, art_id=None, art_size=const.DEF_SIZE,
+            text='', tooltip='', padding=0, decoration_padding=6,
+            flat=True, native=not const.IS_MAC,
+            fontbold=False, fontsize=0, textplace=const.RIGHT,
+            onchange=None):
+
+        self.flat = flat
+        self.decoration_padding = decoration_padding
+
+        self.value = value
+        self.onchange = onchange
+        mixins.GenericGWidget.__init__(self, parent, tooltip)
+
+        renderer_class = renderer.NativeButtonRenderer \
+            if native else renderer.ButtonRenderer
+        self.renderer = renderer_class(
+            self, art_id, art_size, text,
+            padding, fontbold, fontsize, textplace)
+
+    def set_value(self, value, silent=False):
+        self.value = value
+        if self.onchange and not silent:
+            self.onchange()
+        self.refresh()
+
+    def set_active(self, value):
+        self.value = value
+        self.refresh()
+
+    def get_value(self):
+        return self.value
+
+    def get_active(self):
+        return self.value
+
+    def _on_paint(self, event):
+        if self.enabled:
+            if not self.mouse_over and not self.value:
+                self.renderer.draw_normal(self.flat)
+            elif not self.mouse_over and self.value:
+                self.renderer.draw_pressed()
+            elif self.mouse_over and not self.value and not self.mouse_pressed:
+                self.renderer.draw_hover()
+            elif self.mouse_over and self.value and not self.mouse_pressed:
+                self.renderer.draw_pressed()
+            elif self.mouse_over and self.mouse_pressed:
+                self.renderer.draw_pressed()
+        else:
+            if self.value:
+                self.renderer.draw_pressed_disabled()
+            else:
+                self.renderer.draw_disabled(self.flat)
+
+    def _mouse_up(self, event):
+        self.mouse_pressed = False
+        if self.mouse_over:
+            if self.enabled:
+                self.value = not self.value
+                if self.onchange:
+                    self.onchange()
+        self.refresh()
+
+
+class ModeToggleButton(ImageToggleButton):
     keeper = None
     mode = 0
     callback = None
@@ -31,7 +101,7 @@ class ModeToggleButton(gctrls.ImageToggleButton):
         self.mode = mode
         self.callback = on_change
         self.allow_off = allow_off
-        gctrls.ImageToggleButton.__init__(
+        ImageToggleButton.__init__(
             self, parent, False, icons[mode],
             tooltip=names[mode], onchange=self.change)
 
