@@ -1,5 +1,5 @@
 # The test should show two types of
-# HtmlLabel on the main window
+# HyperlinkLabel on the main window
 
 import wal
 
@@ -12,9 +12,9 @@ class MW(wal.MainWindow):
         wal.MainWindow.__init__(self)
         self.set_size(SIZE)
 
-        self.pack(wal.HtmlLabel(self, 'https://sk1project.net'), padding=10)
-        self.pack(wal.HtmlLabel(self, 'Project site',
-                                'https://sk1project.net'), padding=10)
+        self.pack(wal.HyperlinkLabel(self, 'https://sk1project.net'), padding=10)
+        self.pack(wal.HyperlinkLabel(self, 'Project site',
+                                     'https://sk1project.net'), padding=10)
 
 
 MW().run()

@@ -68,7 +68,7 @@ class SensitiveLabel(Label):
             self.Bind(wx.EVT_RIGHT_UP, on_right_click)
 
 
-class HtmlLabel(wx.HyperlinkCtrl, mixins.WidgetMixin):
+class HyperlinkLabel(wx.HyperlinkCtrl, mixins.WidgetMixin):
     def __init__(self, parent, text, url=''):
         url = text if not url else url
         wx.HyperlinkCtrl.__init__(self, parent, wx.ID_ANY, utils.tr(text), url)
