@@ -48,7 +48,7 @@ class Checkbox(wx.CheckBox, mixins.DataWidgetMixin):
 SWITCH_SIZE = (76, 26)
 
 
-class Switch(panels.VPanel, panels.SensitiveCanvas):
+class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
     state = False
     callback = None
 
@@ -56,7 +56,7 @@ class Switch(panels.VPanel, panels.SensitiveCanvas):
         self.state = bool(value)
         self.callback = onclick
         panels.VPanel.__init__(self, parent)
-        panels.SensitiveCanvas.__init__(self)
+        mixins.SensitiveDrawableWidget.__init__(self)
         self.pack(SWITCH_SIZE)
 
     def mouse_left_up(self, _point):

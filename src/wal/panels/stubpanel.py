@@ -18,17 +18,18 @@
 import wx
 
 from .. import utils
-from .basic import Panel
+
+from . import base
 
 
-class StubPanel(Panel):
+class StubPanel(base.Panel):
     bmp = None
     bmp_size = ()
     buttons = None
     buttons_visible = True
 
     def __init__(self, parent):
-        Panel.__init__(self, parent)
+        base.Panel.__init__(self, parent)
         if self.bmp:
             self.bmp_size = self.bmp.GetSize()
         self.buttons = []

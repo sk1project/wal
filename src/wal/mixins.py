@@ -19,7 +19,6 @@ import wx
 
 from . import const
 from . import utils
-from .utils import tr, untr
 
 
 class DialogMixin(object):
@@ -27,7 +26,7 @@ class DialogMixin(object):
         self.Fit()
 
     def set_title(self, title):
-        self.SetTitle(tr(title))
+        self.SetTitle(utils.tr(title))
 
     def set_minsize(self, size):
         self.SetMinSize(size)
@@ -113,7 +112,7 @@ class WidgetMixin(object):
 
     def set_tooltip(self, tip=None):
         if tip:
-            self.SetToolTipString(tr(tip))
+            self.SetToolTipString(utils.tr(tip))
         else:
             self.SetToolTip(None)
 
@@ -156,7 +155,7 @@ class WidgetMixin(object):
 
 class DataWidgetMixin(WidgetMixin):
     def set_value(self, value):
-        self.SetValue(tr(value))
+        self.SetValue(utils.tr(value))
 
     def get_value(self):
         return utils.untr(self.GetValue())
@@ -245,7 +244,7 @@ class GenericGWidget(wx.Panel, WidgetMixin):
                 self.onclick()
         self.refresh()
 
-    def _on_timer(self, event):
+    def _on_timer(self, _event):
         mouse_pos = wx.GetMousePosition()
         x, y = self.GetScreenPosition()
         w, h = self.GetSize()
@@ -262,9 +261,314 @@ class GenericGWidget(wx.Panel, WidgetMixin):
                 if self.repeat and self.onclick and self.mouse_pressed:
                     self.onclick()
 
-    def _on_win_leave(self, event):
+    def _on_win_leave(self, _event):
         self.timer.Stop()
         if self.mouse_over:
             self.mouse_over = False
             self.mouse_pressed = False
             self.refresh()
+
+
+class DrawableWidget(object):
+    dc = None
+    pdc = None
+    dashes = None
+
+    def __init__(self, set_timer=True, buffered=False):
+        self.Bind(wx.EVT_PAINT, self._on_paint, self)
+        self.Bind(wx.EVT_SIZE, self._on_size_change, self)
+        if buffered:
+            self.set_double_buffered()
+        if set_timer and const.IS_MAC:
+            self.timer = wx.Timer(self)
+            self.Bind(wx.EVT_TIMER, self._repaint_after)
+            self.timer.Start(50)
+
+    def _repaint_after(self, _event):
+        self.repaint_after()
+        self.timer.Stop()
+
+    def set_double_buffered(self):
+        if const.IS_MSW:
+            self.SetDoubleBuffered(True)
+
+    def get_size(self):
+        return self.GetSizeTuple()
+
+    def _on_size_change(self, event):
+        self.refresh()
+        event.Skip()
+
+    def _on_paint(self, _event):
+        w, h = self.GetSize()
+        if not w or not h:
+            return
+        self.pdc = wx.PaintDC(self)
+        try:
+            self.dc = wx.GCDC(self.pdc)
+        except Exception:
+            self.dc = self.pdc
+        self.dc.BeginDrawing()
+
+        self.paint()
+
+        if not self.pdc == self.dc:
+            self.dc.EndDrawing()
+            self.pdc.EndDrawing()
+        else:
+            self.dc.EndDrawing()
+        self.pdc = self.dc = None
+
+    # Paint methods for inherited class
+    def paint(self):
+        pass
+
+    def repaint_after(self):
+        self.refresh()
+
+    # ========PaintDC
+
+    def set_origin(self, x=0, y=0):
+        self.pdc.SetDeviceOrigin(x, y)
+
+    def set_stroke(self, color=None, width=1, dashes=None):
+        self.dashes = [] + dashes if dashes else []
+        if color is None:
+            self.pdc.SetPen(wx.TRANSPARENT_PEN)
+        else:
+            pen = wx.Pen(wx.Colour(*color), width)
+            if dashes:
+                pen = wx.Pen(wx.Colour(*color), width, wx.USER_DASH)
+                pen.SetDashes(self.dashes)
+            pen.SetCap(wx.CAP_BUTT)
+            self.pdc.SetPen(pen)
+
+    def set_fill(self, color=None):
+        self.pdc.SetBrush(wx.TRANSPARENT_BRUSH if color is None
+                          else wx.Brush(wx.Colour(*color)))
+
+    def set_font(self, bold=False, size_incr=0):
+        font = self.GetFont()
+        font.SetWeight(wx.FONTWEIGHT_BOLD if bold else wx.FONTWEIGHT_NORMAL)
+        if size_incr:
+            if font.IsUsingSizeInPixels():
+                sz = font.GetPixelSize()[1] + size_incr
+                font.SetPixelSize((0, sz))
+            else:
+                sz = font.GetPointSize() + size_incr
+                font.SetPointSize(sz)
+        self.pdc.SetFont(font)
+        return self.pdc.GetCharHeight()
+
+    def set_text_color(self, color):
+        self.pdc.SetTextForeground(wx.Colour(*color))
+
+    def draw_line(self, x0, y0, x1, y1):
+        self.pdc.DrawLine(x0, y0, x1, y1)
+
+    def draw_rounded_rect(self, x=0, y=0, w=1, h=1, radius=1.0):
+        self.pdc.DrawRoundedRectangle(x, y, w, h, radius)
+
+    def draw_rect(self, x=0, y=0, w=1, h=1):
+        self.pdc.DrawRectangle(x, y, w, h)
+
+    def draw_text(self, text, x, y):
+        self.pdc.DrawText(text, x, y)
+
+    def draw_rotated_text(self, text, x, y, angle):
+        self.pdc.DrawRotatedText(text, x, y, angle)
+
+    def draw_polygon(self, points):
+        self.pdc.DrawPolygon(points)
+
+    def draw_surface(self, surface, x=0, y=0, use_mask=True):
+        self.pdc.DrawBitmap(
+            utils.copy_surface_to_bitmap(surface), x, y, use_mask)
+
+    def put_surface(self, surface, x=0, y=0, use_mask=True):
+        dc = wx.ClientDC(self)
+        dc.DrawBitmap(
+            utils.copy_surface_to_bitmap(surface), x, y, use_mask)
+
+    def draw_linear_gradient(self, rect, start_clr, stop_clr, ndir=False):
+        ndir = wx.SOUTH if ndir else wx.EAST
+        self.pdc.GradientFillLinear(
+            wx.Rect(*rect),
+            wx.Colour(*start_clr),
+            wx.Colour(*stop_clr),
+            nDirection=ndir)
+
+    def draw_bitmap(self, bmp, x=0, y=0, use_mask=True):
+        self.pdc.DrawBitmap(bmp, x, y, use_mask)
+
+    # =========GC device
+
+    def set_gc_origin(self, x=0, y=0):
+        self.dc.SetDeviceOrigin(x, y)
+
+    def set_gc_stroke(self, color=None, width=1, dashes=None):
+        self.dashes = [] + dashes if dashes else []
+        if color is None:
+            self.dc.SetPen(wx.TRANSPARENT_PEN)
+        else:
+            pen = wx.Pen(wx.Colour(*color), width)
+            if self.dashes:
+                pen = wx.Pen(wx.Colour(*color), width, wx.USER_DASH)
+                pen.SetDashes(self.dashes)
+            pen.SetCap(wx.CAP_BUTT)
+            self.dc.SetPen(pen)
+
+    def set_gc_fill(self, color=None):
+        self.dc.SetBrush(wx.TRANSPARENT_BRUSH if color is None
+                         else wx.Brush(wx.Colour(*color)))
+
+    def set_gc_font(self, bold=False, size_incr=0):
+        font = self.GetFont()
+        font.SetWeight(wx.FONTWEIGHT_BOLD if bold else wx.FONTWEIGHT_NORMAL)
+        if size_incr:
+            if font.IsUsingSizeInPixels():
+                sz = font.GetPixelSize() + size_incr
+                font.SetPixelSize(sz)
+            else:
+                sz = font.GetPointSize() + size_incr
+                font.SetPointSize(sz)
+        self.dc.SetFont(font)
+        return self.dc.GetCharHeight()
+
+    def set_gc_text_color(self, color):
+        self.dc.SetTextForeground(wx.Colour(*color))
+
+    def gc_draw_rounded_rect(self, x=0, y=0, w=1, h=1, radius=1.0):
+        self.dc.DrawRoundedRectangle(x, y, w, h, radius)
+
+    def gc_draw_line(self, x0, y0, x1, y1):
+        self.dc.DrawLine(x0, y0, x1, y1)
+
+    def gc_draw_rect(self, x=0, y=0, w=1, h=1):
+        self.dc.DrawRectangle(x, y, w, h)
+
+    def gc_draw_polygon(self, points):
+        self.dc.DrawPolygon(points)
+
+    def gc_draw_text(self, text, x, y):
+        self.dc.DrawText(text, x, y)
+
+    def gc_draw_rotated_text(self, text, x, y, angle):
+        self.dc.DrawRotatedText(text, x, y, angle)
+
+    def gc_draw_surface(self, surface, x=0, y=0, use_mask=True):
+        self.dc.DrawBitmap(
+            utils.copy_surface_to_bitmap(surface), x, y, use_mask)
+
+    def gc_draw_linear_gradient(self, rect, start_clr, stop_clr, ndir=False):
+        ndir = wx.SOUTH if ndir else wx.EAST
+        self.dc.GradientFillLinear(
+            wx.Rect(*rect),
+            wx.Colour(*start_clr),
+            wx.Colour(*stop_clr),
+            nDirection=ndir)
+
+    def gc_draw_bitmap(self, bmp, x=0, y=0, use_mask=True):
+        self.dc.DrawBitmap(bmp, x, y, use_mask)
+
+
+class SensitiveWidget(object):
+    kbdproc = None
+    mouse_captured = False
+    click_flag = False
+
+    def __init__(self, check_move=False, kbdproc=None):
+        self.kbdproc = kbdproc
+        self.Bind(wx.EVT_LEFT_UP, self._mouse_left_up)
+        self.Bind(wx.EVT_LEFT_DOWN, self._mouse_left_down)
+        self.Bind(wx.EVT_MOUSEWHEEL, self._mouse_wheel)
+        self.Bind(wx.EVT_RIGHT_DOWN, self._mouse_right_down)
+        self.Bind(wx.EVT_RIGHT_UP, self._mouse_right_up)
+        self.Bind(wx.EVT_LEFT_DCLICK, self._mouse_left_dclick)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self._mouse_leave)
+        if check_move:
+            self.Bind(wx.EVT_MOTION, self._mouse_move)
+            self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self._capture_lost)
+        if self.kbdproc is not None:
+            self.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
+
+    def _on_key_down(self, event):
+        key_code = event.GetKeyCode()
+        raw_code = event.GetRawKeyCode()
+        modifiers = event.GetModifiers()
+        if self.kbdproc.on_key_down(key_code, raw_code, modifiers):
+            event.Skip()
+
+    def capture_mouse(self):
+        if const.IS_MSW:
+            self.mouse_captured = True
+            self.CaptureMouse()
+
+    def release_mouse(self):
+        if self.mouse_captured:
+            self.mouse_captured = False
+            self.ReleaseMouse()
+
+    def _mouse_leave(self, event):
+        self.mouse_leave(event.GetPositionTuple())
+
+    def _mouse_left_down(self, event):
+        self.mouse_left_down(event.GetPositionTuple())
+
+    def _mouse_left_up(self, event):
+        if not self.click_flag:
+            self.click_flag = True
+            self.mouse_left_up(event.GetPositionTuple())
+            self.click_flag = False
+
+    def _mouse_right_down(self, event):
+        self.mouse_right_down(event.GetPositionTuple())
+
+    def _mouse_right_up(self, event):
+        self.mouse_right_up(event.GetPositionTuple())
+
+    def _mouse_wheel(self, event):
+        self.mouse_wheel(event.GetWheelRotation())
+
+    def _mouse_move(self, event):
+        self.mouse_move(event.GetPositionTuple())
+
+    def _capture_lost(self, _event):
+        self.capture_lost()
+
+    def _mouse_left_dclick(self, event):
+        self.mouse_left_dclick(event.GetPositionTuple())
+
+    def mouse_leave(self, point):
+        pass
+
+    def mouse_left_down(self, point):
+        pass
+
+    def mouse_left_up(self, point):
+        pass
+
+    def mouse_right_down(self, point):
+        pass
+
+    def mouse_right_up(self, point):
+        pass
+
+    def mouse_wheel(self, val):
+        pass
+
+    def mouse_move(self, point):
+        pass
+
+    def capture_lost(self):
+        pass
+
+    def mouse_left_dclick(self, point):
+        pass
+
+
+class SensitiveDrawableWidget(DrawableWidget, SensitiveWidget):
+
+    def __init__(self, check_move=False, kbdproc=None):
+        DrawableWidget.__init__(self)
+        SensitiveWidget.__init__(self, check_move, kbdproc)

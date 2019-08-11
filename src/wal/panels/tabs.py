@@ -18,9 +18,10 @@
 import wx
 
 from .. import const
+from .. import mixins
 from .. import utils
-from ..utils import get_text_size
-from .basic import HPanel, SensitiveCanvas
+
+from . import base
 
 TAB_MARGIN = 1
 TAB_PADDING = 5
@@ -33,7 +34,7 @@ VTAB_WIDTH = 25
 ICON_SIZE = 16
 
 
-class TabPanel(HPanel, SensitiveCanvas):
+class TabPanel(base.HPanel, mixins.SensitiveDrawableWidget):
     painter = None
     tabs = []
     draw_top = True
@@ -45,8 +46,8 @@ class TabPanel(HPanel, SensitiveCanvas):
         self.draw_top = draw_top
         self.custom_bg = custom_bg
         self.tabs = []
-        HPanel.__init__(self, parent)
-        SensitiveCanvas.__init__(self, check_move=True)
+        base.HPanel.__init__(self, parent)
+        mixins.SensitiveDrawableWidget.__init__(self, check_move=True)
         self.set_double_buffered()
         self.set_panel_size()
         self.set_painter(painter_index)
@@ -150,7 +151,7 @@ class TabPanel(HPanel, SensitiveCanvas):
 
     def refresh(self, **kwargs):
         self.arrange_tabs()
-        HPanel.refresh(self)
+        base.HPanel.refresh(self)
 
     def paint(self):
         if self.painter:
@@ -328,12 +329,12 @@ class TabPainter(object):
         width = tab.get_tab_size() - 5 * s
         txt = utils.tr(tab.text)
         if const.IS_MSW:
-            if get_text_size(txt, size_incr=-1)[0] > width:
-                while get_text_size(txt + '...', size_incr=-1)[0] > width:
+            if utils.get_text_size(txt, size_incr=-1)[0] > width:
+                while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:
                     txt = txt[:-1]
                 txt += '...'
         else:
-            while get_text_size(txt, size_incr=-1)[0] > width:
+            while utils.get_text_size(txt, size_incr=-1)[0] > width:
                 txt = txt[:-1]
 
         y = int(HTAB_HEIGHT / 2 - dc.set_font(size_incr=-1) / 2) + 1
@@ -543,12 +544,12 @@ class VRectTabPainter(TabPainter):
         width = tab.get_tab_size() - 5 * s
         txt = utils.tr(tab.text)
         if const.IS_MSW:
-            if get_text_size(txt, size_incr=-1)[0] > width:
-                while get_text_size(txt + '...', size_incr=-1)[0] > width:
+            if utils.get_text_size(txt, size_incr=-1)[0] > width:
+                while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:
                     txt = txt[:-1]
                 txt += '...'
         else:
-            while get_text_size(txt, size_incr=-1)[0] > width:
+            while utils.get_text_size(txt, size_incr=-1)[0] > width:
                 txt = txt[:-1]
         shift = 2 if tab.active else 1
         shift = shift + 2 if const.IS_MSW else shift

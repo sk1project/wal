@@ -22,7 +22,7 @@ from .. import utils
 
 
 class Notebook(wx.Notebook, mixins.WidgetMixin):
-    childs = []
+    childs = None
     callback = None
 
     def __init__(self, parent, on_change=None):

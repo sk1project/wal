@@ -18,14 +18,16 @@
 import wx
 
 from .. import const
-from .basic import SizedPanel, SensitiveCanvas, Canvas, Panel
+from .. import mixins
+
+from . import base
 
 
-class RulerCanvas(SizedPanel, SensitiveCanvas):
+class RulerCanvas(base.SizedPanel, mixins.SensitiveDrawableWidget):
 
     def __init__(self, parent, size=20, check_move=True):
-        SizedPanel.__init__(self, parent)
-        SensitiveCanvas.__init__(self, check_move=check_move)
+        base.SizedPanel.__init__(self, parent)
+        mixins.SensitiveDrawableWidget.__init__(self, check_move=check_move)
         self.set_bg(const.WHITE)
         self.fix_size(size)
         self.set_double_buffered()
@@ -74,16 +76,16 @@ class CanvasTimer(wx.Timer):
         self.start(interval)
 
 
-class MainCanvas(Panel, Canvas):
+class MainCanvas(base.Panel, mixins.DrawableWidget):
     timer = None
     mouse_captured = False
     kbproc = None
 
     def __init__(self, parent, rendering_delay=0):
         rendering_delay = rendering_delay or RENDERING_DELAY
-        Panel.__init__(self, parent, allow_input=True,
-                       style=wx.FULL_REPAINT_ON_RESIZE)
-        Canvas.__init__(self, set_timer=False)
+        base.Panel.__init__(self, parent, allow_input=True,
+                            style=wx.FULL_REPAINT_ON_RESIZE)
+        mixins.DrawableWidget.__init__(self, set_timer=False)
         self.set_bg(const.WHITE)
         self.timer = CanvasTimer(self, rendering_delay, self._on_timer)
         self.Bind(wx.EVT_ENTER_WINDOW, self.mouse_enter, self)
@@ -133,6 +135,7 @@ class MainCanvas(Panel, Canvas):
 
     def release_mouse(self):
         if self.mouse_captured:
+            # noinspection PyBroadException
             try:
                 self.ReleaseMouse()
             except Exception:

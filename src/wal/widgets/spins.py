@@ -177,7 +177,7 @@ class DummyEvent(object):
 _dummy_event = DummyEvent()
 
 
-class _MBtn(panels.Panel, panels.SensitiveCanvas):
+class _MBtn(panels.Panel, mixins.SensitiveDrawableWidget):
     _pressed = False
     _enabled = True
     _active = True
@@ -193,7 +193,7 @@ class _MBtn(panels.Panel, panels.SensitiveCanvas):
         self.callback_wheel = onwheel
         self.parent = parent
         panels.Panel.__init__(self, parent, wx.ID_ANY)
-        panels.SensitiveCanvas.__init__(self)
+        mixins.SensitiveDrawableWidget.__init__(self)
         self.set_size(size)
         self.points = self._get_points()
         self.timer = wx.Timer(self)

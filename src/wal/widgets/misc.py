@@ -92,7 +92,7 @@ class Splitter(wx.SplitterWindow, mixins.WidgetMixin):
         return self.GetSashPosition()
 
 
-class SplitterSash(panels.VPanel, panels.SensitiveWidget):
+class SplitterSash(panels.VPanel, mixins.SensitiveWidget):
     move = False
     mouse_pos = 0
     sash_pos = 0
@@ -100,7 +100,7 @@ class SplitterSash(panels.VPanel, panels.SensitiveWidget):
     def __init__(self, parent, splitter=None, size=3):
         self.splitter = splitter
         panels.VPanel.__init__(self, parent)
-        panels.SensitiveWidget.__init__(self, check_move=True)
+        mixins.SensitiveWidget.__init__(self, check_move=True)
         self.pack((size, size))
         self.SetCursor(wx.StockCursor(wx.CURSOR_SIZEWE))
 

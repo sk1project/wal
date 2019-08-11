@@ -20,6 +20,7 @@ from .panels import *
 from .const import *
 from .dialogs import *
 from .misc import *
+from .mixins import *
 from .renderer import *
 from .widgets import *
 from .utils import *

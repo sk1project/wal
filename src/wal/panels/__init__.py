@@ -1,4 +1,4 @@
-from .basic import *
+from .base import *
 from .canvas import MainCanvas, CanvasTimer, RulerCanvas
 from .notebook import Notebook
 from .stubpanel import StubPanel, StubBtn
