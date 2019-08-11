@@ -19,11 +19,12 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 
 from .. import const
+from .. import mixins
 from .. import utils
-from ..mixins import WidgetMixin
 
 
-class SimpleList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, WidgetMixin):
+class SimpleList(wx.ListCtrl,
+                 listmix.ListCtrlAutoWidthMixin, mixins.WidgetMixin):
     data = []
     select_cmd = None
     activate_cmd = None

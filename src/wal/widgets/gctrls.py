@@ -18,23 +18,22 @@
 import wx
 
 from .. import const
+from .. import mixins
 from .. import renderer
-from ..const import DEF_SIZE, RIGHT
-from ..mixins import GenericGWidget
 
 
-class ImageLabel(GenericGWidget):
+class ImageLabel(mixins.GenericGWidget):
     rightclick_cmd = None
 
     def __init__(
-            self, parent, art_id=None, art_size=DEF_SIZE, text='',
+            self, parent, art_id=None, art_size=const.DEF_SIZE, text='',
             tooltip='', padding=0,
-            fontbold=False, fontsize=0, textplace=RIGHT,
+            fontbold=False, fontsize=0, textplace=const.RIGHT,
             onclick=None, onrightclick=None, repeat=False):
 
         self.flat = True
 
-        GenericGWidget.__init__(self, parent, tooltip, onclick, repeat)
+        mixins.GenericGWidget.__init__(self, parent, tooltip, onclick, repeat)
         self.renderer = renderer.LabelRenderer(
             self, art_id, art_size, text,
             padding, fontbold, fontsize, textplace)
@@ -43,7 +42,7 @@ class ImageLabel(GenericGWidget):
             self.rightclick_cmd = onrightclick
             self.Bind(wx.EVT_RIGHT_UP, self._on_rightclick, self)
 
-    def _on_rightclick(self, event):
+    def _on_rightclick(self, _event):
         if self.rightclick_cmd:
             self.rightclick_cmd()
 
@@ -54,18 +53,18 @@ class ImageLabel(GenericGWidget):
             self.renderer.draw_disabled()
 
 
-class ImageButton(GenericGWidget):
+class ImageButton(mixins.GenericGWidget):
     def __init__(
-            self, parent, art_id=None, art_size=DEF_SIZE,
+            self, parent, art_id=None, art_size=const.DEF_SIZE,
             text='', tooltip='', padding=0, decoration_padding=6,
             flat=True, native=True,
-            fontbold=False, fontsize=0, textplace=RIGHT,
+            fontbold=False, fontsize=0, textplace=const.RIGHT,
             onclick=None, repeat=False):
 
         self.flat = flat
         self.decoration_padding = decoration_padding
 
-        GenericGWidget.__init__(self, parent, tooltip, onclick, repeat)
+        mixins.GenericGWidget.__init__(self, parent, tooltip, onclick, repeat)
 
         if native:
             rndr = renderer.NativeButtonRenderer
@@ -89,15 +88,15 @@ class ImageButton(GenericGWidget):
             self.renderer.draw_disabled(self.flat)
 
 
-class ImageToggleButton(GenericGWidget):
+class ImageToggleButton(mixins.GenericGWidget):
     value = False
     onchange = None
 
     def __init__(
-            self, parent, value=False, art_id=None, art_size=DEF_SIZE,
+            self, parent, value=False, art_id=None, art_size=const.DEF_SIZE,
             text='', tooltip='', padding=0, decoration_padding=6,
             flat=True, native=not const.IS_MAC,
-            fontbold=False, fontsize=0, textplace=RIGHT,
+            fontbold=False, fontsize=0, textplace=const.RIGHT,
             onchange=None):
 
         self.flat = flat
@@ -105,7 +104,7 @@ class ImageToggleButton(GenericGWidget):
 
         self.value = value
         self.onchange = onchange
-        GenericGWidget.__init__(self, parent, tooltip)
+        mixins.GenericGWidget.__init__(self, parent, tooltip)
 
         if native:
             rndr = renderer.NativeButtonRenderer

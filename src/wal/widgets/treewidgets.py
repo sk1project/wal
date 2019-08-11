@@ -18,8 +18,8 @@
 import wx
 
 from .. import const
+from .. import mixins
 from .. import utils
-from ..mixins import WidgetMixin
 
 NO_ICON = -1
 
@@ -35,7 +35,7 @@ class TreeElement(object):
         self.childs = []
 
 
-class TreeWidget(wx.TreeCtrl, WidgetMixin):
+class TreeWidget(wx.TreeCtrl, mixins.WidgetMixin):
     data = None
     items = None
     items_ref = None
@@ -138,7 +138,7 @@ class TreeWidget(wx.TreeCtrl, WidgetMixin):
                 self.SetItemBackgroundColour(item, color)
                 even = not even
 
-    def recolor_items(self, *args):
+    def recolor_items(self, *_args):
         if self.alt_color:
             even = False
             for item in self.items:

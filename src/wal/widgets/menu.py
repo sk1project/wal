@@ -46,7 +46,8 @@ class MenuItem(wx.MenuItem):
     def __init__(self, parent, action_id, text):
         wx.MenuItem.__init__(self, parent, action_id, text=utils.tr(text))
 
-    def bind_to(self, mw, callback, action_id):
+    @staticmethod
+    def bind_to(mw, callback, action_id):
         mw.Bind(wx.EVT_MENU, callback, id=action_id)
 
     def get_enable(self):

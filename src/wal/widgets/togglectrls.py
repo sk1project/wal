@@ -15,11 +15,11 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from ..panels import HPanel, VPanel
-from .gctrls import ImageToggleButton
+from .. import panels
+from . import gctrls
 
 
-class ModeToggleButton(ImageToggleButton):
+class ModeToggleButton(gctrls.ImageToggleButton):
     keeper = None
     mode = 0
     callback = None
@@ -31,7 +31,7 @@ class ModeToggleButton(ImageToggleButton):
         self.mode = mode
         self.callback = on_change
         self.allow_off = allow_off
-        ImageToggleButton.__init__(
+        gctrls.ImageToggleButton.__init__(
             self, parent, False, icons[mode],
             tooltip=names[mode], onchange=self.change)
 
@@ -56,7 +56,7 @@ class ModeToggleButton(ImageToggleButton):
                 self.set_active(True)
 
 
-class HToggleKeeper(HPanel):
+class HToggleKeeper(panels.HPanel):
     mode = 0
     mode_buts = None
     modes = None
@@ -69,7 +69,7 @@ class HToggleKeeper(HPanel):
         self.mode_buts = []
         self.callback = on_change
         self.allow_none = allow_none
-        HPanel.__init__(self, parent)
+        panels.HPanel.__init__(self, parent)
         for item in self.modes:
             but = ModeToggleButton(
                 self, self, item, icons, names,
@@ -97,7 +97,7 @@ class HToggleKeeper(HPanel):
         return self.mode
 
 
-class VToggleKeeper(VPanel):
+class VToggleKeeper(panels.VPanel):
     mode = 0
     mode_buts = None
     modes = None
@@ -110,7 +110,7 @@ class VToggleKeeper(VPanel):
         self.mode_buts = []
         self.callback = on_change
         self.allow_none = allow_none
-        VPanel.__init__(self, parent)
+        panels.VPanel.__init__(self, parent)
         for item in self.modes:
             but = ModeToggleButton(
                 self, self, item, icons, names,

@@ -18,11 +18,11 @@
 import wx.combo
 
 from .. import const
-from ..mixins import WidgetMixin
-from ..utils import bmp_to_white
+from .. import mixins
+from .. import utils
 
 
-class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, WidgetMixin):
+class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
     fontnames = None
     bitmaps = None
     sample_bitmaps = None
@@ -83,11 +83,11 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, WidgetMixin):
                 render = wx.RendererNative.Get()
                 render.DrawItemSelectionRect(self, dc, r, wx.CONTROL_SELECTED)
             if self.font_icon:
-                icon = bmp_to_white(self.font_icon)
+                icon = utils.bmp_to_white(self.font_icon)
                 dc.DrawBitmap(icon, icon_x, icon_y, True)
             dc.SetTextForeground(wx.WHITE)
             dc.DrawText(self.fontnames[item], label_x, label_y)
-            bmp = bmp_to_white(self.sample_bitmaps[item])
+            bmp = utils.bmp_to_white(self.sample_bitmaps[item])
             dc.DrawBitmap(bmp, label_x, sample_y, True)
         elif flags & wx.combo.ODCB_PAINTING_CONTROL:
             if const.IS_GTK:

@@ -94,7 +94,7 @@ class LayerList(UltimateListCtrl):
         self.pos_x = event.GetX()
         event.Skip()
 
-    def on_double_click(self, event):
+    def on_double_click(self, _event):
         if self.double_click_callback:
             self.double_click_callback()
 
