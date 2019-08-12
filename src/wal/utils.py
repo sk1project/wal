@@ -15,10 +15,6 @@
 # 	You should have received a copy of the GNU General Public License
 # 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
-import cairo
-from PIL import Image, ImageOps
-
 import wx
 
 
@@ -61,6 +57,7 @@ def image_to_pil_image(image):
     """
     Converts wx.Image to PIL Image object.
     """
+    from PIL import Image
     pil_image = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
     pil_image.frombytes(image.GetData())
     if image.HasAlpha():
@@ -103,6 +100,7 @@ def copy_surface_to_bitmap(surface):
     """
     Create a wx.Bitmap from a Cairo ImageSurface.
     """
+    import cairo
     cairo_format = surface.get_format()
     if cairo_format not in [cairo.FORMAT_ARGB32, cairo.FORMAT_RGB24]:
         raise TypeError("Unsupported format")
@@ -125,6 +123,7 @@ def copy_bitmap_to_surface(bitmap):
     """
     Create an ImageSurface from a wx.Bitmap
     """
+    import cairo
     width, height = bitmap.GetSize()
     if bitmap.HasAlpha():
         cairo_format = cairo.FORMAT_ARGB32
@@ -176,6 +175,7 @@ def invert_text_bitmap(bmp, color=(0, 0, 0)):
 
 
 def text_to_bitmap(text, color=(0, 0, 0), bold=False):
+    from PIL import ImageOps
     w, h = get_text_size(text, bold)
     dc = wx.MemoryDC()
     bmp = wx.EmptyBitmap(w, h)
