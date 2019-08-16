@@ -49,9 +49,11 @@ def _init_gtk_colors(kw):
         if sysconst.IS_GTK2 else get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
     sel_text = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
     disabled_text = get_sys_color(wx.SYS_COLOUR_GRAYTEXT)
+    entry_bg = get_sys_color(wx.SYS_COLOUR_WINDOW)
     kw['fg'] = fg + (255,)
     kw['bg'] = bg + (255,)
     kw['text'] = fg + (255,)
+    kw['entry_bg'] = () + entry_bg
     kw['selected_text_bg'] = () + sel_bg
     kw['selected_text'] = () + sel_text
     kw['disabled_text'] = mix_colors(fg, bg, 125)
@@ -75,9 +77,11 @@ def _init_mac_colors(kw):
     infobk = get_sys_color(wx.SYS_COLOUR_INFOBK)
     sel_bg = get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
     sel_text = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+    entry_bg = get_sys_color(wx.SYS_COLOUR_WINDOW)
     kw['fg'] = () + fg
     kw['bg'] = () + bg
     kw['text'] = () + fg
+    kw['entry_bg'] = () + entry_bg
     kw['selected_text_bg'] = () + sel_bg
     kw['selected_text'] = () + sel_text
     kw['disabled_text'] = mix_colors(fg, bg, 125)
@@ -101,9 +105,11 @@ def _init_msw_colors(kw):
     infobk = get_sys_color(wx.SYS_COLOUR_INFOBK)
     sel_bg = get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
     sel_text = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+    entry_bg = get_sys_color(wx.SYS_COLOUR_WINDOW)
     kw['fg'] = () + fg
     kw['bg'] = () + bg
     kw['text'] = () + fg
+    kw['entry_bg'] = () + entry_bg
     kw['selected_text_bg'] = () + sel_bg
     kw['selected_text'] = () + sel_text
     kw['disabled_text'] = mix_colors(fg, bg, 125)

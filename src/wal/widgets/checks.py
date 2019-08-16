@@ -70,6 +70,7 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
 
     def set_value(self, value, action=True):
         self.state = bool(value)
+        self.refresh()
         if action:
             self.on_click()
 
@@ -78,12 +79,18 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
             self.callback()
 
     def paint(self):
-        on_color = const.UI_COLORS['selected_text_bg']
-        off_color = const.UI_COLORS['dark_shadow']
-        border_color = const.UI_COLORS['workspace']
+        enabled = self.get_enabled()
+        on_color = const.UI_COLORS['selected_text_bg'] \
+            if enabled else const.UI_COLORS['bg']
+        off_color = const.UI_COLORS['dark_shadow'] \
+            if enabled else const.UI_COLORS['bg']
+        border_color = const.UI_COLORS['workspace'] \
+            if enabled else const.UI_COLORS['disabled_text']
         bg_color = const.UI_COLORS['bg']
-        on_text_color = const.UI_COLORS['selected_text']
-        off_text_color = const.UI_COLORS['text']
+        on_text_color = const.UI_COLORS['selected_text'] \
+            if enabled else const.UI_COLORS['disabled_text']
+        off_text_color = const.UI_COLORS['text'] \
+            if enabled else const.UI_COLORS['disabled_text']
 
         w, h = self.get_size()
 

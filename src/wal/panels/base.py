@@ -25,7 +25,6 @@ from .. import mixins
 from .. import utils
 from ..base import MouseEvent
 from ..mixins import WidgetMixin
-from ..utils import copy_surface_to_bitmap
 
 
 class Panel(wx.Panel, WidgetMixin):
@@ -338,7 +337,7 @@ class Expander(VPanel, mixins.DrawableWidget):
             self.Bind(wx.EVT_RIGHT_UP, self._click, self)
         self.refresh()
 
-    def _click(self, event):
+    def _click(self, _event):
         self.callback()
 
     def change(self, val=False):
@@ -425,13 +424,14 @@ class HSizer(HPanel):
 
     def release_mouse(self):
         if self.mouse_captured:
+            # noinspection PyBroadException
             try:
                 self.ReleaseMouse()
             except Exception:
                 pass
             self.mouse_captured = False
 
-    def capture_lost(self, event):
+    def capture_lost(self, _event):
         self.release_mouse()
 
     def mouse_left_down(self, event):

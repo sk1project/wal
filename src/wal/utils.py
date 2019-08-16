@@ -161,9 +161,17 @@ def get_text_size(text, bold=False, size_incr=0):
     pdc.SetFont(font)
     height = pdc.GetCharHeight()
     width = pdc.GetTextExtent(text)[0]
-    result = (width, height)
     pdc.SelectObject(wx.NullBitmap)
-    return result
+    return width, height
+
+
+def get_max_text_size(texts, bold=False, size_incr=0):
+    max_w = max_h = 0
+    for text in texts:
+        w, h = get_text_size(text, bold, size_incr)
+        max_w = max(w, max_w)
+        max_h = max(h, max_h)
+    return max_w, max_h
 
 
 def invert_text_bitmap(bmp, color=(0, 0, 0)):
