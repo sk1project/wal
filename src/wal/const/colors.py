@@ -46,6 +46,7 @@ EVEN_COLOR = wx.Colour(240, 240, 240)
 ODD_COLOR = wx.Colour(255, 255, 255)
 YELLOW_EVEN_COLOR = wx.Colour(255, 255, 191)
 YELLOW_ODD_COLOR = wx.Colour(255, 255, 222)
+
 WHITE = wx.Colour(255, 255, 255)
 BLACK = wx.Colour(0, 0, 0)
 DARK_GRAY = wx.Colour(89, 89, 89)
@@ -72,14 +73,7 @@ def set_ui_colors(kw):
     kw['disabled_text_shadow'] = mix_colors(
         WHITE.Get(), get_sys_color(wx.SYS_COLOUR_3DFACE), 200)
     kw['workspace'] = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
-    kw['tooltip_bg'] = get_sys_color(wx.SYS_COLOUR_INFOBK)
-
-    # if sysconst.IS_MAC:
-    #     _init_mac_colors(kw)
-    # elif sysconst.IS_MSW:
-    #     _init_msw_colors(kw)
-    # else:
-    #     _init_gtk_colors(kw)
+    kw['tooltip'] = get_sys_color(wx.SYS_COLOUR_INFOBK)
 
     global EVEN_COLOR, ODD_COLOR
     lb_bg = get_sys_color(wx.SYS_COLOUR_LISTBOX)

@@ -82,8 +82,7 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
         enabled = self.get_enabled()
         on_color = const.UI_COLORS['selected_text_bg'] \
             if enabled else const.UI_COLORS['bg']
-        off_color = const.UI_COLORS['entry_bg'] \
-            if enabled else const.UI_COLORS['bg']
+        off_color = const.UI_COLORS['bg']
         border_color = const.UI_COLORS['border'] \
             if enabled else const.UI_COLORS['disabled_text']
         bg_color = const.UI_COLORS['bg']
@@ -94,11 +93,8 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
 
         w, h = self.get_size()
 
-        # Light shadow
-        self.set_gc_stroke()
-        self.set_gc_fill(color=const.WHITE.Get() + (55,))
-        self.gc_draw_rounded_rect(w=w, h=h, radius=2)
         # Background
+        self.set_gc_stroke()
         self.set_gc_fill(color=on_color if self.state else off_color)
         self.gc_draw_rounded_rect(x=1, y=1, w=w - 2, h=h - 3, radius=2)
         # Background shadow

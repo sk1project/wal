@@ -282,7 +282,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
         for item in self.data:
             shift = item_h * index
             # Bottom line drawing
-            self.set_stroke(const.UI_COLORS['bg'])
+            self.set_stroke(const.UI_COLORS['border'])
             self.draw_line(0, item_h * (index + 1),
                            max(w, mt['width']) + 20, item_h * (index + 1))
             # Selection
