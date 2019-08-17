@@ -45,9 +45,11 @@ class LayerList(UltimateListCtrl):
         self.attr1 = UltimateListItemAttr()
         self.attr1.SetBackgroundColour(
             odd_color or wx.Colour(*const.UI_COLORS['odd']))
+        self.attr1.SetTextColour(wx.Colour(*const.UI_COLORS['fg']))
         self.attr2 = UltimateListItemAttr()
         self.attr2.SetBackgroundColour(
             even_color or wx.Colour(*const.UI_COLORS['even']))
+        self.attr2.SetTextColour(wx.Colour(*const.UI_COLORS['fg']))
 
         self.sel_callback = on_select
         self.change_callback = on_change
