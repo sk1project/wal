@@ -36,4 +36,4 @@ class PLine(panels.VPanel):
     def __init__(self, parent, color=None):
         panels.VPanel.__init__(self, parent)
         self.pack((1, 1))
-        self.set_bg(color or const.UI_COLORS['hover_solid_border'])
+        self.set_bg(color or const.UI_COLORS['border'])

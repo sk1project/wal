@@ -135,14 +135,14 @@ class RoundedPanel(VPanel, mixins.DrawableWidget):
             dx += self.widget_panel.get_size()[0]
             dy += self.widget_panel.get_size()[1] // 2
         self.set_fill(None)
-        color = const.UI_COLORS['light_shadow']
+        color = const.UI_COLORS['disabled_text_shadow']
         self.set_stroke(color)
         self.draw_line(1, dy + 1, 6, dy + 1)
         self.draw_line(1, dy + 1, 1, h - 1)
         self.draw_line(1, h - 1, w - 1, h - 1)
         self.draw_line(w - 1, h - 1, w - 1, dy + 1)
         self.draw_line(w - 1, dy + 1, dx, dy + 1)
-        color = const.UI_COLORS['dark_shadow']
+        color = const.UI_COLORS['disabled_text']
         self.set_stroke(color)
         self.draw_line(0, dy, 6, dy)
         self.draw_line(0, dy, 0, h - 2)

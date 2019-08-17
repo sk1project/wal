@@ -289,7 +289,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
             if self.selected == index:
                 rect = (0, shift, max(w, mt['width']) + 20, mt['height'])
                 render = wx.RendererNative.Get()
-                render.DrawItemSelectionRect(self, self.pdc, wx.Rect(*rect),
+                render.DrawItemSelectionRect(self, self.dc, wx.Rect(*rect),
                                              wx.CONTROL_SELECTED)
             # Bitmap drawing
             bmp_pos = (mt['padding'] + mt['bmp_padding'][0],

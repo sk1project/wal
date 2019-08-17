@@ -251,7 +251,7 @@ class Tab(object):
 class TabPainter(object):
     def __init__(self, panel):
         self.panel = panel
-        self.border_color = const.UI_COLORS['hover_solid_border']
+        self.border_color = const.UI_COLORS['border']
         self.bg_color = const.UI_COLORS['bg']
         self.fg_color = const.UI_COLORS['fg']
 
@@ -328,25 +328,14 @@ class TabPainter(object):
         pos = tab.pos + 3 * s - 3
         width = tab.get_tab_size() - 5 * s
         txt = utils.tr(tab.text)
-        if const.IS_MSW:
-            if utils.get_text_size(txt, size_incr=-1)[0] > width:
-                while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:
-                    txt = txt[:-1]
-                txt += '...'
-        else:
-            while utils.get_text_size(txt, size_incr=-1)[0] > width:
+
+        if utils.get_text_size(txt, size_incr=-1)[0] > width:
+            while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:
                 txt = txt[:-1]
+            txt += '...'
 
         y = int(HTAB_HEIGHT / 2 - dc.set_font(size_incr=-1) / 2) + 1
         dc.draw_text(txt, pos, y)
-
-        if not const.IS_MSW:
-            # text shade
-            pos = tab.pos + tab.get_tab_size() - 5 * s
-            start = self.bg_color[:-1] + (0,)
-            stop = self.bg_color[:-1] + (255,)
-            dc.gc_draw_linear_gradient((pos, 4, 3 * s, HTAB_HEIGHT),
-                                       start, stop, False)
 
     def paint_tab_marker(self, tab):
         dc = self.panel
@@ -543,26 +532,16 @@ class VRectTabPainter(TabPainter):
         pos = tab.pos + 3 * s - 3
         width = tab.get_tab_size() - 5 * s
         txt = utils.tr(tab.text)
-        if const.IS_MSW:
-            if utils.get_text_size(txt, size_incr=-1)[0] > width:
-                while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:
-                    txt = txt[:-1]
-                txt += '...'
-        else:
-            while utils.get_text_size(txt, size_incr=-1)[0] > width:
+
+        if utils.get_text_size(txt, size_incr=-1)[0] > width:
+            while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:
                 txt = txt[:-1]
+            txt += '...'
+
         shift = 2 if tab.active else 1
         shift = shift + 2 if const.IS_MSW else shift
         x = int(VTAB_WIDTH / 2 + dc.set_font(size_incr=-1) / 2) + shift
         dc.draw_rotated_text(txt, x, pos, 270)
-
-        if not const.IS_MSW:
-            # text shade
-            pos = tab.pos + tab.get_tab_size() - 5 * s
-            start = self.bg_color[:-1] + (0,)
-            stop = self.bg_color[:-1] + (255,)
-            dc.gc_draw_linear_gradient((4, pos, 3 * s, VTAB_WIDTH),
-                                       start, stop, True)
 
     def paint_tab_marker(self, tab):
         pass

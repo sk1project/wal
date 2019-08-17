@@ -84,7 +84,7 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
             if enabled else const.UI_COLORS['bg']
         off_color = const.UI_COLORS['entry_bg'] \
             if enabled else const.UI_COLORS['bg']
-        border_color = const.UI_COLORS['workspace'] \
+        border_color = const.UI_COLORS['border'] \
             if enabled else const.UI_COLORS['disabled_text']
         bg_color = const.UI_COLORS['bg']
         on_text_color = const.UI_COLORS['selected_text'] \

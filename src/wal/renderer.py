@@ -245,7 +245,7 @@ class ButtonRenderer(LabelRenderer):
     # ----- RENDERING
 
     def _draw_border(self):
-        color = const.UI_COLORS['hover_solid_border']
+        color = const.UI_COLORS['border']
         self.pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
         self.pdc.SetBrush(wx.TRANSPARENT_BRUSH)
         w, h = self.widget.GetSize()
@@ -264,17 +264,17 @@ class ButtonRenderer(LabelRenderer):
     def _draw_hover(self):
         w, h = self.size
 
-        color = const.UI_COLORS['light_shadow']
+        color = const.UI_COLORS['disabled_text_shadow']
         self.dc.SetPen(wx.Pen(wx.Colour(*color), 2))
         self.dc.SetBrush(wx.TRANSPARENT_BRUSH)
         self.dc.DrawRoundedRectangle(2, 2, w - 2, h - 2, 3.0)
 
-        color = const.UI_COLORS['dark_shadow']
+        color = const.UI_COLORS['disabled_text']
         self.dc.SetPen(wx.Pen(wx.Colour(*color), self.active_border))
         self.dc.DrawLine(4, h - 2, w - 3, h - 2)
         self.dc.DrawLine(w - 2, 4, w - 2, h - 3)
 
-        color = const.UI_COLORS['hover_solid_border']
+        color = const.UI_COLORS['border']
         if const.IS_MSW and self.widget.IsDoubleBuffered():
             gc = self.dc.GetGraphicsContext()
             gc.SetAntialiasMode(wx.ANTIALIAS_NONE)
@@ -289,17 +289,17 @@ class ButtonRenderer(LabelRenderer):
     def _draw_pressed(self):
         w, h = self.size
 
-        color = const.UI_COLORS['dark_shadow']
+        color = const.UI_COLORS['disabled_text']
         self.dc.SetPen(wx.Pen(wx.Colour(*color), self.active_border))
         self.dc.DrawLine(3, 1, w - 3, 1)
         self.dc.DrawLine(1, 3, 1, h - 3)
 
-        color = const.UI_COLORS['dark_shadow']
+        color = const.UI_COLORS['disabled_text']
         self.dc.SetPen(wx.Pen(wx.Colour(*color), self.active_border))
         self.dc.SetBrush(wx.Brush(wx.Colour(*color)))
         self.dc.DrawRoundedRectangle(2, 2, w - 2, h - 2, 3.0)
 
-        color = const.UI_COLORS['hover_solid_border']
+        color = const.UI_COLORS['border']
         if const.IS_MSW and self.widget.IsDoubleBuffered():
             gc = self.dc.GetGraphicsContext()
             gc.SetAntialiasMode(wx.ANTIALIAS_NONE)

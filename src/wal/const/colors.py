@@ -40,91 +40,6 @@ def get_sys_color(color_const):
     return wx.SystemSettings_GetColour(color_const).Get()
 
 
-def _init_gtk_colors(kw):
-    border = get_sys_color(wx.SYS_COLOUR_BTNSHADOW)
-    bg = get_sys_color(wx.SYS_COLOUR_3DFACE)
-    fg = get_sys_color(wx.SYS_COLOUR_BTNTEXT)
-    infobk = get_sys_color(wx.SYS_COLOUR_INFOBK)
-    sel_bg = get_sys_color(wx.SYS_COLOUR_ACTIVECAPTION) \
-        if sysconst.IS_GTK2 else get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
-    sel_text = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
-    disabled_text = get_sys_color(wx.SYS_COLOUR_GRAYTEXT)
-    entry_bg = get_sys_color(wx.SYS_COLOUR_WINDOW)
-    kw['fg'] = fg + (255,)
-    kw['bg'] = bg + (255,)
-    kw['text'] = fg + (255,)
-    kw['entry_bg'] = () + entry_bg
-    kw['selected_text_bg'] = () + sel_bg
-    kw['selected_text'] = () + sel_text
-    kw['disabled_text'] = mix_colors(fg, bg, 125)
-    kw['disabled_text_shadow'] = mix_colors((255, 255, 255), bg, 200)
-    kw['hover_border'] = border + (90,)
-    kw['hover_solid_border'] = disabled_text
-    kw['pressed_border'] = border + (0,)
-    kw['light_shadow'] = mix_colors((255, 255, 255), bg, 40)
-    kw['dark_shadow'] = disabled_text
-    kw['dark_face'] = border + (40,)
-    kw['light_face'] = (255, 255, 255, 60)
-    kw['workspace'] = (89, 89, 89)
-    kw['tooltip_bg'] = () + infobk
-
-
-def _init_mac_colors(kw):
-    border = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
-    bg = get_sys_color(wx.SYS_COLOUR_3DFACE)
-    fg = get_sys_color(wx.SYS_COLOUR_BTNTEXT)
-    ws = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
-    infobk = get_sys_color(wx.SYS_COLOUR_INFOBK)
-    sel_bg = get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
-    sel_text = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
-    entry_bg = get_sys_color(wx.SYS_COLOUR_WINDOW)
-    kw['fg'] = () + fg
-    kw['bg'] = () + bg
-    kw['text'] = () + fg
-    kw['entry_bg'] = () + entry_bg
-    kw['selected_text_bg'] = () + sel_bg
-    kw['selected_text'] = () + sel_text
-    kw['disabled_text'] = mix_colors(fg, bg, 125)
-    kw['disabled_text_shadow'] = (255, 255, 255)
-    kw['hover_border'] = border + (90,)
-    kw['hover_solid_border'] = border + ()
-    kw['pressed_border'] = border + ()
-    kw['light_shadow'] = (255, 255, 255, 90)
-    kw['dark_shadow'] = border + (40,)
-    kw['dark_face'] = border + (40,)
-    kw['light_face'] = (255, 255, 255, 60)
-    kw['workspace'] = () + ws
-    kw['tooltip_bg'] = () + infobk
-
-
-def _init_msw_colors(kw):
-    border = get_sys_color(wx.SYS_COLOUR_BTNSHADOW)
-    bg = get_sys_color(wx.SYS_COLOUR_3DFACE)
-    fg = get_sys_color(wx.SYS_COLOUR_BTNTEXT)
-    ws = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
-    infobk = get_sys_color(wx.SYS_COLOUR_INFOBK)
-    sel_bg = get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
-    sel_text = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
-    entry_bg = get_sys_color(wx.SYS_COLOUR_WINDOW)
-    kw['fg'] = () + fg
-    kw['bg'] = () + bg
-    kw['text'] = () + fg
-    kw['entry_bg'] = () + entry_bg
-    kw['selected_text_bg'] = () + sel_bg
-    kw['selected_text'] = () + sel_text
-    kw['disabled_text'] = mix_colors(fg, bg, 125)
-    kw['disabled_text_shadow'] = mix_colors((255, 255, 255), bg, 200)
-    kw['hover_border'] = border + (90,)
-    kw['hover_solid_border'] = mix_colors(border, bg, 200)
-    kw['pressed_border'] = border + (0,)
-    kw['light_shadow'] = (255, 255, 255, 90)
-    kw['dark_shadow'] = border + (40,)
-    kw['dark_face'] = border + (40,)
-    kw['light_face'] = (255, 255, 255, 60)
-    kw['workspace'] = () + ws
-    kw['tooltip_bg'] = () + infobk
-
-
 UI_COLORS = {}
 
 EVEN_COLOR = wx.Colour(240, 240, 240)
@@ -145,12 +60,26 @@ AMBIANCE_GRAY = wx.Colour(60, 59, 55)
 
 
 def set_ui_colors(kw):
-    if sysconst.IS_MAC:
-        _init_mac_colors(kw)
-    elif sysconst.IS_MSW:
-        _init_msw_colors(kw)
-    else:
-        _init_gtk_colors(kw)
+    kw['fg'] = get_sys_color(wx.SYS_COLOUR_BTNTEXT)
+    kw['bg'] = get_sys_color(wx.SYS_COLOUR_3DFACE)
+    kw['border'] = get_sys_color(wx.SYS_COLOUR_BTNSHADOW)
+    kw['text'] = get_sys_color(wx.SYS_COLOUR_BTNTEXT)
+    kw['entry_bg'] = get_sys_color(wx.SYS_COLOUR_WINDOW)
+    kw['selected_text'] = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
+    kw['selected_text_bg'] = get_sys_color(wx.SYS_COLOUR_ACTIVECAPTION) \
+        if sysconst.IS_GTK2 else get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
+    kw['disabled_text'] = get_sys_color(wx.SYS_COLOUR_GRAYTEXT)
+    kw['disabled_text_shadow'] = mix_colors(
+        WHITE.Get(), get_sys_color(wx.SYS_COLOUR_3DFACE), 200)
+    kw['workspace'] = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
+    kw['tooltip_bg'] = get_sys_color(wx.SYS_COLOUR_INFOBK)
+
+    # if sysconst.IS_MAC:
+    #     _init_mac_colors(kw)
+    # elif sysconst.IS_MSW:
+    #     _init_msw_colors(kw)
+    # else:
+    #     _init_gtk_colors(kw)
 
     global EVEN_COLOR, ODD_COLOR
     lb_bg = get_sys_color(wx.SYS_COLOUR_LISTBOX)

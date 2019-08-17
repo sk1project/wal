@@ -401,7 +401,7 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
                 if spin_sep:
                     self.line = panels.HPanel(self)
                     self.line.SetSize((1, self.sb.GetSize()[1] - 2))
-                    self.line.set_bg(const.UI_COLORS['hover_solid_border'])
+                    self.line.set_bg(const.UI_COLORS['border'])
                     self.line.SetPosition((w_pos - 1, 1))
                 self.sb.SetPosition((w_pos, 0))
                 self.SetSize((-1, self.entry.GetSize()[1]))
@@ -446,8 +446,8 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
         self.entry.Enable(val)
         self.sb.Enable(val)
         if self.line:
-            color = const.UI_COLORS['hover_solid_border'] if val \
-                else const.UI_COLORS['light_shadow']
+            color = const.UI_COLORS['border'] if val \
+                else const.UI_COLORS['disabled_text_shadow']
             self.line.set_bg(color)
 
     def get_enabled(self):
