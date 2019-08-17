@@ -37,8 +37,8 @@ class SimpleList(wx.ListCtrl,
                  on_select=None, on_activate=None):
         self.data = data or []
         self.alt_color = alt_color
-        self.odd_color = odd_color or const.ODD_COLOR
-        self.even_color = even_color or const.EVEN_COLOR
+        self.odd_color = odd_color or wx.Colour(*const.UI_COLORS['odd'])
+        self.even_color = even_color or wx.Colour(*const.UI_COLORS['even'])
         style = wx.LC_REPORT | wx.LC_VRULES | wx.NO_BORDER
         style = style | wx.LC_NO_HEADER if not header else style
         style = style | wx.LC_SINGLE_SEL if single_sel else style

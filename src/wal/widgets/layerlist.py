@@ -36,15 +36,17 @@ class LayerList(UltimateListCtrl):
 
     def __init__(
             self, parent, data=None, images=None, alt_color=True,
-            even_color=const.EVEN_COLOR, odd_color=const.ODD_COLOR,
+            even_color=None, odd_color=None,
             on_select=None, on_change=None, on_double_click=None):
         data = data or []
         images = images or []
         self.alt_color = alt_color
         self.attr1 = UltimateListItemAttr()
-        self.attr1.SetBackgroundColour(odd_color)
+        self.attr1.SetBackgroundColour(
+            odd_color or wx.Colour(*const.UI_COLORS['odd']))
         self.attr2 = UltimateListItemAttr()
-        self.attr2.SetBackgroundColour(even_color)
+        self.attr2.SetBackgroundColour(
+            even_color or wx.Colour(*const.UI_COLORS['even']))
 
         self.sel_callback = on_select
         self.change_callback = on_change

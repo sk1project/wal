@@ -134,8 +134,9 @@ class TreeWidget(wx.TreeCtrl, mixins.WidgetMixin):
         if self.alt_color:
             even = False
             for item in self.items:
-                color = const.ODD_COLOR if even else const.EVEN_COLOR
-                self.SetItemBackgroundColour(item, color)
+                color = const.UI_COLORS['odd'] if even \
+                    else const.UI_COLORS['even']
+                self.SetItemBackgroundColour(item, wx.Colour(*color))
                 even = not even
 
     def recolor_items(self, *_args):
@@ -143,8 +144,9 @@ class TreeWidget(wx.TreeCtrl, mixins.WidgetMixin):
             even = False
             for item in self.items:
                 if self.IsVisible(item):
-                    color = const.ODD_COLOR if even else const.EVEN_COLOR
-                    self.SetItemBackgroundColour(item, color)
+                    color = const.UI_COLORS['odd'] if even \
+                        else const.UI_COLORS['even']
+                    self.SetItemBackgroundColour(item, wx.Colour(*color))
                     even = not even
 
     def set_indent(self, val):

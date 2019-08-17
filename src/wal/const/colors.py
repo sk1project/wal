@@ -42,11 +42,6 @@ def get_sys_color(color_const):
 
 UI_COLORS = {}
 
-EVEN_COLOR = wx.Colour(240, 240, 240)
-ODD_COLOR = wx.Colour(255, 255, 255)
-YELLOW_EVEN_COLOR = wx.Colour(255, 255, 191)
-YELLOW_ODD_COLOR = wx.Colour(255, 255, 222)
-
 WHITE = wx.Colour(255, 255, 255)
 BLACK = wx.Colour(0, 0, 0)
 DARK_GRAY = wx.Colour(89, 89, 89)
@@ -76,10 +71,6 @@ def set_ui_colors(kw):
     kw['list_bg'] = list_bg
     kw['even'] = mix_colors((0, 0, 0), list_bg, 15)
     kw['odd'] = mix_colors((255, 255, 255), list_bg, 15)
-
-    global EVEN_COLOR, ODD_COLOR
-    EVEN_COLOR = wx.Colour(*kw['even'])
-    ODD_COLOR = wx.Colour(*kw['odd'])
 
 
 def get_sel_bg():
