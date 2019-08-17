@@ -41,6 +41,7 @@ WX_COLORS = {
     "wx.SYS_COLOUR_3DHIGHLIGHT": wx.SYS_COLOUR_3DHIGHLIGHT,
     "wx.SYS_COLOUR_3DHILIGHT": wx.SYS_COLOUR_3DHILIGHT,
     "wx.SYS_COLOUR_BTNHILIGHT": wx.SYS_COLOUR_BTNHILIGHT,
+    "wx.SYS_COLOUR_LISTBOX": wx.SYS_COLOUR_LISTBOX,
 }
 
 
@@ -48,6 +49,7 @@ class ColorPanel(wal.ScrolledPanel):
     def __init__(self, parent):
         wal.ScrolledPanel.__init__(self, parent)
         keys = WX_COLORS.keys()
+        keys.sort()
         grid = wal.GridPanel(self, len(keys), 2, 10, 10)
         for item in keys:
             grid.pack(wal.Label(grid, item))
