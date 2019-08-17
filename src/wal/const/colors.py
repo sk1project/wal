@@ -72,11 +72,14 @@ def set_ui_colors(kw):
     kw['disabled_text'] = get_sys_color(wx.SYS_COLOUR_GRAYTEXT)
     kw['workspace'] = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
     kw['tooltip'] = get_sys_color(wx.SYS_COLOUR_INFOBK)
+    list_bg = get_sys_color(wx.SYS_COLOUR_LISTBOX)
+    kw['list_bg'] = list_bg
+    kw['even'] = mix_colors((0, 0, 0), list_bg, 15)
+    kw['odd'] = mix_colors((255, 255, 255), list_bg, 15)
 
     global EVEN_COLOR, ODD_COLOR
-    lb_bg = get_sys_color(wx.SYS_COLOUR_LISTBOX)
-    EVEN_COLOR = wx.Colour(*mix_colors((0, 0, 0), lb_bg, 15))
-    ODD_COLOR = wx.Colour(*mix_colors((255, 255, 255), lb_bg, 15))
+    EVEN_COLOR = wx.Colour(*kw['even'])
+    ODD_COLOR = wx.Colour(*kw['odd'])
 
 
 def get_sel_bg():

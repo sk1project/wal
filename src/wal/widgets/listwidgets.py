@@ -39,9 +39,7 @@ class SimpleList(wx.ListCtrl,
         self.alt_color = alt_color
         self.odd_color = odd_color or const.ODD_COLOR
         self.even_color = even_color or const.EVEN_COLOR
-        style = wx.LC_REPORT | wx.LC_VRULES
-        if not const.IS_WX3:
-            style |= wx.BORDER_MASK if border else wx.NO_BORDER
+        style = wx.LC_REPORT | wx.LC_VRULES | wx.NO_BORDER
         style = style | wx.LC_NO_HEADER if not header else style
         style = style | wx.LC_SINGLE_SEL if single_sel else style
         style = style | wx.LC_VIRTUAL if virtual else style
@@ -55,6 +53,7 @@ class SimpleList(wx.ListCtrl,
         if on_activate:
             self.activate_cmd = on_activate
             self.Bind(wx.wx.EVT_LIST_ITEM_ACTIVATED, self.on_activate, self)
+        self.set_bg(const.UI_COLORS['list_bg'])
 
     def set_active(self, index):
         if len(self.data) - 1 >= index:
