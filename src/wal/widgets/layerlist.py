@@ -16,11 +16,12 @@
 # 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import wx
+from wx.lib.agw.ultimatelistctrl import ULC_VRULES, ULC_HRULES
 from wx.lib.agw.ultimatelistctrl import UltimateListCtrl
 from wx.lib.agw.ultimatelistctrl import UltimateListItemAttr
-from wx.lib.agw.ultimatelistctrl import ULC_VRULES, ULC_HRULES
 
 from .. import const
+from .. import utils
 
 WIDTH = 22
 
@@ -53,9 +54,17 @@ class LayerList(UltimateListCtrl):
         self.double_click_callback = on_double_click
 
         self.il = wx.ImageList(16, 16)
+        index = 0
         for icon_id in images:
             bmp = wx.ArtProvider.GetBitmap(icon_id, wx.ART_OTHER, const.SIZE_16)
+            if index > 1:
+                if icon_id.endswith('-no.png'):
+                    bmp = utils.recolor_bmp(
+                        bmp, const.UI_COLORS['disabled_text'])
+                else:
+                    bmp = utils.recolor_bmp(bmp, const.UI_COLORS['fg'])
             self.il.Add(bmp)
+            index += 1
 
         style = wx.LC_REPORT | wx.LC_VRULES | wx.LC_NO_HEADER
         style |= wx.LC_SINGLE_SEL
