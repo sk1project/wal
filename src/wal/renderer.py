@@ -147,9 +147,6 @@ class LabelRenderer:
                 self.pdc.SetTextForeground(wx.Colour(*color))
                 self.pdc.DrawText(text, x, y)
             else:
-                color = const.UI_COLORS['disabled_text_shadow']
-                self.pdc.SetTextForeground(wx.Colour(*color))
-                self.pdc.DrawText(text, x + 1, y + 1)
                 color = const.UI_COLORS['disabled_text']
                 self.pdc.SetTextForeground(wx.Colour(*color))
                 self.pdc.DrawText(text, x, y)
@@ -263,11 +260,6 @@ class ButtonRenderer(LabelRenderer):
 
     def _draw_hover(self):
         w, h = self.size
-
-        color = const.UI_COLORS['disabled_text_shadow']
-        self.dc.SetPen(wx.Pen(wx.Colour(*color), 2))
-        self.dc.SetBrush(wx.TRANSPARENT_BRUSH)
-        self.dc.DrawRoundedRectangle(2, 2, w - 2, h - 2, 3.0)
 
         color = const.UI_COLORS['disabled_text']
         self.dc.SetPen(wx.Pen(wx.Colour(*color), self.active_border))

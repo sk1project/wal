@@ -120,7 +120,7 @@ class VPanel(SizedPanel):
         self.add(obj, expand, flags, padding)
 
 
-class RoundedPanel(VPanel, mixins.DrawableWidget):
+class BorderedPanel(VPanel, mixins.DrawableWidget):
     widget_panel = None
 
     def __init__(self, parent):
@@ -135,14 +135,7 @@ class RoundedPanel(VPanel, mixins.DrawableWidget):
             dx += self.widget_panel.get_size()[0]
             dy += self.widget_panel.get_size()[1] // 2
         self.set_fill(None)
-        color = const.UI_COLORS['disabled_text_shadow']
-        self.set_stroke(color)
-        self.draw_line(1, dy + 1, 6, dy + 1)
-        self.draw_line(1, dy + 1, 1, h - 1)
-        self.draw_line(1, h - 1, w - 1, h - 1)
-        self.draw_line(w - 1, h - 1, w - 1, dy + 1)
-        self.draw_line(w - 1, dy + 1, dx, dy + 1)
-        color = const.UI_COLORS['disabled_text']
+        color = const.UI_COLORS['border']
         self.set_stroke(color)
         self.draw_line(0, dy, 6, dy)
         self.draw_line(0, dy, 0, h - 2)
@@ -154,13 +147,13 @@ class RoundedPanel(VPanel, mixins.DrawableWidget):
             self.widget_panel.refresh()
 
 
-class LabeledPanel(RoundedPanel):
+class LabeledPanel(BorderedPanel):
     panel = None
     widget_panel = None
     widget = None
 
     def __init__(self, parent, text='', widget=None):
-        RoundedPanel.__init__(self, parent)
+        BorderedPanel.__init__(self, parent)
         self.inner_panel = VPanel(self)
 
         if widget or text:

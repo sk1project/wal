@@ -447,7 +447,7 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
         self.sb.Enable(val)
         if self.line:
             color = const.UI_COLORS['border'] if val \
-                else const.UI_COLORS['disabled_text_shadow']
+                else const.UI_COLORS['disabled_text']
             self.line.set_bg(color)
 
     def get_enabled(self):

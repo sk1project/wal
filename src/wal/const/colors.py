@@ -70,8 +70,6 @@ def set_ui_colors(kw):
     kw['selected_text_bg'] = get_sys_color(wx.SYS_COLOUR_ACTIVECAPTION) \
         if sysconst.IS_GTK2 else get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
     kw['disabled_text'] = get_sys_color(wx.SYS_COLOUR_GRAYTEXT)
-    kw['disabled_text_shadow'] = mix_colors(
-        WHITE.Get(), get_sys_color(wx.SYS_COLOUR_3DFACE), 200)
     kw['workspace'] = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
     kw['tooltip'] = get_sys_color(wx.SYS_COLOUR_INFOBK)
 
