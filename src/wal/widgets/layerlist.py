@@ -45,11 +45,9 @@ class LayerList(UltimateListCtrl):
         self.attr1 = UltimateListItemAttr()
         self.attr1.SetBackgroundColour(
             odd_color or wx.Colour(*const.UI_COLORS['odd']))
-        self.attr1.SetTextColour(wx.Colour(*const.UI_COLORS['fg']))
         self.attr2 = UltimateListItemAttr()
         self.attr2.SetBackgroundColour(
             even_color or wx.Colour(*const.UI_COLORS['even']))
-        self.attr2.SetTextColour(wx.Colour(*const.UI_COLORS['fg']))
 
         self.sel_callback = on_select
         self.change_callback = on_change
@@ -79,7 +77,7 @@ class LayerList(UltimateListCtrl):
             self.InsertColumn(i, '')
             self.SetColumnWidth(i, WIDTH)
         self.InsertColumn(5, '')
-        self.SetColumnWidth(5, -1)
+        self.SetColumnWidth(5, -3)
 
         self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.OnItemSelected)
         self.Bind(wx.EVT_LEFT_DOWN, self.on_mouse_down)
@@ -127,7 +125,7 @@ class LayerList(UltimateListCtrl):
         return self.data[item][5] if col == 5 else None
 
     def OnGetItemTextColour(self, item, col):
-        return const.BLACK
+        return const.UI_COLORS['fg']
 
     def OnGetItemText(self, item, col):
         return self.data[item][5] if col == 5 else ''
