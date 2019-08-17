@@ -69,7 +69,7 @@ class LayerList(UltimateListCtrl):
         style = wx.LC_REPORT | wx.LC_VRULES | wx.LC_NO_HEADER
         style |= wx.LC_SINGLE_SEL
         style |= wx.LC_VIRTUAL
-        style |= ULC_VRULES | ULC_HRULES
+        style |= ULC_VRULES | ULC_HRULES | wx.NO_BORDER
         UltimateListCtrl.__init__(self, parent, agwStyle=style)
         self.SetImageList(self.il, wx.IMAGE_LIST_SMALL)
 
