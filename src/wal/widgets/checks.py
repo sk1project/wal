@@ -58,6 +58,7 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
         panels.VPanel.__init__(self, parent)
         mixins.SensitiveDrawableWidget.__init__(self)
         self.pack(SWITCH_SIZE)
+        self.set_double_buffered()
 
     def mouse_left_up(self, _point):
         self.state = not self.state
@@ -118,14 +119,14 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
         self.gc_draw_linear_gradient(rect, start_color, stop_color, True)
 
         # Text
-        self.set_gc_font(bold=True, size_incr=-1)
+        self.set_font(bold=True, size_incr=-1)
         txt_color = on_text_color if self.state else off_text_color
-        self.set_gc_text_color(color=txt_color)
+        self.set_text_color(color=txt_color)
         txt = 'ON' if self.state else 'OFF'
         tw, th = utils.get_text_size(txt, True, -1)
         x = (w if self.state else 3 * w) / 4 - tw / 2
         y = h / 2 - th / 2 - 1
-        self.gc_draw_text(txt, x, y)
+        self.draw_text(txt, x, y)
 
 
 class NumCheckbox(Checkbox):

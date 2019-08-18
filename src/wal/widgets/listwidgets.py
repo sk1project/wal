@@ -212,6 +212,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
         mixins.SensitiveDrawableWidget.__init__(self, True)
         self.set_bg(const.UI_COLORS['entry_bg'])
         self.set_virtual_size()
+        self.set_double_buffered()
 
     def get_selected(self):
         return self.data[self.selected][-1]
@@ -287,9 +288,14 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
             # Selection
             if self.selected == index:
                 rect = (0, shift, max(w, mt['width']) + 20, mt['height'])
-                render = wx.RendererNative.Get()
-                render.DrawItemSelectionRect(self, self.dc, wx.Rect(*rect),
-                                             wx.CONTROL_SELECTED)
+                if const.IS_MSW:
+                    self.set_stroke()
+                    self.set_fill(const.UI_COLORS['selected_text_bg'])
+                    self.draw_rect(*rect)
+                else:
+                    render = wx.RendererNative.Get()
+                    render.DrawItemSelectionRect(
+                        self, self.dc, wx.Rect(*rect), wx.CONTROL_SELECTED)
             # Bitmap drawing
             bmp_pos = (mt['padding'] + mt['bmp_padding'][0],
                        mt['padding'] + mt['bmp_padding'][1])
@@ -303,7 +309,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
             self.draw_text(item[2], mt['text_xpadding'],
                            mt['txt_ypadding'] + shift)
             # Secondary text
-            self.set_font(False, -2)
+            self.set_font(False, -1 if const.IS_MSW else -2)
             self.set_text_color(const.UI_COLORS['disabled_text']
                                 if self.selected != index else
                                 const.UI_COLORS['selected_text'])

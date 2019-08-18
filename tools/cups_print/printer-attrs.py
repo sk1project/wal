@@ -42,10 +42,13 @@ class DetailsPanel(wal.VPanel):
 		wal.VPanel.__init__(self, parent)
 		hpanel = wal.HPanel(self)
 
-		self.details_list = wal.SimpleList(hpanel, [],
+		vp = wal.VPanel(hpanel)
+		vp.set_bg(wal.UI_COLORS['border'])
+		self.details_list = wal.SimpleList(vp, [],
 								on_select=self.details_changed,
 								on_activate=self.details_changed)
-		hpanel.pack(self.details_list, expand=True, fill=True)
+		vp.pack(self.details_list, expand=True, fill=True, padding_all=1)
+		hpanel.pack(vp, expand=True, fill=True)
 
 		hpanel.pack((10, 10))
 
@@ -88,10 +91,13 @@ class AttrsPanel(wal.VPanel):
 		wal.VPanel.__init__(self, parent)
 		hpanel = wal.HPanel(self)
 
-		self.attrs_list = wal.SimpleList(hpanel, [],
+		vp = wal.VPanel(hpanel)
+		vp.set_bg(wal.UI_COLORS['border'])
+		self.attrs_list = wal.SimpleList(vp, [],
 								on_select=self.attrs_changed,
 								on_activate=self.attrs_changed)
-		hpanel.pack(self.attrs_list, expand=True, fill=True)
+		vp.pack(self.attrs_list, expand=True, fill=True, padding_all=1)
+		hpanel.pack(vp, expand=True, fill=True)
 
 		hpanel.pack((10, 10))
 
@@ -134,10 +140,13 @@ class OptionPanel(wal.VPanel):
 		wal.VPanel.__init__(self, parent)
 		hpanel = wal.HPanel(self)
 
-		self.options_list = wal.SimpleList(hpanel, [],
+		vp = wal.VPanel(hpanel)
+		vp.set_bg(wal.UI_COLORS['border'])
+		self.options_list = wal.SimpleList(vp, [],
 								on_select=self.options_changed,
 								on_activate=self.options_changed)
-		hpanel.pack(self.options_list, expand=True, fill=True)
+		vp.pack(self.options_list, expand=True, fill=True, padding_all=1)
+		hpanel.pack(vp, expand=True, fill=True)
 
 		hpanel.pack((10, 10))
 

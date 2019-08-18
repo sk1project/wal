@@ -105,6 +105,7 @@ class SplitterSash(panels.VPanel, mixins.SensitiveWidget):
         self.SetCursor(wx.StockCursor(wx.CURSOR_SIZEWE))
 
     def mouse_left_down(self, point):
+        self.capture_mouse()
         self.move = True
         self.mouse_pos = self.ClientToScreen(point)[0]
         self.sash_pos = self.splitter.get_sash_position()
@@ -115,6 +116,7 @@ class SplitterSash(panels.VPanel, mixins.SensitiveWidget):
             self.splitter.set_sash_position(self.sash_pos + dx)
 
     def mouse_left_up(self, point):
+        self.release_mouse()
         self.move = False
 
 
