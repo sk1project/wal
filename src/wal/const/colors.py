@@ -71,6 +71,7 @@ def set_ui_colors(kw):
     kw['list_bg'] = list_bg
     kw['even'] = mix_colors((0, 0, 0), list_bg, 15)
     kw['odd'] = mix_colors((255, 255, 255), list_bg, 15)
+    kw['3dlight'] = get_sys_color(wx.SYS_COLOUR_3DLIGHT)
 
 
 def get_sel_bg():

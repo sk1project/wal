@@ -260,12 +260,6 @@ class ButtonRenderer(LabelRenderer):
 
     def _draw_hover(self):
         w, h = self.size
-
-        color = const.UI_COLORS['disabled_text']
-        self.dc.SetPen(wx.Pen(wx.Colour(*color), self.active_border))
-        self.dc.DrawLine(4, h - 2, w - 3, h - 2)
-        self.dc.DrawLine(w - 2, 4, w - 2, h - 3)
-
         color = const.UI_COLORS['border']
         if const.IS_MSW and self.widget.IsDoubleBuffered():
             gc = self.dc.GetGraphicsContext()
@@ -280,27 +274,17 @@ class ButtonRenderer(LabelRenderer):
 
     def _draw_pressed(self):
         w, h = self.size
-
-        color = const.UI_COLORS['disabled_text']
-        self.dc.SetPen(wx.Pen(wx.Colour(*color), self.active_border))
-        self.dc.DrawLine(3, 1, w - 3, 1)
-        self.dc.DrawLine(1, 3, 1, h - 3)
-
-        color = const.UI_COLORS['disabled_text']
-        self.dc.SetPen(wx.Pen(wx.Colour(*color), self.active_border))
-        self.dc.SetBrush(wx.Brush(wx.Colour(*color)))
-        self.dc.DrawRoundedRectangle(2, 2, w - 2, h - 2, 3.0)
-
         color = const.UI_COLORS['border']
+        bgcolor = const.UI_COLORS['3dlight']
         if const.IS_MSW and self.widget.IsDoubleBuffered():
             gc = self.dc.GetGraphicsContext()
             gc.SetAntialiasMode(wx.ANTIALIAS_NONE)
             self.dc.SetPen(wx.Pen(wx.Colour(*color), 1))
-            self.dc.SetBrush(wx.TRANSPARENT_BRUSH)
+            self.dc.SetBrush(wx.Brush(wx.Colour(*bgcolor)))
             self.dc.DrawRoundedRectangle(0, 0, w, h, 3.0)
         else:
             self.pdc.SetPen(wx.Pen(wx.Colour(*color), 1))
-            self.pdc.SetBrush(wx.TRANSPARENT_BRUSH)
+            self.pdc.SetBrush(wx.Brush(wx.Colour(*bgcolor)))
             self.pdc.DrawRoundedRectangle(0, 0, w, h, 3.0)
 
     def _draw_pressed_disabled(self):
