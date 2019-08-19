@@ -261,7 +261,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
     def _mouse_wheel(self, event):
         event.Skip()
 
-    def mouse_left_up(self, point):
+    def mouse_left_down(self, point):
         h = self.win_to_doc(*point)[1]
         index = h / self.metrics['height']
         self.set_selected(index)
