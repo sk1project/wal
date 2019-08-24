@@ -201,7 +201,7 @@ class _MBtn(panels.Panel, mixins.SensitiveDrawableWidget):
 
     def _get_points(self):
         w, h = self.GetSizeTuple()
-        mx = 6
+        mx = w // 2 - 1
         my = h // 2 + 4
         s = 3
         points = [(mx - s, my), (mx + s, my), (mx, my - s), (mx - s, my)]
@@ -279,10 +279,15 @@ class _MBtn(panels.Panel, mixins.SensitiveDrawableWidget):
                          else const.UI_COLORS['disabled_text'])
         self.gc_draw_polygon(self.points)
 
+        # Draw left border
+        self.set_gc_stroke(const.UI_COLORS['border'] + (100,))
+        self.gc_draw_line(0, 2 if self._top else 0,
+                          0, h if self._top else h - 2)
+
 
 class MegaSpinButton(panels.Panel):
     enabled = True
-    width = 14
+    width = 16
 
     def __init__(self, parent, value=0, range_val=(0, 10), size=const.DEF_SIZE,
                  onchange=None, vertical=True):

@@ -6,16 +6,31 @@ cur_path = os.path.abspath(os.getcwd())
 wal_path = os.path.join(parent(parent(cur_path)), 'src')
 sys.path.insert(0, wal_path)
 
-
 import wal
+
+COLORS = [
+    'fg',
+    'bg',
+    'border',
+    'text',
+    'disabled_text',
+    'selected_text',
+    'selected_text_bg',
+    'entry_bg',
+    'workspace',
+    'tooltip',
+    'list_bg',
+    'even',
+    'odd',
+    '3dlight',
+]
 
 
 class ColorPanel(wal.ScrolledPanel):
     def __init__(self, parent):
         wal.ScrolledPanel.__init__(self, parent)
-        keys = wal.UI_COLORS.keys()
-        grid = wal.GridPanel(self, len(keys), 2, 10, 10)
-        for item in keys:
+        grid = wal.GridPanel(self, len(COLORS), 2, 10, 10)
+        for item in COLORS:
             grid.pack(wal.Label(grid, item))
             panel = wal.VPanel(grid)
             panel.set_bg(wal.BLACK)
@@ -28,7 +43,7 @@ class ColorPanel(wal.ScrolledPanel):
 
 
 app = wal.Application('wxWidgets')
-mw = wal.MainWindow(app, 'WAL colors', (350, 550))
+mw = wal.MainWindow(app, 'WAL colors', (350, 650))
 top_panel = wal.VPanel(mw)
 mw.pack(top_panel, expand=True, fill=True)
 panel = ColorPanel(top_panel)

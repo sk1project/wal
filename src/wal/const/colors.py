@@ -55,23 +55,33 @@ BLUE = wx.Colour(0, 0, 255)
 AMBIANCE_GRAY = wx.Colour(60, 59, 55)
 
 
-def set_ui_colors(kw):
-    kw['fg'] = get_sys_color(wx.SYS_COLOUR_BTNTEXT)
-    kw['bg'] = get_sys_color(wx.SYS_COLOUR_3DFACE)
-    kw['border'] = get_sys_color(wx.SYS_COLOUR_BTNSHADOW)
-    kw['text'] = get_sys_color(wx.SYS_COLOUR_BTNTEXT)
-    kw['entry_bg'] = get_sys_color(wx.SYS_COLOUR_WINDOW)
-    kw['selected_text'] = get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT)
-    kw['selected_text_bg'] = get_sys_color(wx.SYS_COLOUR_ACTIVECAPTION) \
-        if sysconst.IS_GTK2 else get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
-    kw['disabled_text'] = get_sys_color(wx.SYS_COLOUR_GRAYTEXT)
-    kw['workspace'] = get_sys_color(wx.SYS_COLOUR_APPWORKSPACE)
-    kw['tooltip'] = get_sys_color(wx.SYS_COLOUR_INFOBK)
-    list_bg = get_sys_color(wx.SYS_COLOUR_LISTBOX)
-    kw['list_bg'] = list_bg
-    kw['even'] = mix_colors((0, 0, 0), list_bg, 15)
-    kw['odd'] = mix_colors((255, 255, 255), list_bg, 15)
-    kw['3dlight'] = get_sys_color(wx.SYS_COLOUR_3DLIGHT)
+def get_system_colors():
+    return {
+        'fg': get_sys_color(wx.SYS_COLOUR_BTNTEXT),
+        'bg': get_sys_color(wx.SYS_COLOUR_3DFACE),
+        'text': get_sys_color(wx.SYS_COLOUR_BTNTEXT),
+        'disabled_text': get_sys_color(wx.SYS_COLOUR_GRAYTEXT),
+        'selected_text': get_sys_color(wx.SYS_COLOUR_HIGHLIGHTTEXT),
+        'selected_text_bg': get_sys_color(wx.SYS_COLOUR_ACTIVECAPTION)
+        if sysconst.IS_GTK2 else get_sys_color(wx.SYS_COLOUR_HIGHLIGHT),
+        'border': mix_colors(get_sys_color(wx.SYS_COLOUR_GRAYTEXT),
+                             get_sys_color(wx.SYS_COLOUR_3DFACE), 150)
+        if sysconst.IS_AMBIANCE else get_sys_color(wx.SYS_COLOUR_BTNSHADOW),
+        'entry_bg': get_sys_color(wx.SYS_COLOUR_WINDOW),
+        'workspace': get_sys_color(wx.SYS_COLOUR_APPWORKSPACE),
+        'tooltip': get_sys_color(wx.SYS_COLOUR_INFOBK),
+        'list_bg': get_sys_color(wx.SYS_COLOUR_LISTBOX),
+        '3dlight': get_sys_color(wx.SYS_COLOUR_3DLIGHT),
+    }
+
+
+def set_ui_colors(prefs=None):
+    kw = UI_COLORS
+    kw.update(get_system_colors())
+    if prefs:
+        kw.update(prefs)
+    kw['even'] = mix_colors((0, 0, 0), kw['list_bg'], 15)
+    kw['odd'] = mix_colors((255, 255, 255), kw['list_bg'], 15)
 
 
 def get_sel_bg():

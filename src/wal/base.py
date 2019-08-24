@@ -36,7 +36,7 @@ class Application(wx.App):
         wx.App.__init__(self, redirect=redirect)
         if name:
             self.set_app_name(name)
-        const.set_ui_colors(const.UI_COLORS)
+        const.set_ui_colors()
         self._set_font_size()
 
     @staticmethod
