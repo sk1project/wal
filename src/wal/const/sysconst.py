@@ -57,7 +57,7 @@ def is_ambiance():
     if IS_GTK:
         cmd = "gsettings get org.gnome.desktop.interface gtk-theme"
         return os.popen(cmd).readline().strip().strip('\'') == 'Ambiance' \
-            and not os.environ['GTK_THEME']
+            and not os.environ.get('GTK_THEME')
     return False
 
 
