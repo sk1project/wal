@@ -449,3 +449,20 @@ class HSizer(HPanel):
             self.end = event.get_point()[0]
             self.resize()
             self.processing = False
+
+
+class VFixator(VPanel):
+    h = 1
+
+    def __init__(self, parent, w=1, h=20):
+        self.h = h or 20
+        self.w = w or 1
+        VPanel.__init__(self, parent)
+        self.pack((self.w, self.h))
+
+    def update(self):
+        h = self.get_size()[1]
+        if self.h < h:
+            self.h = h
+            self.remove_all()
+            self.pack((self.w, self.h))
