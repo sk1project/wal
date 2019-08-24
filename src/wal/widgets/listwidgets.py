@@ -202,7 +202,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
 
     def __init__(self, parent, data=None, on_select=None):
         self.data = [
-            (utils.recolor_bmp(obj.icon, const.UI_COLORS['border']),
+            (utils.recolor_bmp(obj.icon, const.UI_COLORS['disabled_text']),
              utils.recolor_bmp(obj.icon, const.UI_COLORS['selected_text']),
              utils.tr(obj.name), utils.tr(obj.title), obj)
             for obj in data]
