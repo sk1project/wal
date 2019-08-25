@@ -53,13 +53,12 @@ def is_unity_16_04():
     return False
 
 
-def is_ambiance():
+def get_theme_name():
     if IS_GTK:
         cmd = "gsettings get org.gnome.desktop.interface gtk-theme"
-        return os.popen(cmd).readline().strip().strip('\'') == 'Ambiance' \
-            and not os.environ.get('GTK_THEME')
-    return False
+        return os.environ.get('GTK_THEME') or \
+            os.popen(cmd).readline().strip().strip('\'') or None
 
 
 IS_UNITY_16 = is_unity_16_04()
-IS_AMBIANCE = is_ambiance()
+IS_AMBIANCE = get_theme_name() == 'Ambiance'
