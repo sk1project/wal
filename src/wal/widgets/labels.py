@@ -25,7 +25,9 @@ from .. import utils
 
 class Label(wx.StaticText, mixins.WidgetMixin):
     def __init__(self, parent, text='', fontbold=False, fontsize=0, fg=()):
-        wx.StaticText.__init__(self, parent, wx.ID_ANY, utils.tr(text))
+        self.parent = parent
+        wx.StaticText.__init__(self, parent, wx.ID_ANY, utils.tr(text),
+                               style=wx.ALIGN_CENTER)
         font = self.GetFont()
         if fontbold:
             font.SetWeight(wx.FONTWEIGHT_BOLD)
@@ -47,6 +49,12 @@ class Label(wx.StaticText, mixins.WidgetMixin):
         if fg:
             self.SetForegroundColour(wx.Colour(*fg))
         self.Wrap(-1)
+        if const.IS_GTK3:
+            self.Bind(wx.EVT_SIZE, self._on_show)
+
+    def _on_show(self, *_args):
+        self.InvalidateBestSize()
+        self.SetSize(self.BestSize)
 
     def set_min_width(self, width):
         self.SetMinSize((width, -1))
