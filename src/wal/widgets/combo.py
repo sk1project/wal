@@ -36,12 +36,6 @@ class Combolist(wx.Choice, mixins.WidgetMixin):
         if onchange:
             self.callback = onchange
             self.Bind(wx.EVT_CHOICE, self.on_change, self)
-        if const.IS_GTK3:
-            self.Bind(wx.EVT_UPDATE_UI, self._on_show)
-
-    def _on_show(self, *_args):
-        self.InvalidateBestSize()
-        self.SetSize(self.BestSize)
 
     def on_change(self, _event):
         if self.callback:
