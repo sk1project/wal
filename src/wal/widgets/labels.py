@@ -51,7 +51,6 @@ class Label(wx.StaticText, mixins.WidgetMixin):
         self.Wrap(-1)
         if const.IS_GTK3:
             self.Bind(wx.EVT_UPDATE_UI, self._on_show)
-            self._on_show()
 
     def _on_show(self, *_args):
         self.InvalidateBestSize()
