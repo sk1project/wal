@@ -48,9 +48,10 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
         if self.font_icon:
             x += self.font_icon.GetSize()[0]
         y += 7 + 3
+        style = wx.CB_READONLY | wx.NO_BORDER if const.IS_GTK3 else wx.CB_READONLY
         wx.combo.OwnerDrawnComboBox.__init__(
             self, parent, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-            (x, y), choices, wx.CB_READONLY, wx.DefaultValidator)
+            (x, y), choices, style, wx.DefaultValidator)
         self._set_active(value)
         self.callback = onchange
         self.Bind(wx.EVT_COMBOBOX, self.on_change, self)
@@ -91,14 +92,16 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
             dc.DrawBitmap(bmp, label_x, sample_y, True)
         elif flags & wx.combo.ODCB_PAINTING_CONTROL:
             if const.IS_GTK:
-                icon_x += 2
-                label_x += 2
+                icon_x += 4
+                icon_y += 1
+                label_x += 4
+                label_y += 1
                 pdc = wx.PaintDC(self)
                 pdc.SetPen(wx.TRANSPARENT_PEN)
-                pdc.SetBrush(wx.Brush(wx.Colour(*self.GetBackgroundColour())))
+                pdc.SetBrush(wx.Brush(wx.Colour(*const.UI_COLORS['bg'])))
                 h = self.get_size()[1]
-                w = r.width + 3
-                pdc.DrawRectangle(0, 0, w, h)
+                w = r.width - 1
+                pdc.DrawRectangle(0, 0, r.width, h)
                 nr = wx.RendererNative.Get()
                 nr.DrawTextCtrl(self, dc, (0, 0, w, h), wx.CONTROL_DIRTY)
             if self.font_icon:
