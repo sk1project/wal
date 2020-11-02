@@ -116,7 +116,7 @@ class WidgetMixin(object):
     def set_tooltip(self, tip=None):
         if tip and not const.IS_WX4:
             self.SetToolTipString(utils.tr(tip))
-        else:
+        elif tip:
             self.SetToolTip(utils.tr(tip))
 
     def destroy(self):
