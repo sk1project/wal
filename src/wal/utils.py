@@ -269,5 +269,5 @@ def get_screen_resolution():
 def get_system_fontsize():
     font = get_default_gui_font()
     if IS_WX4 or font.IsUsingSizeInPixels():
-        return font.GetPixelSize()
+        return font.GetPointSize()
     return font.GetPointSize()

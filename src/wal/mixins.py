@@ -150,6 +150,7 @@ class WidgetMixin(object):
         return self.GetBackgroundColour().Get()[:3]
 
     def popup_menu(self, menu, position=None):
+        position = wx.DefaultPosition if not position and const.IS_WX4 else position
         self.PopupMenu(menu, position)
 
     def set_drop_target(self, target):

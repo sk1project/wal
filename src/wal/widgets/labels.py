@@ -48,8 +48,11 @@ class Label(wx.StaticText, mixins.WidgetMixin):
                         font.SetPointSize(sz)
             else:
                 if const.IS_WX4:
-                        sz = font.GetPixelSize()[1] + fontsize
-                        font.SetPixelSize((0, sz))
+                    fontsize = int(fontsize)
+                    if fontsize > 0:
+                        [font.MakeLarger() for _i in range(fontsize)]
+                    else:
+                        [font.MakeSmaller() for _i in range(abs(fontsize))]
                 else:
                     if font.IsUsingSizeInPixels():
                         sz = font.GetPixelSize()[1] + fontsize
