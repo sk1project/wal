@@ -38,7 +38,7 @@ class ArtProvider(wx.ArtProvider):
 
 
 def push_provider(provider):
-    wx.ArtProvider_Push(provider)
+    wx.ArtProvider.Push(provider) if utils.IS_WX4 else wx.ArtProvider_Push(provider)
 
 
 def provider_get_bitmap(icon_id, client, size):

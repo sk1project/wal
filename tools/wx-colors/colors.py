@@ -57,7 +57,8 @@ class ColorPanel(wal.ScrolledPanel):
             panel.set_bg(wal.BLACK)
             color_panel = wal.VPanel(panel)
             color_panel.pack((80, 30))
-            color_panel.set_bg(wx.SystemSettings_GetColour(WX_COLORS[item]).Get())
+            color_panel.set_bg(wx.SystemSettings.GetColour(WX_COLORS[item]).Get() if wal.IS_WX4
+                               else wx.SystemSettings_GetColour(WX_COLORS[item]).Get())
             panel.pack(color_panel, padding_all=1)
             grid.pack(panel)
         self.pack(grid, padding=10)

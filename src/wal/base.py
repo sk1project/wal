@@ -42,9 +42,9 @@ class Application(wx.App):
     @staticmethod
     def _set_font_size():
         dc = wx.MemoryDC()
-        bmp = wx.EmptyBitmap(1, 1)
+        bmp = wx.Bitmap(1, 1) if const.IS_WX4 else wx.EmptyBitmap(1, 1)
         dc.SelectObject(bmp)
-        dc.SetFont(wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT))
+        dc.SetFont(utils.get_default_gui_font())
         const.FONT_SIZE[0] = dc.GetTextExtent('D')[0]
         const.FONT_SIZE[1] = dc.GetCharHeight()
         dc.SelectObject(wx.NullBitmap)
@@ -63,10 +63,13 @@ class Application(wx.App):
 
     def run(self):
         if self.mw:
+            print 'Run'
             self.SetTopWindow(self.mw)
             if self.mw.maximized:
                 self.mw.Maximize()
+            print 'MW prebuild'
             self.mw.build()
+            print 'MW built'
             if self.actions:
                 self.update_actions()
             self.mw.Show(True)
@@ -77,7 +80,10 @@ class Application(wx.App):
             raise RuntimeError('Main window is not defined!')
 
     def exit(self, *_args):
-        self.Exit()
+        if const.IS_WX4:
+            self.ExitMainLoop()
+        else:
+            self.Exit()
 
 
 class MainWindow(wx.Frame, mixins.DialogMixin):
@@ -135,14 +141,14 @@ class MainWindow(wx.Frame, mixins.DialogMixin):
              padding=0, start_padding=0, end_padding=0):
         expand = 1 if expand else 0
         if self.orientation == wx.VERTICAL:
-            flags = wx.ALIGN_TOP | wx.ALIGN_CENTER_HORIZONTAL
+            flags = wx.ALIGN_TOP | (wx.ALIGN_CENTER_HORIZONTAL if not fill else 0)
             flags = flags | wx.TOP | wx.BOTTOM if padding else flags
             flags = flags | wx.TOP if start_padding else flags
             flags = flags | wx.BOTTOM if end_padding else flags
             flags = flags | wx.EXPAND if fill else flags
             self.box.Add(obj, expand, flags, padding)
         else:
-            flags = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL
+            flags = wx.ALIGN_LEFT | (wx.ALIGN_CENTER_VERTICAL if not fill else 0)
             flags = flags | wx.LEFT | wx.RIGHT if padding else flags
             flags = flags | wx.LEFT if start_padding else flags
             flags = flags | wx.RIGHT if end_padding else flags
@@ -151,7 +157,10 @@ class MainWindow(wx.Frame, mixins.DialogMixin):
 
     def set_icons(self, filepath):
         icons = wx.IconBundle()
-        icons.AddIconFromFile(utils.tr(filepath), wx.BITMAP_TYPE_ANY)
+        if const.IS_WX4:
+            icons.AddIcon(utils.tr(filepath), wx.BITMAP_TYPE_ANY)
+        else:
+            icons.AddIconFromFile(utils.tr(filepath), wx.BITMAP_TYPE_ANY)
         self.SetIcons(icons)
 
     def set_menubar(self, menubar):
@@ -171,6 +180,8 @@ class MouseEvent(object):
         self.event = event
 
     def get_point(self):
+        if const.IS_WX4:
+            return list(self.event.GetPosition())
         return list(self.event.GetPositionTuple())
 
     def get_rotation(self):

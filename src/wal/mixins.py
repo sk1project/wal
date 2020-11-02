@@ -84,7 +84,10 @@ class WidgetMixin(object):
             parent.Layout()
 
     def get_size(self):
-        return self.GetSizeTuple()
+        if const.IS_WX4:
+            return tuple(self.GetSize())
+        else:
+            return self.GetSizeTuple()
 
     def get_position(self):
         return self.GetPosition()
@@ -111,10 +114,10 @@ class WidgetMixin(object):
         return width * const.FONT_SIZE[0], size[1]
 
     def set_tooltip(self, tip=None):
-        if tip:
+        if tip and not const.IS_WX4:
             self.SetToolTipString(utils.tr(tip))
         else:
-            self.SetToolTip(None)
+            self.SetToolTip(utils.tr(tip))
 
     def destroy(self):
         self.Destroy()
@@ -139,12 +142,12 @@ class WidgetMixin(object):
 
     def set_bg(self, color):
         if isinstance(color, tuple):
-            self.SetBackgroundColour(wx.Colour(*color))
+            self.SetBackgroundColour(wx.Colour(*color[:4]))
         else:
             self.SetBackgroundColour(color)
 
     def get_bg(self):
-        return self.GetBackgroundColour().Get()
+        return self.GetBackgroundColour().Get()[:3]
 
     def popup_menu(self, menu, position=None):
         self.PopupMenu(menu, position)
@@ -249,7 +252,7 @@ class GenericGWidget(wx.Panel, WidgetMixin):
         x, y = self.GetScreenPosition()
         w, h = self.GetSize()
         rect = wx.Rect(x, y, w, h)
-        if not rect.Inside(mouse_pos):
+        if not (rect.Contains(mouse_pos) if const.IS_WX4 else rect.Inside(mouse_pos)):
             self.timer.Stop()
             if self.mouse_over:
                 self.mouse_over = False
@@ -308,15 +311,17 @@ class DrawableWidget(object):
             self.dc = wx.GCDC(self.pdc)
         except Exception:
             self.dc = self.pdc
-        self.dc.BeginDrawing()
+        if not const.IS_WX4:
+            self.dc.BeginDrawing()
 
         self.paint()
 
-        if not self.pdc == self.dc:
-            self.dc.EndDrawing()
-            self.pdc.EndDrawing()
-        else:
-            self.dc.EndDrawing()
+        if not const.IS_WX4:
+            if not self.pdc == self.dc:
+                self.dc.EndDrawing()
+                self.pdc.EndDrawing()
+            else:
+                self.dc.EndDrawing()
         self.pdc = self.dc = None
 
     # Paint methods for inherited class
@@ -336,22 +341,22 @@ class DrawableWidget(object):
         if color is None:
             self.pdc.SetPen(wx.TRANSPARENT_PEN)
         else:
-            pen = wx.Pen(wx.Colour(*color), width)
+            pen = wx.Pen(wx.Colour(*color[:4]), width)
             if dashes:
-                pen = wx.Pen(wx.Colour(*color), width, wx.USER_DASH)
+                pen = wx.Pen(wx.Colour(*color[:4]), width, wx.USER_DASH)
                 pen.SetDashes(self.dashes)
             pen.SetCap(wx.CAP_BUTT)
             self.pdc.SetPen(pen)
 
     def set_fill(self, color=None):
         self.pdc.SetBrush(wx.TRANSPARENT_BRUSH if color is None
-                          else wx.Brush(wx.Colour(*color)))
+                          else wx.Brush(wx.Colour(*color[:4])))
 
     def set_font(self, bold=False, size_incr=0):
         font = self.GetFont()
         font.SetWeight(wx.FONTWEIGHT_BOLD if bold else wx.FONTWEIGHT_NORMAL)
         if size_incr:
-            if font.IsUsingSizeInPixels():
+            if const.IS_WX4 or font.IsUsingSizeInPixels():
                 sz = font.GetPixelSize()[1] + size_incr
                 font.SetPixelSize((0, sz))
             else:
@@ -361,7 +366,7 @@ class DrawableWidget(object):
         return self.pdc.GetCharHeight()
 
     def set_text_color(self, color):
-        self.pdc.SetTextForeground(wx.Colour(*color))
+        self.pdc.SetTextForeground(wx.Colour(*color[:4]))
 
     def draw_line(self, x0, y0, x1, y1):
         self.pdc.DrawLine(x0, y0, x1, y1)
@@ -411,16 +416,16 @@ class DrawableWidget(object):
         if color is None:
             self.dc.SetPen(wx.TRANSPARENT_PEN)
         else:
-            pen = wx.Pen(wx.Colour(*color), width)
+            pen = wx.Pen(wx.Colour(*color[:4]), width)
             if self.dashes:
-                pen = wx.Pen(wx.Colour(*color), width, wx.USER_DASH)
+                pen = wx.Pen(wx.Colour(*color[:4]), width, wx.USER_DASH)
                 pen.SetDashes(self.dashes)
             pen.SetCap(wx.CAP_BUTT)
             self.dc.SetPen(pen)
 
     def set_gc_fill(self, color=None):
         self.dc.SetBrush(wx.TRANSPARENT_BRUSH if color is None
-                         else wx.Brush(wx.Colour(*color)))
+                         else wx.Brush(wx.Colour(*color[:4])))
 
     def set_gc_font(self, bold=False, size_incr=0):
         font = self.GetFont()
@@ -436,7 +441,7 @@ class DrawableWidget(object):
         return self.dc.GetCharHeight()
 
     def set_gc_text_color(self, color):
-        self.dc.SetTextForeground(wx.Colour(*color))
+        self.dc.SetTextForeground(wx.Colour(*color[:4]))
 
     def gc_draw_rounded_rect(self, x=0, y=0, w=1, h=1, radius=1.0):
         self.dc.DrawRoundedRectangle(x, y, w, h, radius)
@@ -464,8 +469,8 @@ class DrawableWidget(object):
         ndir = wx.SOUTH if ndir else wx.EAST
         self.dc.GradientFillLinear(
             wx.Rect(*rect),
-            wx.Colour(*start_clr),
-            wx.Colour(*stop_clr),
+            wx.Colour(*start_clr[:4]),
+            wx.Colour(*stop_clr[:4]),
             nDirection=ndir)
 
     def gc_draw_bitmap(self, bmp, x=0, y=0, use_mask=True):
@@ -492,6 +497,9 @@ class SensitiveWidget(object):
         if self.kbdproc is not None:
             self.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
 
+    def _get_point(self, event):
+        return list(event.GetPosition()) if const.IS_WX4 else list(event.GetPositionTuple())
+
     def _on_key_down(self, event):
         key_code = event.GetKeyCode()
         raw_code = event.GetRawKeyCode()
@@ -500,44 +508,44 @@ class SensitiveWidget(object):
             event.Skip()
 
     def capture_mouse(self):
-        if const.IS_MSW:
+        if const.IS_MSW and not const.IS_WX4:
             self.mouse_captured = True
             self.CaptureMouse()
 
     def release_mouse(self):
-        if self.mouse_captured:
+        if self.mouse_captured and not const.IS_WX4:
             self.mouse_captured = False
             self.ReleaseMouse()
 
     def _mouse_leave(self, event):
-        self.mouse_leave(event.GetPositionTuple())
+        self.mouse_leave(self._get_point(event))
 
     def _mouse_left_down(self, event):
-        self.mouse_left_down(event.GetPositionTuple())
+        self.mouse_left_down(self._get_point(event))
 
     def _mouse_left_up(self, event):
         if not self.click_flag:
             self.click_flag = True
-            self.mouse_left_up(event.GetPositionTuple())
+            self.mouse_left_up(self._get_point(event))
             self.click_flag = False
 
     def _mouse_right_down(self, event):
-        self.mouse_right_down(event.GetPositionTuple())
+        self.mouse_right_down(self._get_point(event))
 
     def _mouse_right_up(self, event):
-        self.mouse_right_up(event.GetPositionTuple())
+        self.mouse_right_up(self._get_point(event))
 
     def _mouse_wheel(self, event):
         self.mouse_wheel(event.GetWheelRotation())
 
     def _mouse_move(self, event):
-        self.mouse_move(event.GetPositionTuple())
+        self.mouse_move(self._get_point(event))
 
     def _capture_lost(self, _event):
         self.capture_lost()
 
     def _mouse_left_dclick(self, event):
-        self.mouse_left_dclick(event.GetPositionTuple())
+        self.mouse_left_dclick(self._get_point(event))
 
     def mouse_leave(self, point):
         pass

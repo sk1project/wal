@@ -12,9 +12,9 @@ class MW(wal.MainWindow):
         wal.MainWindow.__init__(self)
         self.set_size(SIZE)
 
-        btn = wal.ImageButton(self, text='Test',
+        btn = wal.ImageButton(self, text='Test image button', flat=False,
                               onclick=self.click)
-        self.pack(btn, fill=True, padding=10)
+        self.pack(btn, padding=10)
 
     def click(self, *args):
         print 'CLICK'

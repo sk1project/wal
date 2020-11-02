@@ -16,7 +16,6 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import wx
-from wx import animate
 
 from .. import base
 from .. import const
@@ -62,12 +61,27 @@ class Bitmap(wx.StaticBitmap, mixins.WidgetMixin):
             self.set_bitmap(self.bmp)
 
 
-class AnimatedGif(animate.GIFAnimationCtrl):
-    def __init__(self, parent, filepath):
-        animate.GIFAnimationCtrl.__init__(
-            self, parent, wx.ID_ANY, utils.tr(filepath))
-        self.GetPlayer().UseBackgroundColour(True)
+if const.IS_WX4:
+    from wx.adv import Animation, AnimationCtrl
 
-    def stop(self): self.Stop()
+    class AnimatedGif(AnimationCtrl):
+        def __init__(self, parent, filepath):
+            AnimationCtrl.__init__(self, parent, wx.ID_ANY, Animation(filepath))
 
-    def play(self): self.Play()
+        def stop(self): self.Stop()
+
+        def play(self): self.Play()
+
+
+else:
+    from wx import animate
+
+    class AnimatedGif(animate.GIFAnimationCtrl):
+        def __init__(self, parent, filepath):
+            animate.GIFAnimationCtrl.__init__(
+                self, parent, wx.ID_ANY, utils.tr(filepath))
+            self.GetPlayer().UseBackgroundColour(True)
+
+        def stop(self): self.Stop()
+
+        def play(self): self.Play()

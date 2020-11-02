@@ -200,7 +200,7 @@ class _MBtn(panels.Panel, mixins.SensitiveDrawableWidget):
         self.Bind(wx.EVT_TIMER, self._repeat_on_timer)
 
     def _get_points(self):
-        w, h = self.GetSizeTuple()
+        w, h = self.GetSize() if const.IS_WX4 else self.GetSizeTuple()
         mx = w // 2 - 1
         my = h // 2 + 4
         s = 3
@@ -254,14 +254,14 @@ class _MBtn(panels.Panel, mixins.SensitiveDrawableWidget):
             self.callback()
 
     def paint(self):
-        w, h = self.GetSizeTuple()
+        w, h = self.GetSize() if const.IS_WX4 else self.GetSizeTuple()
         x = -20
         y = 0 if self._top else -h
-        flag = wx.CONTROL_DIRTY
+        flag = wx.CONTROL_ISDEFAULT if const.IS_WX4 else wx.CONTROL_DIRTY
         if self._pressed and self._enabled:
             flag = wx.CONTROL_PRESSED | wx.CONTROL_SELECTED
         elif not self._enabled:
-            flag = wx.CONTROL_DIRTY | wx.CONTROL_DISABLED
+            flag = flag | wx.CONTROL_DISABLED
 
         # Draw button bg
         self.set_stroke()
@@ -281,8 +281,7 @@ class _MBtn(panels.Panel, mixins.SensitiveDrawableWidget):
 
         # Draw left border
         self.set_gc_stroke(const.UI_COLORS['border'] + (100,))
-        self.gc_draw_line(0, 2 if self._top else 0,
-                          0, h if self._top else h - 2)
+        self.gc_draw_line(0, 2 if self._top else 0, 0, h if self._top else h - 2)
 
 
 class MegaSpinButton(panels.Panel):

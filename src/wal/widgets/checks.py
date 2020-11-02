@@ -100,8 +100,8 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
         self.gc_draw_rounded_rect(x=1, y=1, w=w - 2, h=h - 3, radius=2)
         # Background shadow
         rect = (1, 1, w - 2, h - 3)
-        start_color = const.WHITE.Get() + (0,)
-        stop_color = const.WHITE.Get() + (55,)
+        start_color = const.WHITE.Get()[:3] + (0,)
+        stop_color = const.WHITE.Get()[:3] + (55,)
         self.gc_draw_linear_gradient(rect, start_color, stop_color, True)
         # Border
         self.set_gc_fill()
@@ -114,8 +114,8 @@ class Switch(panels.VPanel, mixins.SensitiveDrawableWidget):
                                   w=w / 2 - 2, h=h - 5, radius=3)
         # Button relief
         rect = (w / 2 + 1 if self.state else 3, 3, w / 2 - 4, h - 7)
-        start_color = const.WHITE.Get() + (40,)
-        stop_color = const.BLACK.Get() + (40,)
+        start_color = const.WHITE.Get()[:3] + (40,)
+        stop_color = const.BLACK.Get()[:3] + (40,)
         self.gc_draw_linear_gradient(rect, start_color, stop_color, True)
 
         # Text
@@ -148,7 +148,8 @@ class Radiobutton(wx.RadioButton, mixins.DataWidgetMixin):
             self, parent, wx.ID_ANY, utils.tr(text), style=style)
         if onclick:
             self.callback = onclick
-            self.Bind(wx.wx.EVT_RADIOBUTTON, self.on_click, self)
+            self.Bind(wx.EVT_RADIOBUTTON if const.IS_WX4 else wx.wx.EVT_RADIOBUTTON,
+                      self.on_click, self)
 
     def on_click(self, _event):
         if self.callback:

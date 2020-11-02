@@ -18,6 +18,7 @@
 import wx
 
 from . import const
+from . import utils
 
 
 class LabelRenderer:
@@ -67,7 +68,7 @@ class LabelRenderer:
             self.disabled_bmp = gray_image.ConvertToBitmap()
 
     def _set_font(self, bold=False, size=0):
-        self.font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = utils.get_default_gui_font()
         if bold:
             self.font.SetWeight(wx.FONTWEIGHT_BOLD)
         if size:
@@ -129,14 +130,16 @@ class LabelRenderer:
             self.dc = wx.GCDC(self.pdc)
         except Exception:
             self.dc = self.pdc
-        self.dc.BeginDrawing()
+        if not const.IS_WX4:
+            self.dc.BeginDrawing()
 
     def _stop(self):
-        if not self.pdc == self.dc:
-            self.dc.EndDrawing()
-            self.pdc.EndDrawing()
-        else:
-            self.dc.EndDrawing()
+        if not const.IS_WX4:
+            if not self.pdc == self.dc:
+                self.dc.EndDrawing()
+                self.pdc.EndDrawing()
+            else:
+                self.dc.EndDrawing()
         self.pdc = self.dc = None
 
     def _draw_text(self, text, x, y):
@@ -334,6 +337,10 @@ class NativeButtonRenderer(ButtonRenderer):
             self, widget, art_id, art_size,
             text, padding, fontbold, fontsize, textplace)
 
+    @property
+    def normal_flag(self):
+        return wx.CONTROL_ISDEFAULT if utils.IS_WX4 else wx.CONTROL_DIRTY
+
     # ----- RENDERING
     def _start(self):
         self.nr = wx.RendererNative.Get()
@@ -349,7 +356,7 @@ class NativeButtonRenderer(ButtonRenderer):
         w, h = self.size
         self.nr.DrawPushButton(
             self.widget, self.dc, (0, 0, w, h),
-            wx.CONTROL_DIRTY)
+            self.normal_flag)
 
     def _draw_disabled(self, flat=True):
         if flat:
@@ -357,7 +364,7 @@ class NativeButtonRenderer(ButtonRenderer):
         w, h = self.size
         self.nr.DrawPushButton(
             self.widget, self.dc, (0, 0, w, h),
-            wx.CONTROL_DIRTY | wx.CONTROL_DISABLED)
+            self.normal_flag | wx.CONTROL_DISABLED)
 
     def _draw_hover(self):
         w, h = self.size

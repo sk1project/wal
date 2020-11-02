@@ -15,14 +15,20 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import wx.combo
+import wx
 
 from .. import const
 from .. import mixins
 from .. import utils
 
 
-class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
+if const.IS_WX4:
+    import wx.adv as adv
+else:
+    import wx.combo as adv
+
+
+class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
     fontnames = None
     bitmaps = None
     sample_bitmaps = None
@@ -38,7 +44,7 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
         self.sample_bitmaps = fontsample_bitmaps or []
         self.font_icon = font_icon
 
-        self.font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = utils.get_default_gui_font()
         self.fontcolor = wx.Colour(*const.UI_COLORS['text'])
 
         choices = self._create_items()
@@ -49,7 +55,7 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
             x += self.font_icon.GetSize()[0]
         y += 7 + 3
         style = wx.CB_READONLY | wx.NO_BORDER if const.IS_GTK3 else wx.CB_READONLY
-        wx.combo.OwnerDrawnComboBox.__init__(
+        adv.OwnerDrawnComboBox.__init__(
             self, parent, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
             (x, y), choices, style, wx.DefaultValidator)
         self._set_active(value)
@@ -72,8 +78,8 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
         label_x = icon_x + 4 + icon_size[0]
         icon_y = self.control_height / 2 - icon_size[1] / 2 + label_y
         sample_y = label_y + self.control_height + 2
-        if flags & wx.combo.ODCB_PAINTING_SELECTED and not \
-                flags & wx.combo.ODCB_PAINTING_CONTROL:
+        if flags & adv.ODCB_PAINTING_SELECTED and not \
+                flags & adv.ODCB_PAINTING_CONTROL:
             if const.IS_MSW:
                 pdc = wx.PaintDC(self)
                 pdc.SetPen(wx.TRANSPARENT_PEN)
@@ -90,7 +96,7 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
             dc.DrawText(self.fontnames[item], label_x, label_y)
             bmp = utils.bmp_to_white(self.sample_bitmaps[item])
             dc.DrawBitmap(bmp, label_x, sample_y, True)
-        elif flags & wx.combo.ODCB_PAINTING_CONTROL:
+        elif flags & adv.ODCB_PAINTING_CONTROL:
             if const.IS_GTK:
                 icon_x += 4
                 icon_y += 1
@@ -103,7 +109,10 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
                 w = r.width - 1
                 pdc.DrawRectangle(0, 0, r.width, h)
                 nr = wx.RendererNative.Get()
-                nr.DrawTextCtrl(self, dc, (0, 0, w, h), wx.CONTROL_DIRTY)
+                if const.IS_WX4:
+                    nr.DrawTextCtrl(self, dc, (0, 0, w, h), wx.CONTROL_FLAT)
+                else:
+                    nr.DrawTextCtrl(self, dc, (0, 0, w, h), wx.CONTROL_DIRTY)
             if self.font_icon:
                 dc.DrawBitmap(self.font_icon, icon_x, icon_y, True)
             dc.SetTextForeground(self.fontcolor)
@@ -144,7 +153,10 @@ class FontBitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
 
     def _set_selection(self, index):
         if index < self.GetCount():
-            self.SetSelection(index)
+            if const.IS_WX4:
+                self.SetSelection(index, index)
+            else:
+                self.SetSelection(index)
 
     def _get_selection(self):
         return self.GetSelection()

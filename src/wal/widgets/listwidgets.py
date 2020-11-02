@@ -24,8 +24,7 @@ from .. import panels
 from .. import utils
 
 
-class SimpleList(wx.ListCtrl,
-                 listmix.ListCtrlAutoWidthMixin, mixins.WidgetMixin):
+class SimpleList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, mixins.WidgetMixin):
     data = []
     select_cmd = None
     activate_cmd = None
@@ -52,7 +51,8 @@ class SimpleList(wx.ListCtrl,
             self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select, self)
         if on_activate:
             self.activate_cmd = on_activate
-            self.Bind(wx.wx.EVT_LIST_ITEM_ACTIVATED, self.on_activate, self)
+            event = wx.EVT_LIST_ITEM_ACTIVATED if const.IS_WX4 else wx.wx.EVT_LIST_ITEM_ACTIVATED
+            self.Bind(event, self.on_activate, self)
         self.set_bg(const.UI_COLORS['list_bg'])
 
     def set_active(self, index):

@@ -31,7 +31,7 @@ class Panel(wx.Panel, WidgetMixin):
     def __init__(self, parent, border=False, allow_input=False,
                  style=wx.TAB_TRAVERSAL):
         style = style | wx.WANTS_CHARS if allow_input else style
-        style = style | wx.BORDER_MASK if border and not const.IS_WX3 else style
+        style = style | wx.BORDER_MASK if border and const.IS_WX2 else style
         wx.Panel.__init__(self, parent, wx.ID_ANY, style=style)
 
     def set_size(self, size):
@@ -85,7 +85,7 @@ class HPanel(SizedPanel):
     def pack(self, obj, expand=False, fill=False,
              padding=0, start_padding=0, end_padding=0, padding_all=0):
         expand = 1 if expand else 0
-        flags = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL
+        flags = wx.ALIGN_LEFT | (wx.ALIGN_CENTER_VERTICAL if not fill else 0)
         flags = flags | wx.LEFT | wx.RIGHT if padding else flags
         flags = flags | wx.ALL if padding_all else flags
         padding = padding_all or padding
@@ -107,7 +107,7 @@ class VPanel(SizedPanel):
             padding=0, start_padding=0, end_padding=0, padding_all=0):
         expand = 1 if expand else 0
         flags = wx.ALIGN_TOP
-        flags = flags | wx.ALIGN_CENTER_HORIZONTAL if align_center else flags
+        flags = flags | wx.ALIGN_CENTER_HORIZONTAL if align_center and not fill else flags
         flags = flags | wx.TOP | wx.BOTTOM if padding else flags
         flags = flags | wx.ALL if padding_all else flags
         padding = padding_all or padding
@@ -208,7 +208,7 @@ class GridPanel(Panel, WidgetMixin):
         flags = wx.ALIGN_RIGHT if align_right else flags
         flags = wx.ALIGN_LEFT if align_left else flags
         flags |= wx.ALIGN_CENTER_VERTICAL
-        flags = flags | wx.EXPAND if fill else flags
+        flags = wx.EXPAND if fill else flags
         self.add(obj, expand, flags)
 
     def add(self, *args, **kw):
@@ -283,7 +283,7 @@ class ScrolledPanel(scrolled.ScrolledPanel, WidgetMixin):
 class ScrolledCanvas(wx.ScrolledWindow, WidgetMixin):
     def __init__(self, parent, border=False):
         style = wx.NO_BORDER
-        if border and not const.IS_WX3:
+        if border and const.IS_WX2:
             style = wx.BORDER_MASK
         wx.ScrolledWindow.__init__(self, parent, wx.ID_ANY, style=style)
         self.set_scroll_rate()
@@ -391,7 +391,8 @@ class HSizer(HPanel):
         self.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
         self.Bind(wx.EVT_MOTION, self.mouse_move)
         self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self.capture_lost)
-        self.SetCursor(wx.StockCursor(wx.CURSOR_SIZEWE))
+        self.SetCursor(wx.Cursor(wx.CURSOR_SIZEWE) if const.IS_WX4
+                       else wx.StockCursor(wx.CURSOR_SIZEWE))
 
     def set_client(self, client_parent, client, client_min=0, left_side=True):
         self.client = client

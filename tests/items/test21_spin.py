@@ -14,10 +14,10 @@ class MW(wal.MainWindow):
         self.spin = wal.IntSpin(self, 5, (0, 20), width=3,
                                 onchange=self.onchange,
                                 onenter=self.onenter)
-        self.pack(self.spin)
+        self.pack(self.spin, padding=5)
 
         self.spin1 = wal.IntSpin(self, 5, (0, 20), onchange=self.onchange1)
-        self.pack(self.spin1)
+        self.pack(self.spin1, padding=5)
 
     def onchange(self):
         print self.spin.get_value()

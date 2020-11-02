@@ -17,6 +17,8 @@
 
 import wx
 
+IS_WX4 = wx.VERSION[0] == 4
+
 
 def tr(msg):
     return msg.decode('utf-8') if isinstance(msg, str) else msg
@@ -35,7 +37,7 @@ def cursor(path, bitmap_type, x=0, y=0):
 
 
 def stock_cursor(cursor_id):
-    return wx.StockCursor(cursor_id)
+    return wx.Cursor(cursor_id) if IS_WX4 else wx.StockCursor(cursor_id)
 
 
 def get_bitmap_size(bitmap):
@@ -144,19 +146,24 @@ def copy_bitmap_to_surface(bitmap):
 
 # ----- Text routines
 
+def get_default_gui_font():
+    return wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT) if IS_WX4 \
+        else wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+
+
 def get_text_size(text, bold=False, size_incr=0):
-    font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+    font = get_default_gui_font()
     if bold:
         font.SetWeight(wx.FONTWEIGHT_BOLD)
     if size_incr:
-        if font.IsUsingSizeInPixels():
+        if IS_WX4 or font.IsUsingSizeInPixels():
             sz = font.GetPixelSize()[1] + size_incr
             font.SetPixelSize((0, sz))
         else:
             sz = font.GetPointSize() + size_incr
             font.SetPointSize(sz)
     pdc = wx.MemoryDC()
-    bmp = wx.EmptyBitmap(1, 1)
+    bmp = wx.Bitmap(1, 1) if IS_WX4 else wx.EmptyBitmap(1, 1)
     pdc.SelectObject(bmp)
     pdc.SetFont(font)
     height = pdc.GetCharHeight()
@@ -190,7 +197,7 @@ def text_to_bitmap(text, color=(0, 0, 0), bold=False):
     dc.SelectObject(bmp)
     dc.SetBackground(wx.Brush("white"))
     dc.Clear()
-    font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+    font = get_default_gui_font()
     if bold:
         font.SetWeight(wx.FONTWEIGHT_BOLD)
     dc.SetFont(font)
@@ -199,7 +206,8 @@ def text_to_bitmap(text, color=(0, 0, 0), bold=False):
     image = bitmap_to_pil_image(bmp)
     image.putalpha(ImageOps.invert(image).convert('L'))
     ret = pil_image_to_bitmap(image)
-    dc.EndDrawing()
+    if not IS_WX4:
+        dc.EndDrawing()
     dc.SelectObject(wx.NullBitmap)
     return ret, (w, h)
 
@@ -208,7 +216,10 @@ def recolor_bmp(bmp, color):
     image = bmp.ConvertToImage()
     if isinstance(color, wx.Colour):
         color = color.Get()
-    image.SetRGBRect(wx.Rect(0, 0, *bmp.GetSize()), *color)
+    if IS_WX4:
+        image.SetRGB(wx.Rect(0, 0, *bmp.GetSize()), *color[:3])
+    else:
+        image.SetRGBRect(wx.Rect(0, 0, *bmp.GetSize()), *color)
     return image.ConvertToBitmap()
 
 
@@ -230,14 +241,16 @@ def get_dc(widget):
         dc = wx.GCDC(pdc)
     except Exception:
         dc = pdc
-    pdc.BeginDrawing()
-    dc.BeginDrawing()
+    if not IS_WX4:
+        pdc.BeginDrawing()
+        dc.BeginDrawing()
     return dc
 
 
 def get_buffered_dc(widget):
     pdc = wx.BufferedPaintDC(widget)
-    pdc.BeginDrawing()
+    if not IS_WX4:
+        pdc.BeginDrawing()
     return pdc
 
 
@@ -254,9 +267,7 @@ def get_screen_resolution():
 
 
 def get_system_fontsize():
-    font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
-    if font.IsUsingSizeInPixels():
-        fontsize = font.GetPixelSize()
-    else:
-        fontsize = font.GetPointSize()
-    return fontsize
+    font = get_default_gui_font()
+    if IS_WX4 or font.IsUsingSizeInPixels():
+        return font.GetPixelSize()
+    return font.GetPointSize()

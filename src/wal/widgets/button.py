@@ -35,7 +35,7 @@ class Button(wx.Button, mixins.WidgetMixin):
             self.callback = onclick
             self.Bind(wx.EVT_BUTTON, self.on_click, self)
         if tooltip:
-            self.SetToolTipString(tooltip)
+            self.set_tooltip(tooltip)
 
     def set_default(self):
         self.SetDefault()
@@ -90,10 +90,10 @@ class ColorButton(wx.ColourPickerCtrl, mixins.WidgetMixin):
             self.on_change(None)
 
     def get_value(self):
-        return self.val255_to_dec(self.GetColour().Get())
+        return self.val255_to_dec(self.GetColour().Get())[:3]
 
     def get_value255(self):
-        return self.GetColour().Get()
+        return self.GetColour().Get()[:3]
 
 
 class ImageButton(mixins.GenericGWidget):

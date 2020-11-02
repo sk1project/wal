@@ -16,11 +16,15 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import wx
-import wx.combo
 
 from .. import const
 from .. import mixins
 from .. import utils
+
+if const.IS_WX4:
+    import wx.adv as adv
+else:
+    import wx.combo as adv
 
 
 class Combolist(wx.Choice, mixins.WidgetMixin):
@@ -66,17 +70,17 @@ class Combolist(wx.Choice, mixins.WidgetMixin):
         if val not in self.items:
             self.items.append(val)
             self.SetItems(self.items)
-        self.set_active(self.items.index[val])
+        self.set_active(self.items.index(val))
 
 
-class BitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
+class BitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
     def __init__(self, parent, value=0, bitmaps=None):
         self.bitmaps = bitmaps or []
         choices = self._create_items()
         x, y = self.bitmaps[0].GetSize()
         x += 4
         y += 7 + 3
-        wx.combo.OwnerDrawnComboBox.__init__(
+        adv.OwnerDrawnComboBox.__init__(
             self, parent, wx.ID_ANY,
             wx.EmptyString, wx.DefaultPosition,
             (x, y), choices, wx.CB_READONLY,
@@ -87,12 +91,12 @@ class BitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
         if item == wx.NOT_FOUND:
             return
         x, y, w, h = wx.Rect(*rect).Get()
-        if flags & wx.combo.ODCB_PAINTING_SELECTED and \
-                flags & wx.combo.ODCB_PAINTING_CONTROL:
+        if flags & adv.ODCB_PAINTING_SELECTED and \
+                flags & adv.ODCB_PAINTING_CONTROL:
             dc.SetBrush(wx.Brush(wx.WHITE))
             dc.DrawRectangle(x - 1, y - 1, w + 2, h + 2)
             bitmap = self.bitmaps[item]
-        elif flags & wx.combo.ODCB_PAINTING_SELECTED:
+        elif flags & adv.ODCB_PAINTING_SELECTED:
             if const.IS_MSW:
                 pdc = wx.PaintDC(self)
                 pdc.SetPen(wx.TRANSPARENT_PEN)
@@ -128,7 +132,10 @@ class BitmapChoice(wx.combo.OwnerDrawnComboBox, mixins.WidgetMixin):
 
     def set_selection(self, index):
         if index < self.GetCount():
-            self.SetSelection(index)
+            if const.IS_WX4:
+                self.SetSelection(index, index)
+            else:
+                self.SetSelection(index)
 
     def get_selection(self):
         return self.GetSelection()

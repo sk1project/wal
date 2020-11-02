@@ -43,8 +43,12 @@ class Menu(wx.Menu):
 
 
 class MenuItem(wx.MenuItem):
-    def __init__(self, parent, action_id, text):
-        wx.MenuItem.__init__(self, parent, action_id, text=utils.tr(text))
+    def __init__(self, parent, action_id, text, checkable=False):
+        if not const.IS_WX4:
+            wx.MenuItem.__init__(self, parent, action_id, text=utils.tr(text))
+        else:
+            kind = wx.ITEM_CHECK if checkable else wx.ITEM_NORMAL
+            wx.MenuItem.__init__(self, parent, action_id, text=utils.tr(text), kind=kind)
 
     @staticmethod
     def bind_to(mw, callback, action_id):
@@ -57,7 +61,8 @@ class MenuItem(wx.MenuItem):
         self.Enable(enabled)
 
     def set_checkable(self, val):
-        self.SetCheckable(val)
+        if not const.IS_WX4:
+            self.SetCheckable(val)
 
     def is_checked(self):
         return self.IsChecked()
@@ -70,7 +75,10 @@ class MenuItem(wx.MenuItem):
             self.SetBitmap(bmp)
 
     def toggle(self):
-        self.Toggle()
+        if not const.IS_WX4:
+            self.Toggle()
+        else:
+            self.Check(not self.is_checked())
 
     def set_active(self, val):
         if self.is_checkable() and self.is_checked() != val:

@@ -22,6 +22,11 @@ from .. import mixins
 from .. import renderer
 from .. import utils
 
+if const.IS_WX4:
+    from wx.adv import HyperlinkCtrl
+else:
+    from wx import HyperlinkCtrl
+
 
 class Label(wx.StaticText, mixins.WidgetMixin):
     def __init__(self, parent, text='', fontbold=False, fontsize=0, fg=()):
@@ -34,17 +39,24 @@ class Label(wx.StaticText, mixins.WidgetMixin):
         if fontsize:
             if isinstance(fontsize, str):
                 sz = int(fontsize)
-                if font.IsUsingSizeInPixels():
+                if const.IS_WX4:
                     font.SetPixelSize((0, sz))
                 else:
-                    font.SetPointSize(sz)
+                    if font.IsUsingSizeInPixels():
+                        font.SetPixelSize((0, sz))
+                    else:
+                        font.SetPointSize(sz)
             else:
-                if font.IsUsingSizeInPixels():
-                    sz = font.GetPixelSize()[1] + fontsize
-                    font.SetPixelSize((0, sz))
+                if const.IS_WX4:
+                        sz = font.GetPixelSize()[1] + fontsize
+                        font.SetPixelSize((0, sz))
                 else:
-                    sz = font.GetPointSize() + fontsize
-                    font.SetPointSize(sz)
+                    if font.IsUsingSizeInPixels():
+                        sz = font.GetPixelSize()[1] + fontsize
+                        font.SetPixelSize((0, sz))
+                    else:
+                        sz = font.GetPointSize() + fontsize
+                        font.SetPointSize(sz)
         self.SetFont(font)
         if fg:
             self.SetForegroundColour(wx.Colour(*fg))
@@ -76,10 +88,10 @@ class SensitiveLabel(Label):
             self.Bind(wx.EVT_RIGHT_UP, on_right_click)
 
 
-class HyperlinkLabel(wx.HyperlinkCtrl, mixins.WidgetMixin):
+class HyperlinkLabel(HyperlinkCtrl, mixins.WidgetMixin):
     def __init__(self, parent, text, url=''):
         url = text if not url else url
-        wx.HyperlinkCtrl.__init__(self, parent, wx.ID_ANY, utils.tr(text), url)
+        HyperlinkCtrl.__init__(self, parent, wx.ID_ANY, utils.tr(text), url)
 
 
 class ImageLabel(mixins.GenericGWidget):
