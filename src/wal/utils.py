@@ -61,10 +61,10 @@ def image_to_pil_image(image):
     """
     from PIL import Image
     pil_image = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-    pil_image.frombytes(image.GetData())
+    pil_image.frombytes(str(image.GetData()))
     if image.HasAlpha():
         alpha = Image.new('L', (image.GetWidth(), image.GetHeight()))
-        alpha.frombytes(image.GetAlphaData())
+        alpha.frombytes(str(image.GetAlphaData()))
         pil_image.putalpha(alpha)
     return pil_image
 
@@ -73,10 +73,13 @@ def pil_image_to_image(pil_image):
     """
     Converts PIL Image object to wx.Image.
     """
-    image = wx.EmptyImage(*pil_image.size)
+    image = wx.Image(*pil_image.size) if IS_WX4 else wx.EmptyImage(*pil_image.size)
     if pil_image.mode[-1] == 'A':
         image.SetData(pil_image.convert('RGB').tobytes())
-        image.SetAlphaData(pil_image.tobytes()[3::4])
+        if IS_WX4:
+            image.SetAlpha(pil_image.tobytes()[3::4])
+        else:
+            image.SetAlphaData(pil_image.tobytes()[3::4])
     else:
         image.SetData(pil_image.tobytes())
     return image
@@ -113,10 +116,10 @@ def copy_surface_to_bitmap(surface):
     data = surface.get_data()
     if cairo_format == cairo.FORMAT_ARGB32:
         fmt = wx.BitmapBufferFormat_ARGB32
-        bmp = wx.EmptyBitmapRGBA(width, height)
+        bmp = wx.Bitmap.FromRGBA(width, height) if IS_WX4 else wx.EmptyBitmapRGBA(width, height)
     else:
         fmt = wx.BitmapBufferFormat_RGB32
-        bmp = wx.EmptyBitmap(width, height, 32)
+        bmp = wx.Bitmap(width, height, 32) if IS_WX4 else wx.EmptyBitmap(width, height, 32)
     bmp.CopyFromBuffer(data, fmt, stride)
     return bmp
 
@@ -191,9 +194,9 @@ def invert_text_bitmap(bmp, color=(0, 0, 0)):
 
 def text_to_bitmap(text, color=(0, 0, 0), bold=False):
     from PIL import ImageOps
-    w, h = get_text_size(text, bold)
+    w, h = get_text_size(tr(text), bold)
     dc = wx.MemoryDC()
-    bmp = wx.EmptyBitmap(w, h)
+    bmp = wx.Bitmap(w, h) if IS_WX4 else wx.EmptyBitmap(w, h)
     dc.SelectObject(bmp)
     dc.SetBackground(wx.Brush("white"))
     dc.Clear()
@@ -202,8 +205,9 @@ def text_to_bitmap(text, color=(0, 0, 0), bold=False):
         font.SetWeight(wx.FONTWEIGHT_BOLD)
     dc.SetFont(font)
     dc.SetTextForeground(wx.Colour(*color))
-    dc.DrawText(text, 0, 0)
+    dc.DrawText(tr(text), 0, 0)
     image = bitmap_to_pil_image(bmp)
+    print 'w, h -->', w, h
     image.putalpha(ImageOps.invert(image).convert('L'))
     ret = pil_image_to_bitmap(image)
     if not IS_WX4:

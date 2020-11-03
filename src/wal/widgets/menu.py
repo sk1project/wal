@@ -30,13 +30,22 @@ class Menu(wx.Menu):
         wx.Menu.__init__(self)
 
     def append_menu(self, item_id, text, menu):
-        self.AppendMenu(item_id, utils.tr(text), menu)
+        if const.IS_WX4:
+            self.Append(item_id, utils.tr(text), menu)
+        else:
+            self.AppendMenu(item_id, utils.tr(text), menu)
 
     def remove_item(self, item):
-        self.RemoveItem(item)
+        if const.IS_WX4:
+            self.Remove(item)
+        else:
+            self.RemoveItem(item)
 
     def append_item(self, item):
-        self.AppendItem(item)
+        if const.IS_WX4:
+            self.Append(item)
+        else:
+            self.AppendItem(item)
 
     def append_separator(self):
         return self.AppendSeparator()

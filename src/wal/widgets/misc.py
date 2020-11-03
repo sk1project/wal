@@ -17,6 +17,7 @@
 
 import wx
 
+from .. import const
 from .. import mixins
 from .. import panels
 
@@ -101,7 +102,8 @@ class SplitterSash(panels.VPanel, mixins.SensitiveWidget):
         panels.VPanel.__init__(self, parent)
         mixins.SensitiveWidget.__init__(self, check_move=True)
         self.pack((size, size))
-        self.SetCursor(wx.StockCursor(wx.CURSOR_SIZEWE))
+        self.SetCursor(wx.Cursor(wx.CURSOR_SIZEWE) if const.IS_WX4
+                       else wx.StockCursor(wx.CURSOR_SIZEWE))
 
     def mouse_left_down(self, point):
         self.capture_mouse()

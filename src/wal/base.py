@@ -63,13 +63,10 @@ class Application(wx.App):
 
     def run(self):
         if self.mw:
-            print 'Run'
             self.SetTopWindow(self.mw)
             if self.mw.maximized:
                 self.mw.Maximize()
-            print 'MW prebuild'
             self.mw.build()
-            print 'MW built'
             if self.actions:
                 self.update_actions()
             self.mw.Show(True)

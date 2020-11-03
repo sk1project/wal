@@ -87,7 +87,10 @@ class StubBtn(wx.Panel):
         self.SetSize(self.icon.GetSize())
 
         if tooltip:
-            self.SetToolTipString(utils.tr(tooltip))
+            if utils.IS_WX4:
+                self.SetToolTip(utils.tr(tooltip))
+            else:
+                self.SetToolTipString(utils.tr(tooltip))
 
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_PAINT, self._on_paint, self)
