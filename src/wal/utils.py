@@ -108,7 +108,7 @@ def copy_surface_to_bitmap(surface):
     import cairo
     cairo_format = surface.get_format()
     if cairo_format not in [cairo.FORMAT_ARGB32, cairo.FORMAT_RGB24]:
-        raise TypeError("Unsupported format")
+        raise TypeError('Unsupported format')
 
     width = surface.get_width()
     height = surface.get_height()
@@ -198,7 +198,7 @@ def text_to_bitmap(text, color=(0, 0, 0), bold=False):
     dc = wx.MemoryDC()
     bmp = wx.Bitmap(w, h) if IS_WX4 else wx.EmptyBitmap(w, h)
     dc.SelectObject(bmp)
-    dc.SetBackground(wx.Brush("white"))
+    dc.SetBackground(wx.Brush('white'))
     dc.Clear()
     font = get_default_gui_font()
     if bold:
@@ -207,7 +207,6 @@ def text_to_bitmap(text, color=(0, 0, 0), bold=False):
     dc.SetTextForeground(wx.Colour(*color))
     dc.DrawText(tr(text), 0, 0)
     image = bitmap_to_pil_image(bmp)
-    print 'w, h -->', w, h
     image.putalpha(ImageOps.invert(image).convert('L'))
     ret = pil_image_to_bitmap(image)
     if not IS_WX4:

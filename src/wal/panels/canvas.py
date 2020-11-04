@@ -113,7 +113,7 @@ class MainCanvas(base.Panel, mixins.DrawableWidget):
 
     def _on_char(self, event):
         modifiers = event.GetModifiers()
-        unichar = unichr(event.GetUniChar())
+        unichar = unichr(event.GetUnicodeKey() if const.IS_WX4 else event.GetUniChar())
         if self.kbproc and not self.kbproc.on_char(modifiers, unichar):
             return
         event.Skip()

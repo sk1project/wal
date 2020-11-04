@@ -132,10 +132,7 @@ class BitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
 
     def set_selection(self, index):
         if index < self.GetCount():
-            if const.IS_WX4:
-                self.SetSelection(index, index)
-            else:
-                self.SetSelection(index)
+            self.SetSelection(index)
 
     def get_selection(self):
         return self.GetSelection()

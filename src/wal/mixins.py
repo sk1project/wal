@@ -41,6 +41,8 @@ class DialogMixin(object):
         self.Centre()
 
     def get_size(self):
+        if const.IS_WX4:
+            return tuple(self.GetSize())
         return self.GetSizeTuple()
 
     def set_size(self, size):
@@ -86,8 +88,7 @@ class WidgetMixin(object):
     def get_size(self):
         if const.IS_WX4:
             return tuple(self.GetSize())
-        else:
-            return self.GetSizeTuple()
+        return self.GetSizeTuple()
 
     def get_position(self):
         return self.GetPosition()
@@ -297,6 +298,8 @@ class DrawableWidget(object):
             self.SetDoubleBuffered(True)
 
     def get_size(self):
+        if const.IS_WX4:
+            return tuple(self.GetSize())
         return self.GetSizeTuple()
 
     def _on_size_change(self, event):

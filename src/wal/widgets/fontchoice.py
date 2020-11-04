@@ -153,10 +153,7 @@ class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
 
     def _set_selection(self, index):
         if index < self.GetCount():
-            if const.IS_WX4:
-                self.SetSelection(index, index)
-            else:
-                self.SetSelection(index)
+            self.SetSelection(index)
 
     def _get_selection(self):
         return self.GetSelection()
