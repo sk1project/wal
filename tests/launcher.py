@@ -40,14 +40,12 @@ class ListFrame(Frame):
         bframe = Frame(rframe)
         bframe.pack(fill=X, anchor=S, side=BOTTOM)
 
-        self.exec_btn = Button(bframe, text='Execute', font=FONT,
-                               command=self.execute)
+        self.exec_btn = Button(bframe, text='Execute', font=FONT, command=self.execute)
         self.exec_btn.pack(side=RIGHT)
 
         Frame(bframe, width=5).pack(side=RIGHT)
 
-        self.rescan_btn = Button(bframe, text='Rescan', font=FONT,
-                                 command=self.scan_tests)
+        self.rescan_btn = Button(bframe, text='Rescan', font=FONT, command=self.scan_tests)
         self.rescan_btn.pack(side=RIGHT)
 
         Frame(rframe, height=5).pack(fill=X, anchor=S, side=BOTTOM)
@@ -102,8 +100,7 @@ class ListFrame(Frame):
         self.tests = []
         file_items = os.listdir(TPATH)
         for fname in file_items:
-            if os.path.isfile(os.path.join(TPATH, fname)) and fname.endswith(
-                    '.py'):
+            if os.path.isfile(os.path.join(TPATH, fname)) and fname.endswith('.py'):
                 self.tests.append(fname.split('.py')[0])
         self.tests.sort()
         for item in self.tests:
@@ -137,8 +134,8 @@ class ListFrame(Frame):
 def center_window(w, h):
     ws = root.winfo_screenwidth()
     hs = root.winfo_screenheight()
-    x = (ws/2) - (w/2)
-    y = (hs/2) - (h/2)
+    x = (ws / 2) - (w / 2)
+    y = (hs / 2) - (h / 2)
     root.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 
