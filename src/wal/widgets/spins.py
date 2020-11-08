@@ -509,7 +509,7 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
         try:
             line = 'val=' + txt
             code = compile(line, '<string>', 'exec')
-            exec code
+            exec(code)
         except Exception:
             return self.value
         return val

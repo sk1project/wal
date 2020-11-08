@@ -17,27 +17,17 @@
 
 import wx
 
-IS_WX4 = wx.VERSION[0] == 4
-
-
-def tr(msg):
-    return msg.decode('utf-8') if isinstance(msg, str) else msg
-
-
-def untr(msg):
-    return msg.encode('utf-8') if isinstance(msg, unicode) else msg
-
 
 def new_id():
     return wx.NewId()
 
 
 def cursor(path, bitmap_type, x=0, y=0):
-    return wx.Cursor(tr(path), bitmap_type, x, y)
+    return wx.Cursor(path, bitmap_type, x, y)
 
 
 def stock_cursor(cursor_id):
-    return wx.Cursor(cursor_id) if IS_WX4 else wx.StockCursor(cursor_id)
+    return wx.Cursor(cursor_id)
 
 
 def get_bitmap_size(bitmap):
@@ -73,13 +63,10 @@ def pil_image_to_image(pil_image):
     """
     Converts PIL Image object to wx.Image.
     """
-    image = wx.Image(*pil_image.size) if IS_WX4 else wx.EmptyImage(*pil_image.size)
+    image = wx.Image(*pil_image.size)
     if pil_image.mode[-1] == 'A':
         image.SetData(pil_image.convert('RGB').tobytes())
-        if IS_WX4:
-            image.SetAlpha(pil_image.tobytes()[3::4])
-        else:
-            image.SetAlphaData(pil_image.tobytes()[3::4])
+        image.SetAlpha(pil_image.tobytes()[3::4])
     else:
         image.SetData(pil_image.tobytes())
     return image
@@ -116,10 +103,10 @@ def copy_surface_to_bitmap(surface):
     data = surface.get_data()
     if cairo_format == cairo.FORMAT_ARGB32:
         fmt = wx.BitmapBufferFormat_ARGB32
-        bmp = wx.Bitmap.FromRGBA(width, height) if IS_WX4 else wx.EmptyBitmapRGBA(width, height)
+        bmp = wx.Bitmap.FromRGBA(width, height)
     else:
         fmt = wx.BitmapBufferFormat_RGB32
-        bmp = wx.Bitmap(width, height, 32) if IS_WX4 else wx.EmptyBitmap(width, height, 32)
+        bmp = wx.Bitmap(width, height, 32)
     bmp.CopyFromBuffer(data, fmt, stride)
     return bmp
 
@@ -150,8 +137,7 @@ def copy_bitmap_to_surface(bitmap):
 # ----- Text routines
 
 def get_default_gui_font():
-    return wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT) if IS_WX4 \
-        else wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+    return wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
 
 
 def get_text_size(text, bold=False, size_incr=0):
@@ -159,14 +145,10 @@ def get_text_size(text, bold=False, size_incr=0):
     if bold:
         font.SetWeight(wx.FONTWEIGHT_BOLD)
     if size_incr:
-        if IS_WX4 or font.IsUsingSizeInPixels():
-            sz = font.GetPixelSize()[1] + size_incr
-            font.SetPixelSize((0, sz))
-        else:
-            sz = font.GetPointSize() + size_incr
-            font.SetPointSize(sz)
+        sz = font.GetPixelSize()[1] + size_incr
+        font.SetPixelSize((0, sz))
     pdc = wx.MemoryDC()
-    bmp = wx.Bitmap(1, 1) if IS_WX4 else wx.EmptyBitmap(1, 1)
+    bmp = wx.Bitmap(1, 1)
     pdc.SelectObject(bmp)
     pdc.SetFont(font)
     height = pdc.GetCharHeight()
@@ -194,9 +176,9 @@ def invert_text_bitmap(bmp, color=(0, 0, 0)):
 
 def text_to_bitmap(text, color=(0, 0, 0), bold=False):
     from PIL import ImageOps
-    w, h = get_text_size(tr(text), bold)
+    w, h = get_text_size(text, bold)
     dc = wx.MemoryDC()
-    bmp = wx.Bitmap(w, h) if IS_WX4 else wx.EmptyBitmap(w, h)
+    bmp = wx.Bitmap(w, h)
     dc.SelectObject(bmp)
     dc.SetBackground(wx.Brush('white'))
     dc.Clear()
@@ -205,12 +187,10 @@ def text_to_bitmap(text, color=(0, 0, 0), bold=False):
         font.SetWeight(wx.FONTWEIGHT_BOLD)
     dc.SetFont(font)
     dc.SetTextForeground(wx.Colour(*color))
-    dc.DrawText(tr(text), 0, 0)
+    dc.DrawText(text, 0, 0)
     image = bitmap_to_pil_image(bmp)
     image.putalpha(ImageOps.invert(image).convert('L'))
     ret = pil_image_to_bitmap(image)
-    if not IS_WX4:
-        dc.EndDrawing()
     dc.SelectObject(wx.NullBitmap)
     return ret, (w, h)
 
@@ -219,10 +199,7 @@ def recolor_bmp(bmp, color):
     image = bmp.ConvertToImage()
     if isinstance(color, wx.Colour):
         color = color.Get()
-    if IS_WX4:
-        image.SetRGB(wx.Rect(0, 0, *bmp.GetSize()), *color[:3])
-    else:
-        image.SetRGBRect(wx.Rect(0, 0, *bmp.GetSize()), *color)
+    image.SetRGB(wx.Rect(0, 0, *bmp.GetSize()), *color[:3])
     return image.ConvertToBitmap()
 
 
@@ -244,16 +221,11 @@ def get_dc(widget):
         dc = wx.GCDC(pdc)
     except Exception:
         dc = pdc
-    if not IS_WX4:
-        pdc.BeginDrawing()
-        dc.BeginDrawing()
     return dc
 
 
 def get_buffered_dc(widget):
     pdc = wx.BufferedPaintDC(widget)
-    if not IS_WX4:
-        pdc.BeginDrawing()
     return pdc
 
 
@@ -270,7 +242,4 @@ def get_screen_resolution():
 
 
 def get_system_fontsize():
-    font = get_default_gui_font()
-    if IS_WX4 or font.IsUsingSizeInPixels():
-        return font.GetPointSize()
-    return font.GetPointSize()
+    return get_default_gui_font().GetPixelSize()

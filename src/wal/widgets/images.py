@@ -78,8 +78,7 @@ else:
 
     class AnimatedGif(animate.GIFAnimationCtrl):
         def __init__(self, parent, filepath):
-            animate.GIFAnimationCtrl.__init__(
-                self, parent, wx.ID_ANY, utils.tr(filepath))
+            super().__init__(self, parent, wx.ID_ANY, filepath)
             self.GetPlayer().UseBackgroundColour(True)
 
         def stop(self): self.Stop()

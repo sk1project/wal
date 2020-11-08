@@ -30,10 +30,7 @@ class Menu(wx.Menu):
         wx.Menu.__init__(self)
 
     def append_menu(self, item_id, text, menu):
-        if const.IS_WX4:
-            self.Append(item_id, utils.tr(text), menu)
-        else:
-            self.AppendMenu(item_id, utils.tr(text), menu)
+        self.Append(item_id, text, menu)
 
     def remove_item(self, item):
         if const.IS_WX4:
@@ -53,11 +50,8 @@ class Menu(wx.Menu):
 
 class MenuItem(wx.MenuItem):
     def __init__(self, parent, action_id, text, checkable=False):
-        if not const.IS_WX4:
-            wx.MenuItem.__init__(self, parent, action_id, text=utils.tr(text))
-        else:
-            kind = wx.ITEM_CHECK if checkable else wx.ITEM_NORMAL
-            wx.MenuItem.__init__(self, parent, action_id, text=utils.tr(text), kind=kind)
+        kind = wx.ITEM_CHECK if checkable else wx.ITEM_NORMAL
+        wx.MenuItem.__init__(self, parent, action_id, text=text, kind=kind)
 
     @staticmethod
     def bind_to(mw, callback, action_id):
@@ -102,4 +96,4 @@ class MenuBar(wx.MenuBar):
         wx.MenuBar.__init__(self)
 
     def append_menu(self, _menu_id, txt, menu):
-        self.Append(menu, utils.tr(txt))
+        self.Append(menu, txt)

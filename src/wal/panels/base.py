@@ -160,8 +160,7 @@ class LabeledPanel(BorderedPanel):
             self.widget_panel = HPanel(self)
             self.widget = widget
             if text:
-                self.widget = wx.StaticText(self.widget_panel,
-                                            wx.ID_ANY, utils.tr(text))
+                self.widget = wx.StaticText(self.widget_panel, wx.ID_ANY, text)
             self.widget_panel.pack(self.widget, padding=5)
             self.widget_panel.Fit()
             self.add(self.widget_panel, 0, wx.ALIGN_LEFT | wx.LEFT, 7)
@@ -355,7 +354,7 @@ class ExpandedPanel(VPanel):
         self.expander = Expander(header, on_click=self.expand)
         header.pack(self.expander, padding=2)
         if txt:
-            header.pack(wx.StaticText(header, wx.ID_ANY, utils.tr(txt)))
+            header.pack(wx.StaticText(header, wx.ID_ANY, txt))
         VPanel.pack(self, header, fill=True)
         self.container = VPanel(self)
         VPanel.pack(self, self.container, fill=True)

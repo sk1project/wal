@@ -80,7 +80,6 @@ class SimpleList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, mixins.WidgetMixin
         even = False
         i = 0
         for item in data:
-            item = utils.tr(item)
             self.Append([item])
             if alt_color:
                 list_item = self.GetItem(i)
@@ -123,7 +122,7 @@ class ReportList(SimpleList):
     def set_columns(self):
         for item in self.data[0]:
             index = self.data[0].index(item)
-            self.InsertColumn(index, utils.tr(item))
+            self.InsertColumn(index, item)
 
     def set_data(self, data, alt_color=True):
         even = False
@@ -132,9 +131,9 @@ class ReportList(SimpleList):
         subheader = any(isinstance(i, str) for i in data)
         for item in data[1:]:
             if isinstance(item, list):
-                list_item = [utils.tr(label) for label in item]
+                list_item = [] + item
             elif isinstance(item, str):
-                list_item = [utils.tr(item), ] + ['', ] * (cols - 1)
+                list_item = [item, ] + ['', ] * (cols - 1)
             else:
                 continue
             self.Append(list_item)
@@ -204,7 +203,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
         self.data = [
             (utils.recolor_bmp(obj.icon, const.UI_COLORS['disabled_text']),
              utils.recolor_bmp(obj.icon, const.UI_COLORS['selected_text']),
-             utils.tr(obj.name), utils.tr(obj.title), obj)
+             obj.name, obj.title, obj)
             for obj in data]
         self.set_metrics()
         self.callback = on_select

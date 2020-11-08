@@ -27,7 +27,7 @@ def _dialog(parent, title, text, icon, yesno=False, cancel=False):
             buttons = buttons | wx.CANCEL if buttons else wx.OK | wx.CANCEL
     else:
         buttons = wx.OK
-    dlg = wx.MessageDialog(parent, tr(text), tr(title), icon | buttons)
+    dlg = wx.MessageDialog(parent, text, title, icon | buttons)
     ret = dlg.ShowModal()
     dlg.Destroy()
     return ret

@@ -1,7 +1,7 @@
 # /usr/bin/python2
 
 import os
-from Tkinter import *
+from tkinter import *
 
 
 def echo_msg(msg, newline=True, flush=True):
@@ -12,7 +12,7 @@ def echo_msg(msg, newline=True, flush=True):
         sys.stdout.flush()
 
 
-FONT = 'Ubuntu\ Regular 12'
+FONT = 'Ubuntu\\ Regular 12'
 PATH = os.path.abspath(os.path.dirname(__file__))
 TPATH = os.path.join(PATH, 'items')
 PYTHONPATH = os.path.abspath(os.path.join(PATH, '..', 'src'))
@@ -65,36 +65,38 @@ class ListFrame(Frame):
         self.list.bind("<Double-Button-1>", self.execute)
         self.list.bind('<Return>', self.execute)
 
-    def on_up(self, *args):
+    def on_up(self, *_args):
         selection = self.list.curselection()[0] - 1
         if selection < 0:
             selection = 0
         self.read_info(selection)
 
-    def on_down(self, *args):
+    def on_down(self, *_args):
         selection = self.list.curselection()[0] + 1
         if selection == len(self.tests):
             selection = len(self.tests) - 1
         self.read_info(selection)
 
-    def on_select(self, *args):
+    def on_select(self, *_args):
         selection = self.list.curselection()[0]
         if selection < 0:
             return
         self.read_info(selection)
 
-    def execute(self, *args):
+    def execute(self, *_args):
         selection = self.list.curselection()[0]
-        if selection < 0: return
+        if selection < 0:
+            return
         fname = '{}.py'.format(self.tests[selection])
         fpath = os.path.join(TPATH, fname)
-        if not os.path.isfile(fpath): return
-        cmd = 'python %s' % fpath
+        if not os.path.isfile(fpath):
+            return
+        cmd = 'python3 %s' % fpath
         echo_msg('START %s' % fname, False)
         if not os.system(cmd):
             echo_msg('......[OK]')
 
-    def scan_tests(self, *args):
+    def scan_tests(self, *_args):
         if self.tests:
             self.list.delete(0, END)
         self.tests = []
@@ -120,7 +122,7 @@ class ListFrame(Frame):
         self.text.delete(1.0, END)
         fpath = os.path.join(TPATH, self.tests[index] + '.py')
         info = ''
-        with open(fpath, 'rb') as fp:
+        with open(fpath, 'r') as fp:
             while True:
                 line = fp.readline()
                 if line.startswith('#'):
@@ -134,6 +136,7 @@ class ListFrame(Frame):
 
 root = Tk()
 root.title('UI Tests')
+root.iconphoto(False, PhotoImage(file='images/icon.png'))
 frame = ListFrame(root)
 frame.pack(fill=BOTH, expand=1, padx=15, pady=15)
 root.geometry('{}x{}'.format(650, 450))

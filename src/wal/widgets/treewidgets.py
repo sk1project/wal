@@ -103,7 +103,7 @@ class TreeWidget(wx.TreeCtrl, mixins.WidgetMixin):
     def add_childs(self, parent, childs):
         for item in childs:
             icon = self.get_icons(item)
-            tid = self.AppendItem(parent, utils.tr(item.name), icon, NO_ICON)
+            tid = self.AppendItem(parent, item.name, icon, NO_ICON)
             self.items_ref.append(item)
             self.items.append(tid)
             self.add_childs(tid, item.childs)

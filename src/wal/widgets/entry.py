@@ -32,7 +32,7 @@ class Entry(wx.TextCtrl, mixins.DataWidgetMixin):
     def __init__(self, parent, value='', size=const.DEF_SIZE, width=0,
                  onchange=None, multiline=False, richtext=False, onenter=None,
                  editable=True, no_border=False, no_wrap=False):
-        self.value = utils.tr(value)
+        self.value = value
         self.editable = editable
         self._callback = onchange
         style = wx.TE_MULTILINE if multiline else 0
@@ -77,7 +77,7 @@ class Entry(wx.TextCtrl, mixins.DataWidgetMixin):
 
     def set_value(self, val):
         self.my_changes = True
-        self.value = utils.tr(val)
+        self.value = val
         self.SetValue(self.value)
 
     def set_editable(self, val):
@@ -94,7 +94,7 @@ class Entry(wx.TextCtrl, mixins.DataWidgetMixin):
         self.SetDefaultStyle(wx.TextAttr(wx.NullColour, wx.NullColour, f))
 
     def append(self, txt):
-        self.AppendText(utils.tr(txt))
+        self.AppendText(txt)
         self.value = self.GetValue()
 
     def clear(self):

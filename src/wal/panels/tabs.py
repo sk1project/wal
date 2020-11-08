@@ -327,7 +327,7 @@ class TabPainter(object):
         s = INDICATOR_SIZE
         pos = tab.pos + 3 * s - 3
         width = tab.get_tab_size() - 5 * s
-        txt = utils.tr(tab.text)
+        txt = tab.text
 
         if utils.get_text_size(txt, size_incr=-1)[0] > width:
             while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:
@@ -531,7 +531,7 @@ class VRectTabPainter(TabPainter):
         s = INDICATOR_SIZE
         pos = tab.pos + 3 * s - 3
         width = tab.get_tab_size() - 5 * s
-        txt = utils.tr(tab.text)
+        txt = tab.text
 
         if utils.get_text_size(txt, size_incr=-1)[0] > width:
             while utils.get_text_size(txt + '...', size_incr=-1)[0] > width:

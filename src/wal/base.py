@@ -154,10 +154,7 @@ class MainWindow(wx.Frame, mixins.DialogMixin):
 
     def set_icons(self, filepath):
         icons = wx.IconBundle()
-        if const.IS_WX4:
-            icons.AddIcon(utils.tr(filepath), wx.BITMAP_TYPE_ANY)
-        else:
-            icons.AddIconFromFile(utils.tr(filepath), wx.BITMAP_TYPE_ANY)
+        icons.AddIcon(filepath, wx.BITMAP_TYPE_ANY)
         self.SetIcons(icons)
 
     def set_menubar(self, menubar):

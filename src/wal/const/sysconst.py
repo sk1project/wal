@@ -17,6 +17,7 @@
 
 import os
 import platform
+
 import wx
 
 MSW = '__WXMSW__'
@@ -49,8 +50,9 @@ IS_UNITY = DESKTOP_NAME == 'Unity'
 
 def is_unity_16_04():
     if IS_GTK:
-        if platform.dist()[0] == 'Ubuntu' and platform.dist()[1]:
-            return IS_UNITY and int(platform.dist()[1].split('.')[0]) >= 16
+        import distro
+        if distro.linux_distribution()[0] == 'Ubuntu' and distro.linux_distribution()[1]:
+            return IS_UNITY and int(distro.linux_distribution()[1].split('.')[0]) >= 16
     return False
 
 

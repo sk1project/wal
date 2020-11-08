@@ -40,7 +40,7 @@ class Notebook(wx.Notebook, mixins.WidgetMixin):
     def add_page(self, page, title):
         page.layout()
         self.childs.append(page)
-        self.AddPage(page, utils.tr(title))
+        self.AddPage(page, title)
 
     def remove_page(self, page):
         index = self.childs.index(page)

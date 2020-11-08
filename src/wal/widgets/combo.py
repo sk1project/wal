@@ -31,10 +31,8 @@ class Combolist(wx.Choice, mixins.WidgetMixin):
     items = []
     callback = None
 
-    def __init__(self, parent, size=const.DEF_SIZE, width=0,
-                 items=None, onchange=None):
-        items = items or []
-        self.items = [utils.tr(item) for item in items]
+    def __init__(self, parent, size=const.DEF_SIZE, width=0, items=None, onchange=None):
+        self.items = items or []
         size = self._set_width(size, width)
         wx.Choice.__init__(self, parent, wx.ID_ANY, size, choices=self.items)
         if onchange:
@@ -46,7 +44,7 @@ class Combolist(wx.Choice, mixins.WidgetMixin):
             self.callback()
 
     def set_items(self, items):
-        self.items = [utils.tr(item) for item in items]
+        self.items = items or []
         self.SetItems(self.items)
 
     def set_selection(self, index):
@@ -63,10 +61,9 @@ class Combolist(wx.Choice, mixins.WidgetMixin):
         return self.get_selection()
 
     def get_active_value(self):
-        return utils.untr(self.items[self.get_selection()])
+        return self.items[self.get_selection()]
 
     def set_active_value(self, val):
-        val = utils.tr(val)
         if val not in self.items:
             self.items.append(val)
             self.SetItems(self.items)
@@ -151,12 +148,11 @@ class Combobox(wx.ComboBox, mixins.DataWidgetMixin):
 
     def __init__(self, parent, value='', pos=(-1, 1), size=const.DEF_SIZE,
                  width=0, items=None, onchange=None):
-        items = items or []
-        self.items = [utils.tr(item) for item in items]
+        self.items = items or []
         flags = wx.CB_DROPDOWN | wx.TE_PROCESS_ENTER
         size = self._set_width(size, width)
         wx.ComboBox.__init__(self, parent, wx.ID_ANY, value,
-                             pos, size, items, flags)
+                             pos, size, self.items, flags)
         if onchange:
             self.callback = onchange
             self.Bind(wx.EVT_COMBOBOX, self.on_change, self)
@@ -181,7 +177,7 @@ class Combobox(wx.ComboBox, mixins.DataWidgetMixin):
         event.Skip()
 
     def set_items(self, items):
-        self.items = [utils.tr(item) for item in items]
+        self.items = items
         self.SetItems(self.items)
 
 

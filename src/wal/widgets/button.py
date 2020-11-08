@@ -20,7 +20,6 @@ import wx
 from .. import const
 from .. import mixins
 from .. import renderer
-from .. import utils
 
 
 class Button(wx.Button, mixins.WidgetMixin):
@@ -28,7 +27,7 @@ class Button(wx.Button, mixins.WidgetMixin):
 
     def __init__(self, parent, text, size=const.DEF_SIZE, onclick=None,
                  tooltip='', default=False, pid=wx.ID_ANY):
-        wx.Button.__init__(self, parent, pid, utils.tr(text), size=size)
+        wx.Button.__init__(self, parent, pid, text, size=size)
         if default:
             self.SetDefault()
         if onclick:

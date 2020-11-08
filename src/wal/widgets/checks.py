@@ -29,7 +29,7 @@ class Checkbox(wx.CheckBox, mixins.DataWidgetMixin):
     def __init__(self, parent, text='', value=False, onclick=None, right=False):
         style = wx.ALIGN_RIGHT if right else 0
         wx.CheckBox.__init__(
-            self, parent, wx.ID_ANY, utils.tr(text), style=style)
+            self, parent, wx.ID_ANY, text, style=style)
         self.SetValue(True if value else False)
         if onclick:
             self.callback = onclick
@@ -144,8 +144,7 @@ class Radiobutton(wx.RadioButton, mixins.DataWidgetMixin):
 
     def __init__(self, parent, text='', onclick=None, group=False):
         style = wx.RB_GROUP if group else 0
-        wx.RadioButton.__init__(
-            self, parent, wx.ID_ANY, utils.tr(text), style=style)
+        wx.RadioButton.__init__(self, parent, wx.ID_ANY, text, style=style)
         if onclick:
             self.callback = onclick
             self.Bind(wx.EVT_RADIOBUTTON if const.IS_WX4 else wx.wx.EVT_RADIOBUTTON,

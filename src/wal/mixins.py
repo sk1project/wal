@@ -26,7 +26,7 @@ class DialogMixin(object):
         self.Fit()
 
     def set_title(self, title):
-        self.SetTitle(utils.tr(title))
+        self.SetTitle(title)
 
     def set_minsize(self, size):
         self.SetMinSize(size)
@@ -115,10 +115,8 @@ class WidgetMixin(object):
         return width * const.FONT_SIZE[0], size[1]
 
     def set_tooltip(self, tip=None):
-        if tip and not const.IS_WX4:
-            self.SetToolTipString(utils.tr(tip))
-        elif tip:
-            self.SetToolTip(utils.tr(tip))
+        if tip:
+            self.SetToolTip(tip)
 
     def destroy(self):
         self.Destroy()
@@ -160,10 +158,10 @@ class WidgetMixin(object):
 
 class DataWidgetMixin(WidgetMixin):
     def set_value(self, value):
-        self.SetValue(utils.tr(value))
+        self.SetValue(value)
 
     def get_value(self):
-        return utils.untr(self.GetValue())
+        return self.GetValue()
 
 
 class RangeDataWidgetMixin(DataWidgetMixin):

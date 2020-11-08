@@ -31,8 +31,7 @@ else:
 class Label(wx.StaticText, mixins.WidgetMixin):
     def __init__(self, parent, text='', fontbold=False, fontsize=0, fg=()):
         self.parent = parent
-        wx.StaticText.__init__(self, parent, wx.ID_ANY, utils.tr(text),
-                               style=wx.ALIGN_CENTER)
+        wx.StaticText.__init__(self, parent, wx.ID_ANY, text, style=wx.ALIGN_CENTER)
         font = self.GetFont()
         if fontbold:
             font.SetWeight(wx.FONTWEIGHT_BOLD)
@@ -75,7 +74,7 @@ class Label(wx.StaticText, mixins.WidgetMixin):
         self.SetMinSize((width, -1))
 
     def set_text(self, text):
-        self.SetLabel(utils.tr(text))
+        self.SetLabel(text)
 
     def wrap(self, width):
         self.Wrap(width)
@@ -94,7 +93,7 @@ class SensitiveLabel(Label):
 class HyperlinkLabel(HyperlinkCtrl, mixins.WidgetMixin):
     def __init__(self, parent, text, url=''):
         url = text if not url else url
-        HyperlinkCtrl.__init__(self, parent, wx.ID_ANY, utils.tr(text), url)
+        HyperlinkCtrl.__init__(self, parent, wx.ID_ANY, text, url)
 
 
 class ImageLabel(mixins.GenericGWidget):
