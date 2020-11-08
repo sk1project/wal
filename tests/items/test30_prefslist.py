@@ -36,7 +36,7 @@ class MW(wal.MainWindow):
         self.pack(self.prefs, fill=True, expand=True, padding=10)
 
     def click(self, *args):
-        print 'CLICKED', self.prefs.get_selected_index()
+        print('CLICKED', self.prefs.get_selected_index())
 
 
 MW().run()

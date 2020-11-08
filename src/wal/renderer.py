@@ -130,16 +130,8 @@ class LabelRenderer:
             self.dc = wx.GCDC(self.pdc)
         except Exception:
             self.dc = self.pdc
-        if not const.IS_WX4:
-            self.dc.BeginDrawing()
 
     def _stop(self):
-        if not const.IS_WX4:
-            if not self.pdc == self.dc:
-                self.dc.EndDrawing()
-                self.pdc.EndDrawing()
-            else:
-                self.dc.EndDrawing()
         self.pdc = self.dc = None
 
     def _draw_text(self, text, x, y):
@@ -339,7 +331,7 @@ class NativeButtonRenderer(ButtonRenderer):
 
     @property
     def normal_flag(self):
-        return wx.CONTROL_ISDEFAULT if utils.IS_WX4 else wx.CONTROL_DIRTY
+        return wx.CONTROL_ISDEFAULT
 
     # ----- RENDERING
     def _start(self):

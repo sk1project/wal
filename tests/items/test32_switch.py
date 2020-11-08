@@ -32,13 +32,13 @@ class MW(wal.MainWindow):
         self.switch3.set_value(True)
 
     def on_change(self):
-        print self.switch.get_value()
+        print(self.switch.get_value())
 
     def on_change1(self):
-        print self.switch1.get_value()
+        print(self.switch1.get_value())
 
     def on_change2(self):
-        print self.switch1.get_value()
+        print(self.switch1.get_value())
 
 
 MW().run()

@@ -17,7 +17,7 @@ class MW(wal.MainWindow):
         self.pack(btn, padding=10)
 
     def click(self, *args):
-        print 'CLICK'
+        print('CLICK')
 
 
 MW().run()

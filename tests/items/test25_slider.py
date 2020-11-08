@@ -20,10 +20,10 @@ class MW(wal.MainWindow):
         self.pack(self.slider2)
 
     def on_change(self):
-        print self.slider.get_value()
+        print(self.slider.get_value())
 
     def on_final_change(self):
-        print 'final', self.slider.get_value()
+        print('final', self.slider.get_value())
 
 
 MW().run()

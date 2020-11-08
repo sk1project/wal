@@ -24,16 +24,16 @@ class MW(wal.MainWindow):
         self.pack(self.radio3)
 
     def on_click(self):
-        print '-' * 30
-        print self.radio1.get_value()
-        print self.radio2.get_value()
-        print self.radio3.get_value()
+        print('-' * 30)
+        print(self.radio1.get_value())
+        print(self.radio2.get_value())
+        print(self.radio3.get_value())
 
     def on_click3(self):
-        print '-' * 30
-        print self.radio1.get_value()
-        print self.radio2.get_value()
-        print self.radio3.get_value()
+        print('-' * 30)
+        print(self.radio1.get_value())
+        print(self.radio2.get_value())
+        print(self.radio3.get_value())
 
 
 MW().run()

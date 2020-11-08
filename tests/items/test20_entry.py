@@ -29,10 +29,10 @@ class MW(wal.MainWindow):
         self.pack(self.entry3, fill=True, expand=True)
 
     def on_change(self):
-        print self.entry1.get_value()
+        print(self.entry1.get_value())
 
     def on_enter(self):
-        print 'enter', self.entry1.get_value()
+        print('enter', self.entry1.get_value())
 
 
 MW().run()

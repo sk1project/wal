@@ -21,10 +21,10 @@ class MW(wal.MainWindow):
         self.pack(self.spin2)
 
     def on_change(self):
-        print self.spin.get_value()
+        print(self.spin.get_value())
 
     def on_enter(self):
-        print self.spin.get_value()
+        print(self.spin.get_value())
 
 
 MW().run()

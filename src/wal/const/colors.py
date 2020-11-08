@@ -37,8 +37,7 @@ def lighter_color(color, coef):
 
 
 def get_sys_color(color_const):
-    return wx.SystemSettings.GetColour(color_const).Get()[:3] if sysconst.IS_WX4 \
-        else wx.SystemSettings_GetColour(color_const).Get()[:3]
+    return wx.SystemSettings.GetColour(color_const).Get()[:3]
 
 
 UI_COLORS = {}

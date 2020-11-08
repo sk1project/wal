@@ -20,13 +20,13 @@ class MW(wal.MainWindow):
         self.pack(self.spin1, padding=5)
 
     def onchange(self):
-        print self.spin.get_value()
+        print(self.spin.get_value())
 
     def onenter(self):
-        print 'onenter', self.spin.get_value()
+        print('onenter', self.spin.get_value())
 
     def onchange1(self):
-        print self.spin1.get_value()
+        print(self.spin1.get_value())
 
 
 MW().run()

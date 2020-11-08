@@ -147,8 +147,7 @@ class Radiobutton(wx.RadioButton, mixins.DataWidgetMixin):
         wx.RadioButton.__init__(self, parent, wx.ID_ANY, text, style=style)
         if onclick:
             self.callback = onclick
-            self.Bind(wx.EVT_RADIOBUTTON if const.IS_WX4 else wx.wx.EVT_RADIOBUTTON,
-                      self.on_click, self)
+            self.Bind(wx.EVT_RADIOBUTTON, self.on_click, self)
 
     def on_click(self, _event):
         if self.callback:

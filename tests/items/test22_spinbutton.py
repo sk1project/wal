@@ -19,7 +19,7 @@ class MW(wal.MainWindow):
         self.pack(self.spin2)
 
     def on_change(self, event):
-        print self.spin.get_value()
+        print(self.spin.get_value())
 
 
 MW().run()

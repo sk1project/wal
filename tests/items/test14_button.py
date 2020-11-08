@@ -23,7 +23,7 @@ class MW(wal.MainWindow):
         self.pack(btn, padding=10)
 
     def on_click(self):
-        print 'Works!'
+        print('Works!')
 
 
 MW().run()

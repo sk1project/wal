@@ -22,10 +22,7 @@ from .. import mixins
 from .. import utils
 
 
-if const.IS_WX4:
-    import wx.adv as adv
-else:
-    import wx.combo as adv
+import wx.adv as adv
 
 
 class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
@@ -109,10 +106,7 @@ class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
                 w = r.width - 1
                 pdc.DrawRectangle(0, 0, r.width, h)
                 nr = wx.RendererNative.Get()
-                if const.IS_WX4:
-                    nr.DrawTextCtrl(self, dc, (0, 0, w, h), wx.CONTROL_FLAT)
-                else:
-                    nr.DrawTextCtrl(self, dc, (0, 0, w, h), wx.CONTROL_DIRTY)
+                nr.DrawTextCtrl(self, dc, (0, 0, w, h), wx.CONTROL_FLAT)
             if self.font_icon:
                 dc.DrawBitmap(self.font_icon, icon_x, icon_y, True)
             dc.SetTextForeground(self.fontcolor)

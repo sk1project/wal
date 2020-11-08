@@ -26,10 +26,10 @@ class MW(wal.MainWindow):
         self.pack(self.fcmb)
 
     def on_change(self):
-        print self.cmb.get_value()
+        print(self.cmb.get_value())
 
     def on_change2(self):
-        print self.fcmb.get_value()
+        print(self.fcmb.get_value())
 
 
 MW().run()

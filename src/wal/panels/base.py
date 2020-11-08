@@ -390,8 +390,7 @@ class HSizer(HPanel):
         self.Bind(wx.EVT_LEFT_UP, self.mouse_left_up)
         self.Bind(wx.EVT_MOTION, self.mouse_move)
         self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self.capture_lost)
-        self.SetCursor(wx.Cursor(wx.CURSOR_SIZEWE) if const.IS_WX4
-                       else wx.StockCursor(wx.CURSOR_SIZEWE))
+        self.SetCursor(wx.Cursor(wx.CURSOR_SIZEWE))
 
     def set_client(self, client_parent, client, client_min=0, left_side=True):
         self.client = client

@@ -18,8 +18,8 @@ class MW(wal.MainWindow):
         self.pack(self.clist)
 
     def on_change(self):
-        print self.clist.get_active()
-        print self.clist.get_active_value()
+        print(self.clist.get_active())
+        print(self.clist.get_active_value())
 
 
 MW().run()

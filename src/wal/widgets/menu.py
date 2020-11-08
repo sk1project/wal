@@ -33,16 +33,10 @@ class Menu(wx.Menu):
         self.Append(item_id, text, menu)
 
     def remove_item(self, item):
-        if const.IS_WX4:
-            self.Remove(item)
-        else:
-            self.RemoveItem(item)
+        self.Remove(item)
 
     def append_item(self, item):
-        if const.IS_WX4:
-            self.Append(item)
-        else:
-            self.AppendItem(item)
+        self.Append(item)
 
     def append_separator(self):
         return self.AppendSeparator()
@@ -64,8 +58,7 @@ class MenuItem(wx.MenuItem):
         self.Enable(enabled)
 
     def set_checkable(self, val):
-        if not const.IS_WX4:
-            self.SetCheckable(val)
+        pass
 
     def is_checked(self):
         return self.IsChecked()
@@ -78,10 +71,7 @@ class MenuItem(wx.MenuItem):
             self.SetBitmap(bmp)
 
     def toggle(self):
-        if not const.IS_WX4:
-            self.Toggle()
-        else:
-            self.Check(not self.is_checked())
+        self.Check(not self.is_checked())
 
     def set_active(self, val):
         if self.is_checkable() and self.is_checked() != val:

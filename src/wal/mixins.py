@@ -41,9 +41,7 @@ class DialogMixin(object):
         self.Centre()
 
     def get_size(self):
-        if const.IS_WX4:
-            return tuple(self.GetSize())
-        return self.GetSizeTuple()
+        return tuple(self.GetSize())
 
     def set_size(self, size):
         self.SetSize(wx.Size(*size))
@@ -86,9 +84,7 @@ class WidgetMixin(object):
             parent.Layout()
 
     def get_size(self):
-        if const.IS_WX4:
-            return tuple(self.GetSize())
-        return self.GetSizeTuple()
+        return tuple(self.GetSize())
 
     def get_position(self):
         return self.GetPosition()
@@ -149,7 +145,7 @@ class WidgetMixin(object):
         return self.GetBackgroundColour().Get()[:3]
 
     def popup_menu(self, menu, position=None):
-        position = wx.DefaultPosition if not position and const.IS_WX4 else position
+        position = position or wx.DefaultPosition
         self.PopupMenu(menu, position)
 
     def set_drop_target(self, target):
@@ -252,7 +248,7 @@ class GenericGWidget(wx.Panel, WidgetMixin):
         x, y = self.GetScreenPosition()
         w, h = self.GetSize()
         rect = wx.Rect(x, y, w, h)
-        if not (rect.Contains(mouse_pos) if const.IS_WX4 else rect.Inside(mouse_pos)):
+        if not rect.Contains(mouse_pos):
             self.timer.Stop()
             if self.mouse_over:
                 self.mouse_over = False
@@ -296,9 +292,7 @@ class DrawableWidget(object):
             self.SetDoubleBuffered(True)
 
     def get_size(self):
-        if const.IS_WX4:
-            return tuple(self.GetSize())
-        return self.GetSizeTuple()
+        return tuple(self.GetSize())
 
     def _on_size_change(self, event):
         self.refresh()
@@ -313,17 +307,8 @@ class DrawableWidget(object):
             self.dc = wx.GCDC(self.pdc)
         except Exception:
             self.dc = self.pdc
-        if not const.IS_WX4:
-            self.dc.BeginDrawing()
 
         self.paint()
-
-        if not const.IS_WX4:
-            if not self.pdc == self.dc:
-                self.dc.EndDrawing()
-                self.pdc.EndDrawing()
-            else:
-                self.dc.EndDrawing()
         self.pdc = self.dc = None
 
     # Paint methods for inherited class
@@ -358,12 +343,8 @@ class DrawableWidget(object):
         font = self.GetFont()
         font.SetWeight(wx.FONTWEIGHT_BOLD if bold else wx.FONTWEIGHT_NORMAL)
         if size_incr:
-            if const.IS_WX4 or font.IsUsingSizeInPixels():
-                sz = font.GetPixelSize()[1] + size_incr
-                font.SetPixelSize((0, sz))
-            else:
-                sz = font.GetPointSize() + size_incr
-                font.SetPointSize(sz)
+            sz = font.GetPixelSize()[1] + size_incr
+            font.SetPixelSize((0, sz))
         self.pdc.SetFont(font)
         return self.pdc.GetCharHeight()
 
@@ -500,7 +481,7 @@ class SensitiveWidget(object):
             self.Bind(wx.EVT_KEY_DOWN, self._on_key_down)
 
     def _get_point(self, event):
-        return list(event.GetPosition()) if const.IS_WX4 else list(event.GetPositionTuple())
+        return list(event.GetPosition())
 
     def _on_key_down(self, event):
         key_code = event.GetKeyCode()
@@ -510,14 +491,10 @@ class SensitiveWidget(object):
             event.Skip()
 
     def capture_mouse(self):
-        if const.IS_MSW and not const.IS_WX4:
-            self.mouse_captured = True
-            self.CaptureMouse()
+        pass
 
     def release_mouse(self):
-        if self.mouse_captured and not const.IS_WX4:
-            self.mouse_captured = False
-            self.ReleaseMouse()
+        pass
 
     def _mouse_leave(self, event):
         self.mouse_leave(self._get_point(event))

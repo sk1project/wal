@@ -51,7 +51,7 @@ class SimpleList(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, mixins.WidgetMixin
             self.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select, self)
         if on_activate:
             self.activate_cmd = on_activate
-            event = wx.EVT_LIST_ITEM_ACTIVATED if const.IS_WX4 else wx.wx.EVT_LIST_ITEM_ACTIVATED
+            event = wx.EVT_LIST_ITEM_ACTIVATED
             self.Bind(event, self.on_activate, self)
         self.set_bg(const.UI_COLORS['list_bg'])
 
@@ -242,13 +242,11 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
 
         bw, bh = utils.get_bitmap_size(self.data[0][0])
         w0, h0 = utils.get_max_text_size([item[2] for item in self.data], True)
-        w1, h1 = utils.get_max_text_size(
-            [item[3] for item in self.data], False, -2)
+        w1, h1 = utils.get_max_text_size([item[3] for item in self.data], False, -2)
         self.metrics['bmp'] = bw
         height = max(bh, h0 + h1 + 3)
         self.metrics['bmp_padding'] = (0, (height - bh) / 2)
-        self.metrics['text_xpadding'] = 3 * self.metrics['padding'] + \
-                                        self.metrics['bmp']
+        self.metrics['text_xpadding'] = 3 * self.metrics['padding'] + self.metrics['bmp']
         self.metrics['txt_ypadding'] = self.metrics['padding']
         self.metrics['txt2_ypadding'] = self.metrics['txt_ypadding'] + h0 + 3
         self.metrics['height'] = height + 2 * self.metrics['padding'] + 1
@@ -262,7 +260,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
 
     def mouse_left_down(self, point):
         h = self.win_to_doc(*point)[1]
-        index = h / self.metrics['height']
+        index = int(h / self.metrics['height'])
         self.set_selected(index)
 
     def set_virtual_size(self):
@@ -282,8 +280,7 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
             shift = item_h * index
             # Bottom line drawing
             self.set_stroke(const.UI_COLORS['border'])
-            self.draw_line(0, item_h * (index + 1),
-                           max(w, mt['width']) + 20, item_h * (index + 1))
+            self.draw_line(0, item_h * (index + 1), max(w, mt['width']) + 20, item_h * (index + 1))
             # Selection
             if self.selected == index:
                 rect = (0, shift, max(w, mt['width']) + 20, mt['height'])
@@ -293,26 +290,18 @@ class PrefsList(panels.ScrolledCanvas, mixins.SensitiveDrawableWidget):
                     self.draw_rect(*rect)
                 else:
                     render = wx.RendererNative.Get()
-                    render.DrawItemSelectionRect(
-                        self, self.dc, wx.Rect(*rect), wx.CONTROL_SELECTED)
+                    render.DrawItemSelectionRect(self, self.dc, wx.Rect(*rect), wx.CONTROL_SELECTED)
             # Bitmap drawing
-            bmp_pos = (mt['padding'] + mt['bmp_padding'][0],
-                       mt['padding'] + mt['bmp_padding'][1])
-            self.draw_bitmap(item[0] if self.selected != index else item[1],
-                             bmp_pos[0], bmp_pos[1] + shift)
+            bmp_pos = (mt['padding'] + mt['bmp_padding'][0], mt['padding'] + mt['bmp_padding'][1])
+            self.draw_bitmap(item[0] if self.selected != index else item[1], bmp_pos[0], bmp_pos[1] + shift)
             # Main text
             self.set_font(True, 0)
-            self.set_text_color(const.UI_COLORS['fg']
-                                if self.selected != index else
-                                const.UI_COLORS['selected_text'])
-            self.draw_text(item[2], mt['text_xpadding'],
-                           mt['txt_ypadding'] + shift)
+            self.set_text_color(const.UI_COLORS['fg'] if self.selected != index else const.UI_COLORS['selected_text'])
+            self.draw_text(item[2], mt['text_xpadding'], mt['txt_ypadding'] + shift)
             # Secondary text
             self.set_font(False, -1 if const.IS_MSW else -2)
-            self.set_text_color(const.UI_COLORS['disabled_text']
-                                if self.selected != index else
-                                const.UI_COLORS['selected_text'])
-            self.draw_text(item[3], mt['text_xpadding'],
-                           mt['txt2_ypadding'] + shift)
+            self.set_text_color(const.UI_COLORS['disabled_text'] if self.selected != index
+                                else const.UI_COLORS['selected_text'])
+            self.draw_text(item[3], mt['text_xpadding'], mt['txt2_ypadding'] + shift)
 
             index += 1

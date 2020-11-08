@@ -25,10 +25,10 @@ class MW(wal.MainWindow):
         self.pack(self.check3)
 
     def on_click(self):
-        print self.check1.get_value()
+        print(self.check1.get_value())
 
     def on_click3(self):
-        print self.check3.get_value()
+        print(self.check3.get_value())
 
 
 MW().run()

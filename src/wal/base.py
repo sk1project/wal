@@ -42,7 +42,7 @@ class Application(wx.App):
     @staticmethod
     def _set_font_size():
         dc = wx.MemoryDC()
-        bmp = wx.Bitmap(1, 1) if const.IS_WX4 else wx.EmptyBitmap(1, 1)
+        bmp = wx.Bitmap(1, 1)
         dc.SelectObject(bmp)
         dc.SetFont(utils.get_default_gui_font())
         const.FONT_SIZE[0] = dc.GetTextExtent('D')[0]
@@ -77,10 +77,7 @@ class Application(wx.App):
             raise RuntimeError('Main window is not defined!')
 
     def exit(self, *_args):
-        if const.IS_WX4:
-            self.ExitMainLoop()
-        else:
-            self.Exit()
+        self.ExitMainLoop()
 
 
 class MainWindow(wx.Frame, mixins.DialogMixin):
@@ -174,9 +171,7 @@ class MouseEvent(object):
         self.event = event
 
     def get_point(self):
-        if const.IS_WX4:
-            return list(self.event.GetPosition())
-        return list(self.event.GetPositionTuple())
+        return list(self.event.GetPosition())
 
     def get_rotation(self):
         return self.event.GetWheelRotation()

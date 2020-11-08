@@ -21,10 +21,7 @@ from .. import const
 from .. import mixins
 from .. import utils
 
-if const.IS_WX4:
-    import wx.adv as adv
-else:
-    import wx.combo as adv
+import wx.adv as adv
 
 
 class Combolist(wx.Choice, mixins.WidgetMixin):

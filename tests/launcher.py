@@ -91,7 +91,7 @@ class ListFrame(Frame):
         fpath = os.path.join(TPATH, fname)
         if not os.path.isfile(fpath):
             return
-        cmd = 'python3 %s' % fpath
+        cmd = '/usr/bin/python3 %s' % fpath
         echo_msg('START %s' % fname, False)
         if not os.system(cmd):
             echo_msg('......[OK]')

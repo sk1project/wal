@@ -160,7 +160,7 @@ class StubBtn(wx.Panel):
         x, y = self.GetScreenPosition()
         w, h = self.GetSize()
         rect = wx.Rect(x, y, w, h)
-        if not (rect.Contains(mouse_pos) if utils.IS_WX4 else rect.Inside(mouse_pos)):
+        if not rect.Contains(mouse_pos):
             self.timer.Stop()
             if self.mouse_over:
                 self.mouse_over = False

@@ -20,12 +20,8 @@ import wx
 from .. import const
 from .. import mixins
 from .. import renderer
-from .. import utils
 
-if const.IS_WX4:
-    from wx.adv import HyperlinkCtrl
-else:
-    from wx import HyperlinkCtrl
+from wx.adv import HyperlinkCtrl
 
 
 class Label(wx.StaticText, mixins.WidgetMixin):
@@ -38,27 +34,13 @@ class Label(wx.StaticText, mixins.WidgetMixin):
         if fontsize:
             if isinstance(fontsize, str):
                 sz = int(fontsize)
-                if const.IS_WX4:
-                    font.SetPixelSize((0, sz))
-                else:
-                    if font.IsUsingSizeInPixels():
-                        font.SetPixelSize((0, sz))
-                    else:
-                        font.SetPointSize(sz)
+                font.SetPixelSize((0, sz))
             else:
-                if const.IS_WX4:
-                    fontsize = int(fontsize)
-                    if fontsize > 0:
-                        [font.MakeLarger() for _i in range(fontsize)]
-                    else:
-                        [font.MakeSmaller() for _i in range(abs(fontsize))]
+                fontsize = int(fontsize)
+                if fontsize > 0:
+                    [font.MakeLarger() for _i in range(fontsize)]
                 else:
-                    if font.IsUsingSizeInPixels():
-                        sz = font.GetPixelSize()[1] + fontsize
-                        font.SetPixelSize((0, sz))
-                    else:
-                        sz = font.GetPointSize() + fontsize
-                        font.SetPointSize(sz)
+                    [font.MakeSmaller() for _i in range(abs(fontsize))]
         self.SetFont(font)
         if fg:
             self.SetForegroundColour(wx.Colour(*fg))
