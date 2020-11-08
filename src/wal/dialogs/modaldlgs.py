@@ -23,7 +23,6 @@ from .. import mixins
 from ..panels import HPanel, VPanel
 from ..const import EXPAND, ALL, VERTICAL, HORIZONTAL
 from ..widgets import HLine, Button, Label, ProgressBar
-from ..utils import tr
 
 LOG = logging.getLogger(__name__)
 

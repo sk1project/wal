@@ -17,8 +17,6 @@
 
 import wx
 
-from ..utils import tr
-
 
 def _dialog(parent, title, text, icon, yesno=False, cancel=False):
     if any([yesno, cancel]):

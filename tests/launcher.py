@@ -134,11 +134,19 @@ class ListFrame(Frame):
         self.exec_btn['state'] = 'normal'
 
 
+def center_window(w, h):
+    ws = root.winfo_screenwidth()
+    hs = root.winfo_screenheight()
+    x = (ws/2) - (w/2)
+    y = (hs/2) - (h/2)
+    root.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+
 root = Tk()
 root.title('UI Tests')
 root.iconphoto(False, PhotoImage(file='images/icon.png'))
 frame = ListFrame(root)
 frame.pack(fill=BOTH, expand=1, padx=15, pady=15)
-root.geometry('{}x{}'.format(650, 450))
+center_window(650, 450)
 root.attributes('-zoomed', False)
 root.mainloop()
