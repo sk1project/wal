@@ -42,8 +42,7 @@ class Entry(wx.TextCtrl, mixins.DataWidgetMixin):
         style = style | wx.TE_DONTWRAP if no_wrap else style
 
         size = self._set_width(size, width)
-        wx.TextCtrl.__init__(
-            self, parent, wx.ID_ANY, self.value, size=size, style=style)
+        wx.TextCtrl.__init__(self, parent, wx.ID_ANY, self.value, size=size, style=style)
         if onenter:
             self._callback1 = onenter
             self.Bind(wx.EVT_TEXT_ENTER, self._on_enter, self)

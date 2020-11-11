@@ -20,8 +20,11 @@ import wx
 from .. import const
 from .. import mixins
 from .. import panels
+from .. import utils
 
 from . import entry
+
+ALLOWED_CHARS = '.0123456789+-*/'
 
 
 class NativeSpin(wx.SpinCtrl, mixins.RangeDataWidgetMixin):
@@ -77,82 +80,79 @@ class NativeSpin(wx.SpinCtrl, mixins.RangeDataWidgetMixin):
         self.SetValue(int(value))
 
 
-NativeSpinDouble = NativeSpin
+class NativeSpinDouble(wx.SpinCtrlDouble, mixins.RangeDataWidgetMixin):
+    callback = None
+    callback1 = None
+    flag = True
+    ctxmenu_flag = False
+    digits = 2
+    step = 0
 
-if not const.IS_WX2:
-    class NativeSpinDouble(wx.SpinCtrlDouble, mixins.RangeDataWidgetMixin):
-        callback = None
-        callback1 = None
-        flag = True
-        ctxmenu_flag = False
-        digits = 2
-        step = 0
+    def __init__(
+            self, parent, value=0.0, range_val=(0.0, 1.0), step=0.01,
+            digits=2, size=const.DEF_SIZE, width=6,
+            onchange=None, onenter=None, check_focus=True):
 
-        def __init__(
-                self, parent, value=0.0, range_val=(0.0, 1.0), step=0.01,
-                digits=2, size=const.DEF_SIZE, width=6,
-                onchange=None, onenter=None, check_focus=True):
+        self.range_val = range_val
+        width = 0 if const.IS_GTK3 else width
+        width = width + 2 if const.IS_MSW else width
+        size = self._set_width(size, width)
+        style = wx.SP_ARROW_KEYS | wx.ALIGN_LEFT | wx.TE_PROCESS_ENTER
+        wx.SpinCtrlDouble.__init__(self, parent, wx.ID_ANY, '',
+                                   size=size, style=style,
+                                   min=0, max=100, initial=value, inc=step)
+        self.set_range(range_val)
+        self.set_value(value)
+        self.set_step(step)
+        self.set_digits(digits)
+        if onchange:
+            self.callback = onchange
+            self.Bind(wx.EVT_SPINCTRLDOUBLE, self.on_change, self)
+        if onenter:
+            self.callback1 = onenter
+            self.Bind(wx.EVT_TEXT_ENTER, self.on_enter, self)
+        if check_focus:
+            self.Bind(
+                wx.EVT_KILL_FOCUS, self._entry_lost_focus, self)
+            self.Bind(wx.EVT_CONTEXT_MENU, self._ctxmenu, self)
 
-            self.range_val = range_val
-            width = 0 if const.IS_GTK3 else width
-            width = width + 2 if const.IS_MSW else width
-            size = self._set_width(size, width)
-            style = wx.SP_ARROW_KEYS | wx.ALIGN_LEFT | wx.TE_PROCESS_ENTER
-            wx.SpinCtrlDouble.__init__(self, parent, wx.ID_ANY, '',
-                                       size=size, style=style,
-                                       min=0, max=100, initial=value, inc=step)
-            self.set_range(range_val)
-            self.set_value(value)
-            self.set_step(step)
-            self.set_digits(digits)
-            if onchange:
-                self.callback = onchange
-                self.Bind(wx.EVT_SPINCTRLDOUBLE, self.on_change, self)
-            if onenter:
-                self.callback1 = onenter
-                self.Bind(wx.EVT_TEXT_ENTER, self.on_enter, self)
-            if check_focus:
-                self.Bind(
-                    wx.EVT_KILL_FOCUS, self._entry_lost_focus, self)
-                self.Bind(wx.EVT_CONTEXT_MENU, self._ctxmenu, self)
+    def set_step(self, step):
+        self.step = step
+        self.SetIncrement(step)
 
-        def set_step(self, step):
-            self.step = step
-            self.SetIncrement(step)
+    def set_digits(self, digits):
+        self.digits = digits
+        self.SetDigits(digits)
 
-        def set_digits(self, digits):
-            self.digits = digits
-            self.SetDigits(digits)
+    def _set_digits(self, digits):
+        self.set_digits(digits)
 
-        def _set_digits(self, digits):
-            self.set_digits(digits)
+    def on_change(self, *_args):
+        if self.callback:
+            self.callback()
 
-        def on_change(self, *_args):
-            if self.callback:
-                self.callback()
+    def on_enter(self, event):
+        if self.callback1:
+            self.callback1()
+        event.Skip()
 
-        def on_enter(self, event):
-            if self.callback1:
-                self.callback1()
-            event.Skip()
+    def _ctxmenu(self, event):
+        self.ctxmenu_flag = True
+        event.Skip()
 
-        def _ctxmenu(self, event):
-            self.ctxmenu_flag = True
-            event.Skip()
+    def _entry_lost_focus(self, event):
+        if not self.flag and not self.ctxmenu_flag:
+            self.on_change()
+        elif not self.flag and self.ctxmenu_flag:
+            self.ctxmenu_flag = False
+        event.Skip()
 
-        def _entry_lost_focus(self, event):
-            if not self.flag and not self.ctxmenu_flag:
-                self.on_change()
-            elif not self.flag and self.ctxmenu_flag:
-                self.ctxmenu_flag = False
-            event.Skip()
+    def get_value(self):
+        return float(self.GetValue()) if self.digits \
+            else int(self.GetValue())
 
-        def get_value(self):
-            return float(self.GetValue()) if self.digits \
-                else int(self.GetValue())
-
-        def set_value(self, value):
-            self.SetValue(float(value) if self.digits else int(value))
+    def set_value(self, value):
+        self.SetValue(float(value) if self.digits else int(value))
 
 
 class NativeSpinButton(wx.SpinButton, mixins.RangeDataWidgetMixin):
@@ -280,8 +280,8 @@ class _MBtn(panels.Panel, mixins.SensitiveDrawableWidget):
         self.gc_draw_polygon(self.points)
 
         # Draw left border
-        self.set_gc_stroke(const.UI_COLORS['border'] + (100,))
-        self.gc_draw_line(0, 2 if self._top else 0, 0, h if self._top else h - 2)
+        # self.set_gc_stroke(const.UI_COLORS['border'] + (100,))
+        # self.gc_draw_line(0, 2 if self._top else 0, 0, h if self._top else h - 2)
 
 
 class MegaSpinButton(panels.Panel):
@@ -434,8 +434,7 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
             self.box.Add(self.sb, 0, wx.ALL)
 
         if check_focus:
-            self.entry.Bind(
-                wx.EVT_KILL_FOCUS, self._entry_lost_focus, self.entry)
+            self.entry.Bind(wx.EVT_KILL_FOCUS, self._entry_lost_focus, self.entry)
             self.entry.Bind(wx.EVT_CONTEXT_MENU, self._ctxmenu, self.entry)
 
         self.set_step(step)
@@ -450,29 +449,25 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
         self.entry.Enable(val)
         self.sb.Enable(val)
         if self.line:
-            color = const.UI_COLORS['border'] if val \
-                else const.UI_COLORS['disabled_text']
+            color = const.UI_COLORS['border'] if val else const.UI_COLORS['disabled_text']
             self.line.set_bg(color)
 
     def get_enabled(self):
         return self.entry.IsEnabled()
 
     def _check_spin(self, event):
-        if self.flag:
-            return
-        coef = pow(10, self.digits)
-        dval = float(self.sb.get_value() - int(self.value * coef))
-        if not self.value == self._calc_entry():
-            self._set_value(self._calc_entry())
-        self.SetValue(dval * self.step + self.value)
-        event.Skip()
+        if not self.flag:
+            dval = float(self.sb.get_value() - int(self.value * 10 ** self.digits))
+            if not self.value == self._calc_entry():
+                self._set_value(self._calc_entry())
+            self.SetValue(dval * self.step + self.value)
+            event.Skip()
 
     def _entry_enter(self):
-        if self.flag:
-            return
-        self.SetValue(self._calc_entry())
-        if self.enter_callback:
-            self.enter_callback()
+        if not self.flag:
+            self.SetValue(self._calc_entry())
+            if self.enter_callback:
+                self.enter_callback()
 
     def _mouse_wheel(self, event):
         if self.get_enabled():
@@ -495,58 +490,44 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
     def _check_entry(self):
         if not self.flag:
             value = self.entry.get_value()
-            chars = '.0123456789+-*/' if self.digits else '0123456789+-*/'
+            chars = ALLOWED_CHARS if self.digits else ALLOWED_CHARS[1:]
             result = ''.join([item for item in value if item in chars])
             if not value == result:
-                self.flag = True
-                self.entry.set_value(result)
-                self.flag = False
+                with utils.flagman(self, 'flag'):
+                    self.entry.set_value(result)
 
     def _calc_entry(self):
-        txt = self.entry.get_value()
-        val = 0
         # noinspection PyBroadException
         try:
-            line = 'val=' + txt
-            code = compile(line, '<string>', 'exec')
-            exec(code)
+            local_dict = {}
+            exec('val=' + self.entry.get_value(), globals(), local_dict)
+            return local_dict['val']
         except Exception:
             return self.value
-        return val
 
     def _check_in_range(self, val):
         minval, maxval = self.range_val
-        if val < minval:
-            val = minval
-        if val > maxval:
-            val = maxval
-        coef = pow(10, self.digits)
-        val = round(val * coef) / coef
-        return val
+        return round(min(max(val, minval), maxval) * 10 ** self.digits) / 10 ** self.digits
 
     def _set_value(self, val):
-        coef = pow(10, self.digits)
         self.value = self._check_in_range(val)
-        if not self.digits:
-            self.value = int(self.value)
+        self.value = int(self.value) if not self.digits else self.value
         self.entry.set_value(str(self.value))
-        self.sb.set_value(int(self.value * coef))
+        self.sb.set_value(int(self.value * 10 ** self.digits))
 
     def _set_digits(self, digits):
         self.digits = digits
         self.set_range(self.range_val)
 
     def set_value(self, val):
-        self.flag = True
-        self._set_value(val)
-        self.flag = False
+        with utils.flagman(self, 'flag'):
+            self._set_value(val)
 
     # ----- Native API emulation
     def SetValue(self, val):
-        self.flag = True
-        old_value = self.value
-        self._set_value(val)
-        self.flag = False
+        with utils.flagman(self, 'flag'):
+            old_value = self.value
+            self._set_value(val)
         if self.callback is not None and not self.value == old_value:
             self.callback()
 
@@ -556,9 +537,8 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
         return self.value
 
     def SetRange(self, minval, maxval):
-        coef = pow(10, self.digits)
         self.range_val = (minval, maxval)
-        self.sb.set_range((int(minval * coef), int(maxval * coef)))
+        self.sb.set_range((int(minval * 10 ** self.digits), int(maxval * 10 ** self.digits)))
 
     # ----- Control API
     def set_step(self, step):

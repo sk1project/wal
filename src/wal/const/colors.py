@@ -16,11 +16,21 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import wx
+import typing as tp
 
 from . import sysconst
 
 
-def mix_colors(fg, bg, alpha):
+def mix_colors(fg: tp.Union[tp.List[float], tp.Tuple[float, ...]],
+               bg: tp.Union[tp.List[float], tp.Tuple[float, ...]],
+               alpha: float) -> tp.Tuple[float, float, float]:
+    """Mixes two RGB color values applying transparency value
+
+    :param fg: (tuple|list) foreground RGB color value
+    :param bg: (tuple|list) foreground RGB color value
+    :param alpha: (float) transparency value
+    :return: tuple of mixed RGB color values
+    """
     r1, g1, b1 = fg[:3]
     r2, g2, b2 = bg[:3]
     a1 = alpha / 255.0
@@ -31,12 +41,24 @@ def mix_colors(fg, bg, alpha):
     return r, g, b
 
 
-def lighter_color(color, coef):
+def lighter_color(color: tp.Union[tp.List[float], tp.Tuple[float, ...]],
+                  coef: float) -> tp.Tuple[float, float, float]:
+    """Lighters color by provided coefficient between 0.0 - 1.0
+
+    :param color: (tuple|list) RGB color value
+    :param coef: (float) lightening coefficient between 0.0 - 1.0
+    :return: tuple of lightened RGB color values
+    """
     white = (255, 255, 255)
     return mix_colors(color, white, coef * 255.0)
 
 
-def get_sys_color(color_const):
+def get_sys_color(color_const: int) -> tp.Tuple[float, float, float]:
+    """Returns wx predefined system color as RGB tuple
+
+    :param color_const: (int) wx predefined color constant
+    :return: tuple of RGB color values
+    """
     return wx.SystemSettings.GetColour(color_const).Get()[:3]
 
 
@@ -55,7 +77,11 @@ BLUE = wx.Colour(0, 0, 255)
 AMBIANCE_GRAY = wx.Colour(60, 59, 55)
 
 
-def get_system_colors():
+def get_system_colors() -> tp.Dict[str, tp.Tuple[float, float, float]]:
+    """Returns wx predefined system colors as RGB tuples in dict
+
+    :return: dict of RGB tuples
+    """
     return {
         'fg': get_sys_color(wx.SYS_COLOUR_BTNTEXT),
         'bg': get_sys_color(wx.SYS_COLOUR_3DFACE),
@@ -75,15 +101,21 @@ def get_system_colors():
     }
 
 
-def set_ui_colors(prefs=None):
+def set_ui_colors(prefs: tp.Optional[tp.Dict[str, tp.Tuple[float, float, float]]] = None) -> None:
+    """Sets UI_COLOR members and updates them from optional prefs.
+
+    :param prefs: (dict|None) optional prefs dict
+    """
     kw = UI_COLORS
     kw.update(get_system_colors())
-    if prefs:
-        kw.update(prefs)
+    kw.update(prefs or {})
     kw['even'] = mix_colors((0, 0, 0), kw['list_bg'], 15)
     kw['odd'] = mix_colors((255, 255, 255), kw['list_bg'], 15)
 
 
-def get_sel_bg():
-    return get_sys_color(wx.SYS_COLOUR_ACTIVECAPTION) \
-        if sysconst.IS_GTK2 else get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)
+def get_sel_bg() -> tp.Tuple[float, float, float]:
+    """Returns selection background color
+
+    :return: RGB color values tuple
+    """
+    return get_sys_color(wx.SYS_COLOUR_HIGHLIGHT)

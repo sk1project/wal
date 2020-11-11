@@ -243,3 +243,19 @@ def get_screen_resolution():
 
 def get_system_fontsize():
     return get_default_gui_font().GetPixelSize()
+
+
+class FlagManager:
+    def __init__(self, obj, field):
+        self.obj = obj
+        self.field = field
+
+    def __enter__(self):
+        self.obj.__dict__[self.field] = True
+        return self
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self.obj.__dict__[self.field] = False
+
+
+flagman = FlagManager

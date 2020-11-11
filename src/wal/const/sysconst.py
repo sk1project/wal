@@ -17,6 +17,7 @@
 
 import os
 import platform
+import typing as tp
 
 import wx
 
@@ -38,30 +39,17 @@ IS_WX3 = wx.VERSION[0] == 3
 IS_WX4 = wx.VERSION[0] == 4
 
 
-def _get_desktop_name():
-    if IS_GTK and 'XDG_CURRENT_DESKTOP' in os.environ:
-        return os.environ['XDG_CURRENT_DESKTOP']
-    return None
+DESKTOP_NAME = os.environ.get('XDG_CURRENT_DESKTOP')
 
 
-DESKTOP_NAME = _get_desktop_name()
-IS_UNITY = DESKTOP_NAME == 'Unity'
+def get_theme_name() -> tp.Optional[str]:
+    """Detects GTK theme name
 
-
-def is_unity_16_04():
-    if IS_GTK:
-        import distro
-        if distro.linux_distribution()[0] == 'Ubuntu' and distro.linux_distribution()[1]:
-            return IS_UNITY and int(distro.linux_distribution()[1].split('.')[0]) >= 16
-    return False
-
-
-def get_theme_name():
+    :return: (string|None) name of GTK theme
+    """
     if IS_GTK:
         cmd = "gsettings get org.gnome.desktop.interface gtk-theme"
-        return os.environ.get('GTK_THEME') or \
-            os.popen(cmd).readline().strip().strip('\'') or None
+        return os.environ.get('GTK_THEME') or os.popen(cmd).readline().strip().strip('\'') or None
 
 
-IS_UNITY_16 = is_unity_16_04()
 IS_AMBIANCE = get_theme_name() == 'Ambiance'

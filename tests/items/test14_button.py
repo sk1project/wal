@@ -1,4 +1,4 @@
-# The test should show differen
+# The test should show different
 # button states on the main window
 
 import wal

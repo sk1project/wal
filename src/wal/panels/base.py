@@ -31,7 +31,6 @@ class Panel(wx.Panel, WidgetMixin):
     def __init__(self, parent, border=False, allow_input=False,
                  style=wx.TAB_TRAVERSAL):
         style = style | wx.WANTS_CHARS if allow_input else style
-        style = style | wx.BORDER_MASK if border and const.IS_WX2 else style
         wx.Panel.__init__(self, parent, wx.ID_ANY, style=style)
 
     def set_size(self, size):
@@ -282,8 +281,6 @@ class ScrolledPanel(scrolled.ScrolledPanel, WidgetMixin):
 class ScrolledCanvas(wx.ScrolledWindow, WidgetMixin):
     def __init__(self, parent, border=False):
         style = wx.NO_BORDER
-        if border and const.IS_WX2:
-            style = wx.BORDER_MASK
         wx.ScrolledWindow.__init__(self, parent, wx.ID_ANY, style=style)
         self.set_scroll_rate()
         self.set_double_buffered()

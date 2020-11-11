@@ -50,13 +50,9 @@ class ColorButton(wx.ColourPickerCtrl, mixins.WidgetMixin):
 
     def __init__(self, parent, color=(), onchange=None, silent=True):
         self.silent = silent
-        if not color:
-            color = const.BLACK
-        elif isinstance(color, str):
-            color = wx.Colour(*self.hex_to_val255(color))
-        else:
-            color = wx.Colour(*self.val255(color))
-        wx.ColourPickerCtrl.__init__(self, parent, wx.ID_ANY, color)
+        color = color or const.BLACK.Get()
+        color = self.hex_to_val255(color) if isinstance(color, str) else self.val255(color)
+        wx.ColourPickerCtrl.__init__(self, parent, wx.ID_ANY, wx.Colour(*color))
         if onchange:
             self.callback = onchange
             self.Bind(wx.EVT_COLOURPICKER_CHANGED, self.on_change, self)
@@ -67,8 +63,7 @@ class ColorButton(wx.ColourPickerCtrl, mixins.WidgetMixin):
 
     @staticmethod
     def hex_to_val255(hexcolor):
-        return tuple(int(hexcolor[a:b], 0x10)
-                     for a, b in ((1, 3), (3, 5), (5, -1)))
+        return tuple(int(hexcolor[a:b], 0x10) for a, b in ((1, 3), (3, 5), (5, -1)))
 
     @staticmethod
     def val255(vals):
@@ -96,26 +91,18 @@ class ColorButton(wx.ColourPickerCtrl, mixins.WidgetMixin):
 
 
 class ImageButton(mixins.GenericGWidget):
-    def __init__(
-            self, parent, art_id=None, art_size=const.DEF_SIZE,
-            text='', tooltip='', padding=0, decoration_padding=6,
-            flat=True, native=True,
-            fontbold=False, fontsize=0, textplace=const.RIGHT,
-            onclick=None, repeat=False):
+    def __init__(self, parent, art_id=None, art_size=const.DEF_SIZE,
+                 text='', tooltip='', padding=0, decoration_padding=6,
+                 flat=True, native=True,
+                 fontbold=False, fontsize=0, textplace=const.RIGHT,
+                 onclick=None, repeat=False):
 
         self.flat = flat
         self.decoration_padding = decoration_padding
-
         mixins.GenericGWidget.__init__(self, parent, tooltip, onclick, repeat)
 
-        if native:
-            rndr = renderer.NativeButtonRenderer
-        else:
-            rndr = renderer.ButtonRenderer
-
-        self.renderer = rndr(
-            self, art_id, art_size, text,
-            padding, fontbold, fontsize, textplace)
+        rndr_cls = renderer.NativeButtonRenderer if native else renderer.ButtonRenderer
+        self.renderer = rndr_cls(self, art_id, art_size, text, padding, fontbold, fontsize, textplace)
 
     def _on_paint(self, event):
         if self.enabled:
