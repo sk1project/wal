@@ -19,6 +19,9 @@ class MW(wal.MainWindow):
         self.spin1 = wal.IntSpin(self, 5, (0, 20), onchange=self.onchange1)
         self.pack(self.spin1, padding=5)
 
+        self.spin2 = wal.FloatSpin(self, 5, (-20.0, 20.0), onchange=self.onchange2)
+        self.pack(self.spin2, padding=5)
+
     def onchange(self):
         print(self.spin.get_value())
 
@@ -27,6 +30,9 @@ class MW(wal.MainWindow):
 
     def onchange1(self):
         print(self.spin1.get_value())
+
+    def onchange2(self):
+        print(self.spin2.get_value())
 
 
 MW().run()
