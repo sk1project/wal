@@ -529,6 +529,8 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
         self.value = self._check_in_range(val)
         if not self.digits:
             self.value = int(self.value)
+        if not self.value:
+            self.value = 0.0 if self.digits else 0
         self.entry.set_value(str(self.value))
         self.sb.set_value(int(self.value * coef))
 
