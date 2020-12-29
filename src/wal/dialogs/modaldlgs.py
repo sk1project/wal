@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  Copyright (C) 2013-2018 by Ihor E. Novikov
+#  Copyright (C) 2013-2020 by Ihor E. Novikov
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,19 +25,6 @@ from ..const import EXPAND, ALL, VERTICAL, HORIZONTAL
 from ..widgets import HLine, Button, Label, ProgressBar
 
 LOG = logging.getLogger(__name__)
-
-
-class ProgressDialog(wx.ProgressDialog):
-
-    def __init__(self, parent=None, title='', width=130):
-        style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
-        super().__init__(self, title, ' ' * width, parent=parent, style=style)
-
-    def update(self, value, msg):
-        self.Update(value, msg)
-
-    def destroy(self):
-        self.Destroy()
 
 
 class SimpleDialog(wx.Dialog, mixins.DialogMixin):
@@ -86,7 +73,7 @@ class SimpleDialog(wx.Dialog, mixins.DialogMixin):
         pass
 
     def get_result(self):
-        return None
+        pass
 
     def on_close(self, _event=None):
         self.end_modal(const.BUTTON_CANCEL)
@@ -183,10 +170,22 @@ class OkCancelDialog(SimpleDialog):
         self.end_modal(const.BUTTON_CANCEL)
 
     def show(self):
-        ret = self.get_result() if self.show_modal() == const.BUTTON_OK \
-            else None
+        ret = self.get_result() if self.show_modal() == const.BUTTON_OK else None
         self.destroy()
         return ret
+
+
+class ProgressDialog(wx.ProgressDialog):
+
+    def __init__(self, parent=None, title='', width=130):
+        style = wx.PD_APP_MODAL | wx.PD_AUTO_HIDE
+        super().__init__(self, title, ' ' * width, parent=parent, style=style)
+
+    def update(self, value, msg):
+        self.Update(value, msg)
+
+    def destroy(self):
+        self.Destroy()
 
 
 class CustomProgressDialog(SimpleDialog):
