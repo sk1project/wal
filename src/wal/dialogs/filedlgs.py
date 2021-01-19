@@ -28,7 +28,7 @@ HOME = os.path.expanduser('~'). \
 
 def expanduser(path=''):
     if path.startswith('~'):
-        path = path.replace('~', HOME)
+        path = HOME + path[1:]
     return path
 
 
@@ -40,7 +40,7 @@ def get_open_file_name(parent, title='Open', default_dir='~',
     style = wx.FD_CHANGE_DIR | wx.FD_FILE_MUST_EXIST | wx.FD_PREVIEW
     dlg = wx.FileDialog(
         parent, message=utils.tr(title),
-        defaultDir=expanduser(default_dir),
+        defaultDir=utils.tr(expanduser(default_dir)),
         defaultFile="",
         wildcard=utils.tr(wildcard),
         style=wx.FD_OPEN | style
@@ -64,7 +64,7 @@ def get_save_file_name(parent, path, title='', wildcard='*.txt'):
     style = wx.FD_CHANGE_DIR | wx.FD_OVERWRITE_PROMPT | wx.FD_PREVIEW
     dlg = wx.FileDialog(
         parent, message=utils.tr(title),
-        defaultDir=doc_folder,
+        defaultDir=utils.tr(doc_folder),
         defaultFile=utils.tr(doc_name),
         wildcard=utils.tr(wildcard),
         style=wx.FD_SAVE | style
