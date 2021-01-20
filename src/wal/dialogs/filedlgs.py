@@ -27,9 +27,7 @@ HOME = os.path.expanduser('~'). \
 
 
 def expanduser(path=''):
-    if path.startswith('~'):
-        path = HOME + path[1:]
-    return path
+    return HOME + path[1:] if path.startswith('~') else path
 
 
 def get_open_file_name(parent, title='Open', default_dir='~',
