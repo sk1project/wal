@@ -501,6 +501,10 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
                 self.flag = True
                 self.entry.set_value(result)
                 self.flag = False
+            if self.ctxmenu_flag:
+                if self.callback:
+                    self.callback()
+                self.ctxmenu_flag = False
 
     def _calc_entry(self):
         txt = self.entry.get_value()
