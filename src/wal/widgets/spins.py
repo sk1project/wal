@@ -495,6 +495,10 @@ class MegaSpinDouble(wx.Panel, mixins.RangeDataWidgetMixin):
             if not value == result:
                 with utils.flagman(self, 'flag'):
                     self.entry.set_value(result)
+            if self.ctxmenu_flag:
+                if self.callback:
+                    self.callback()
+                self.ctxmenu_flag = False
 
     def _calc_entry(self):
         # noinspection PyBroadException
