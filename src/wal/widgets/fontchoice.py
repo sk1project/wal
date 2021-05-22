@@ -34,8 +34,10 @@ class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
     sample_bitmaps = None
     font_icon = None
     control_height = 0
+    preview_width = 0
 
     def __init__(self, parent, value=0, size=(10, 30),
+                 preview_width=0,
                  fontnames=None, fontname_bitmaps=None,
                  fontsample_bitmaps=None, font_icon=None, onchange=None):
 
@@ -43,6 +45,7 @@ class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
         self.bitmaps = fontname_bitmaps or []
         self.sample_bitmaps = fontsample_bitmaps or []
         self.font_icon = font_icon
+        self.preview_width = preview_width
 
         self.font = utils.get_default_gui_font()
         self.fontcolor = wx.Colour(*const.UI_COLORS['text'])
@@ -123,7 +126,7 @@ class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
             dc.SetTextForeground(self.fontcolor)
             dc.DrawText(self.fontnames[item], label_x, label_y)
             dc.DrawBitmap(self.sample_bitmaps[item], label_x, sample_y, True)
-            dc.SetPen(wx.Pen(wx.Colour(240, 240, 240), 1))
+            dc.SetPen(wx.Pen(wx.Colour(*const.UI_COLORS['border']), 1))
             val = sample_y + self.sample_bitmaps[item].GetSize()[1]
             dc.DrawLine(0, val, r.width, val)
 
@@ -137,14 +140,19 @@ class FontBitmapChoice(adv.OwnerDrawnComboBox, mixins.WidgetMixin):
     def OnMeasureItemWidth(self, item):
         if item == wx.NOT_FOUND:
             return 1
-        val = max(self.bitmaps[item].GetSize()[0],
-                  self.sample_bitmaps[item].GetSize()[0])
+        if self.preview_width > 0:
+            val = self.preview_width
+        else:
+            val = max(
+                self.bitmaps[item].GetSize()[0],
+                self.sample_bitmaps[item].GetSize()[0]
+            )
         if self.font_icon:
             val += self.font_icon.GetSize()[0] + 2
         return val - 4
 
     def _create_items(self):
-        return [str(item) for item in range(len(self.fontnames))]
+        return [str(item) for item in self.fontnames]
 
     def _set_bitmaps(self, bitmaps, sample_bitmaps):
         self.bitmaps = bitmaps
