@@ -78,7 +78,9 @@ class Entry(wx.TextCtrl, mixins.DataWidgetMixin):
     def set_value(self, val):
         self.my_changes = True
         self.value = utils.tr(val)
+        cursor_pos = self.get_cursor_pos()
         self.SetValue(self.value)
+        self.set_cursor_pos(cursor_pos)
 
     def set_editable(self, val):
         self.SetEditable(val)
