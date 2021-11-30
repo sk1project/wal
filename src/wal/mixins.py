@@ -330,7 +330,7 @@ class DrawableWidget(object):
         else:
             pen = wx.Pen(wx.Colour(*color[:4]), width)
             if dashes:
-                pen = wx.Pen(wx.Colour(*color[:4]), width, wx.USER_DASH)
+                pen = wx.Pen(wx.Colour(*color[:4]), width, wx.PENSTYLE_USER_DASH)
                 pen.SetDashes(self.dashes)
             pen.SetCap(wx.CAP_BUTT)
             self.pdc.SetPen(pen)
@@ -401,7 +401,7 @@ class DrawableWidget(object):
         else:
             pen = wx.Pen(wx.Colour(*color[:4]), width)
             if self.dashes:
-                pen = wx.Pen(wx.Colour(*color[:4]), width, wx.USER_DASH)
+                pen = wx.Pen(wx.Colour(*color[:4]), width, wx.PENSTYLE_USER_DASH)
                 pen.SetDashes(self.dashes)
             pen.SetCap(wx.CAP_BUTT)
             self.dc.SetPen(pen)

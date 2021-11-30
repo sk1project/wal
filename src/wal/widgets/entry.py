@@ -91,7 +91,7 @@ class Entry(wx.TextCtrl, mixins.DataWidgetMixin):
 
     def set_monospace(self, zoom=0):
         points = self.GetFont().GetPointSize()
-        f = wx.Font(points + zoom, wx.MODERN, wx.NORMAL, wx.NORMAL)
+        f = wx.Font(points + zoom, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
         self.SetDefaultStyle(wx.TextAttr(wx.NullColour, wx.NullColour, f))
 
     def append(self, txt):
