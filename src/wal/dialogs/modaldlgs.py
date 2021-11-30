@@ -16,13 +16,13 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+
 import wx
 
-from .. import const
-from .. import mixins
+from .. import const, mixins
+from ..const import ALL, EXPAND, HORIZONTAL, VERTICAL
 from ..panels import HPanel, VPanel
-from ..const import EXPAND, ALL, VERTICAL, HORIZONTAL
-from ..widgets import HLine, Button, Label, ProgressBar
+from ..widgets import Button, HLine, Label, ProgressBar
 
 LOG = logging.getLogger(__name__)
 
@@ -37,7 +37,8 @@ class SimpleDialog(wx.Dialog, mixins.DialogMixin):
         stl = stl | wx.RESIZE_BORDER | wx.MAXIMIZE_BOX if resizable else stl
         self.add_line = add_line
 
-        super().__init__(self, parent, -1, title, wx.DefaultPosition, size, style=stl)
+        wx.Dialog.__init__(self, parent, -1, title, wx.DefaultPosition, size,
+                           style=stl)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(sizer)
